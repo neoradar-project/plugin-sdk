@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace NeoRadar.PluginSdk.Rendering;
 
 /// <summary>
@@ -27,6 +29,20 @@ public interface IRenderingInterface
     /// yet (typically resolves on the next frame after registration).
     /// </summary>
     IPluginGraphics? Graphics(ScreenHandle handle);
+
+    // ── PluginInsetWorld camera control ──
+
+    /// <summary>Recentre a <see cref="ScreenScope.PluginInsetWorld"/> camera on a mercator point.</summary>
+    bool SetViewportCenter(ScreenHandle handle, Vector2 worldCenter) => false;
+
+    /// <summary>Set a <see cref="ScreenScope.PluginInsetWorld"/> camera's web-mercator zoom level.</summary>
+    bool SetViewportZoom(ScreenHandle handle, double zoom) => false;
+
+    /// <summary>
+    /// Recentre a <see cref="ScreenScope.PluginInsetWorld"/> camera on a lat/lon
+    /// pair, with an optional zoom override. Convenience over the mercator form.
+    /// </summary>
+    bool CenterOnLatLon(ScreenHandle handle, double lat, double lon, double? zoom = null) => false;
 
     // ── Legacy (queue-based) drawing API ──
     // Returns null in Phase 1 — kept for ABI compatibility with plugins that
