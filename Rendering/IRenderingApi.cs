@@ -1,22 +1,61 @@
 namespace NeoRadar.PluginSdk.Rendering;
 
+/// <summary>
+/// Plugin-facing rendering surface. Plugins register one or more
+/// <see cref="ScreenDefinition"/>s; each registration returns a
+/// <see cref="ScreenHandle"/> the plugin uses to look up its
+/// <see cref="IPluginGraphics"/> drawing surface.
+/// </summary>
 public interface IRenderingInterface
 {
-    ObjectHandle DrawLine(DrawLineParams parameters);
+    // ── Screen lifecycle ──
 
-    ObjectHandle DrawFill(DrawFillParams parameters);
+    /// <summary>
+    /// Register a new screen for this plugin. Returns <see cref="ScreenHandle.Invalid"/>
+    /// if the host's rendering surface isn't available (e.g. running headless).
+    /// </summary>
+    ScreenHandle RegisterScreen(ScreenDefinition definition, IPluginScreenRenderer renderer);
 
-    ObjectHandle DrawText(DrawTextParams parameters);
+    bool UnregisterScreen(ScreenHandle handle);
 
-    ObjectHandle DrawPoints(DrawPointParams parameters);
+    bool SetScreenEnabled(ScreenHandle handle, bool enabled);
+    bool IsScreenEnabled(ScreenHandle handle);
 
-    bool SetVisible(ObjectHandle handle, bool visible);
+    /// <summary>
+    /// Returns the drawing surface for this screen, or <c>null</c> if the
+    /// handle is unknown or the screen hasn't been bound to a render surface
+    /// yet (typically resolves on the next frame after registration).
+    /// </summary>
+    IPluginGraphics? Graphics(ScreenHandle handle);
 
-    bool SetColor(ObjectHandle handle, Color color);
+    // ── Legacy (queue-based) drawing API ──
+    // Returns null in Phase 1 — kept for ABI compatibility with plugins that
+    // were authored against the previous IRenderingInterface shape. New
+    // plugins should use the screen-based API above.
 
-    bool Remove(ObjectHandle handle);
+    /// <summary>Legacy: queue-based draw. Use <see cref="RegisterScreen"/> instead.</summary>
+    ObjectHandle DrawLine(DrawLineParams parameters) => ObjectHandle.Invalid;
 
-    void RemoveAll();
+    /// <summary>Legacy: queue-based draw. Use <see cref="RegisterScreen"/> instead.</summary>
+    ObjectHandle DrawFill(DrawFillParams parameters) => ObjectHandle.Invalid;
+
+    /// <summary>Legacy: queue-based draw. Use <see cref="RegisterScreen"/> instead.</summary>
+    ObjectHandle DrawText(DrawTextParams parameters) => ObjectHandle.Invalid;
+
+    /// <summary>Legacy: queue-based draw. Use <see cref="RegisterScreen"/> instead.</summary>
+    ObjectHandle DrawPoints(DrawPointParams parameters) => ObjectHandle.Invalid;
+
+    /// <summary>Legacy: queue-based mutator.</summary>
+    bool SetVisible(ObjectHandle handle, bool visible) => false;
+
+    /// <summary>Legacy: queue-based mutator.</summary>
+    bool SetColor(ObjectHandle handle, Color color) => false;
+
+    /// <summary>Legacy: queue-based mutator.</summary>
+    bool Remove(ObjectHandle handle) => false;
+
+    /// <summary>Legacy: queue-based mutator.</summary>
+    void RemoveAll() { }
 
     ViewportInfo GetViewport();
 
