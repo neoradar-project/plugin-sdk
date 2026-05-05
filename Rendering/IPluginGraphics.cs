@@ -53,6 +53,18 @@ public interface IPluginGraphics
     bool SetMinZoom(GraphicsObjectRef r, float minZoom);
     bool SetHitTestVisible(GraphicsObjectRef r, bool hittable);
 
+    /// <summary>Update the text content of a screen-space text ref. Returns false if the ref isn't a text ref.</summary>
+    bool SetText(GraphicsObjectRef r, string text);
+
+    /// <summary>Move the anchor point of a screen-space ref (text/rect/line). Returns false if the ref doesn't support repositioning.</summary>
+    bool SetScreenAnchor(GraphicsObjectRef r, Vector2 anchor);
+
+    /// <summary>Replace the points of a screen-space line ref. Use for leader lines whose endpoints both change.</summary>
+    bool SetScreenPoints(GraphicsObjectRef r, IReadOnlyList<Vector2> points);
+
+    /// <summary>Resize a screen-space rect ref. Use to grow/shrink hit-test or selection rectangles.</summary>
+    bool SetScreenSize(GraphicsObjectRef r, float width, float height);
+
     // ── Hierarchy ──
 
     bool BringToFront(GraphicsObjectRef r);
