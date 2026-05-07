@@ -19,6 +19,22 @@ public enum ScreenScope
     PluginInsetScreen,
 }
 
+/// <summary>How often a plugin inset should re-render in response to position batches.</summary>
+public enum BatchInvalidationFrequency
+{
+    /// <summary>Wake every position batch (~1.5 Hz). Default.</summary>
+    EveryBatch = 1,
+
+    /// <summary>Wake every other batch (~0.75 Hz). For displays that update at half rate.</summary>
+    EveryOtherBatch = 2,
+
+    /// <summary>Wake every fourth batch (~0.4 Hz). For slow-changing displays (wind, weather).</summary>
+    EveryFourthBatch = 4,
+
+    /// <summary>Never auto-wake on batches. Plugin drives invalidation through its own mutations.</summary>
+    OnDemand = 0,
+}
+
 /// <summary>
 /// Declarative screen registration. <see cref="ZOrder"/> slots between host modules:
 /// ExtendedCenterlines=-10, GeoJson=0, RangeRings=10, SpeedVector=45, Targets=50,
@@ -32,7 +48,12 @@ public sealed record ScreenDefinition(
     string? Icon = null,
     int InsetWidth = 480,
     int InsetHeight = 320,
-    bool ShowInList = true);
+    bool ShowInList = true)
+{
+    /// <summary>How often this screen re-renders on position batches. Inset scopes only;
+    /// ignored for main-radar overlays.</summary>
+    public BatchInvalidationFrequency BatchFrequency { get; init; } = BatchInvalidationFrequency.EveryBatch;
+}
 
 /// <summary>Stable, opaque handle returned by <c>RegisterScreen</c>.</summary>
 public readonly record struct ScreenHandle(ulong Value)
