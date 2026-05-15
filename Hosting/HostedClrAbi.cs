@@ -35,8 +35,12 @@ internal static class HostedClrAbi
     /// v8 — adds Flightplan_TryGetByCallsign + FlightplanUpdated/Removed events.
     /// v9 — adds ControllerData_TryGetByCallsign + ControllerData_SetGroundStatus
     ///       + OnControllerDataUpdated event (first mutator-shaped sub-API).
+    /// v10 — adds Airport surface (Is*RunwayActive, SetAirportStatus,
+    ///        SetRunwayStatus, RemoveRunwayStatus, SetShowCenterlines)
+    ///        + 5 airport events. GetConfigurationByIcao deferred pending
+    ///        array marshalling for the runway lists.
     /// </remarks>
-    public const int Version = 9;
+    public const int Version = 10;
 }
 
 /// <summary>
@@ -99,6 +103,32 @@ internal unsafe struct HostFunctionTable
     /// snapshot — full Route marshalling is deferred.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, FlightplanSnapshot*, int> Flightplan_TryGetByCallsign;
+
+    // --- Airport ------------------------------------------------------
+
+    /// <summary>Returns 1 if the named runway is an active departure runway, 0 otherwise.</summary>
+    public delegate* unmanaged[Cdecl]<char*, char*, int> Airport_IsDepRunwayActive;
+
+    /// <summary>Returns 1 if the named runway is an active arrival runway, 0 otherwise.</summary>
+    public delegate* unmanaged[Cdecl]<char*, char*, int> Airport_IsArrRunwayActive;
+
+    /// <summary>
+    /// Mutator — set runway status. Type matches PluginSdk.Airport.RunwayType
+    /// (Departure=0, Arrival=1). Returns 1 on success, 0 on miss.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, char*, int, int> Airport_SetRunwayStatus;
+
+    /// <summary>Mutator — remove runway status (deactivate).</summary>
+    public delegate* unmanaged[Cdecl]<char*, char*, int, int> Airport_RemoveRunwayStatus;
+
+    /// <summary>
+    /// Mutator — set airport status. Status matches PluginSdk.Airport.AirportStatus
+    /// (Active=0, Observed=1).
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, int, int> Airport_SetAirportStatus;
+
+    /// <summary>Mutator — toggle whether extended runway centerlines render for this airport.</summary>
+    public delegate* unmanaged[Cdecl]<char*, int, int> Airport_SetShowCenterlines;
 
     // --- ControllerData -----------------------------------------------
 
@@ -196,6 +226,21 @@ internal unsafe struct PluginRuntimeTable
     /// fetch the full row if it wants the data.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnControllerDataUpdated;
+
+    /// <summary>AirportAdded — ICAO only.</summary>
+    public delegate* unmanaged[Cdecl]<char*, void> OnAirportAdded;
+
+    /// <summary>AirportRemoved — ICAO only.</summary>
+    public delegate* unmanaged[Cdecl]<char*, void> OnAirportRemoved;
+
+    /// <summary>AirportStatusChanged — ICAO + status byte.</summary>
+    public delegate* unmanaged[Cdecl]<char*, int, void> OnAirportStatusChanged;
+
+    /// <summary>RunwayStatusChanged — ICAO + runway + active flag + isArrival flag.</summary>
+    public delegate* unmanaged[Cdecl]<char*, char*, int, int, void> OnRunwayStatusChanged;
+
+    /// <summary>AirportConfigurationsUpdated — total count.</summary>
+    public delegate* unmanaged[Cdecl]<int, void> OnAirportConfigurationsUpdated;
 }
 
 /// <summary>
