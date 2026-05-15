@@ -33,8 +33,10 @@ internal static class HostedClrAbi
     /// v6 — adds Controller_TryGetByCallsign + ControllerConnected/Disconnected events.
     /// v7 — adds Fsd_GetConnection + FsdConnected/Disconnected events.
     /// v8 — adds Flightplan_TryGetByCallsign + FlightplanUpdated/Removed events.
+    /// v9 — adds ControllerData_TryGetByCallsign + ControllerData_SetGroundStatus
+    ///       + OnControllerDataUpdated event (first mutator-shaped sub-API).
     /// </remarks>
-    public const int Version = 8;
+    public const int Version = 9;
 }
 
 /// <summary>
@@ -97,6 +99,22 @@ internal unsafe struct HostFunctionTable
     /// snapshot — full Route marshalling is deferred.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, FlightplanSnapshot*, int> Flightplan_TryGetByCallsign;
+
+    // --- ControllerData -----------------------------------------------
+
+    /// <summary>
+    /// Look up the controller-data row keyed by aircraft callsign.
+    /// Returns 1 on hit, 0 on miss.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, ControllerDataSnapshot*, int> ControllerData_TryGetByCallsign;
+
+    /// <summary>
+    /// Mutator — set the ground status (None/Start/Push/Taxi/Dep) for an
+    /// aircraft. <paramref name="status"/> matches
+    /// <see cref="PluginSdk.ControllerData.GroundStatus"/>. Returns 1 on
+    /// success, 0 if the callsign isn't tracked, negative on error.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, int, int> ControllerData_SetGroundStatus;
 
     // --- Logger -------------------------------------------------------
 
@@ -171,6 +189,13 @@ internal unsafe struct PluginRuntimeTable
 
     /// <summary>FlightplanRemoved — callsign only.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnFlightplanRemoved;
+
+    /// <summary>
+    /// ControllerDataUpdated — callsign only. The SDK event carries just
+    /// the callsign; the plugin calls api.ControllerData.GetByCallsign to
+    /// fetch the full row if it wants the data.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, void> OnControllerDataUpdated;
 }
 
 /// <summary>
@@ -182,6 +207,46 @@ internal unsafe struct PluginRuntimeTable
 /// callsigns are at most 12 characters; 16 covers everything with room
 /// for the null terminator.
 /// </summary>
+/// <summary>
+/// ControllerData row marshalled across the function-pointer boundary.
+/// Mirrors PluginSdk.ControllerData.ControllerDataModel for every field
+/// that survives a POD round-trip — strings inline, numerics direct,
+/// enums as byte.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Pack = 8)]
+internal unsafe struct ControllerDataSnapshot
+{
+    public const int CallsignCapacity = 24;
+    public const int DirectCapacity = 16;
+    public const int SquawkCapacity = 8;
+    public const int ScratchpadCapacity = 64;
+    public const int RawScratchpadCapacity = 128;
+
+    public fixed char Callsign[CallsignCapacity];
+    public fixed char AssignedDirect[DirectCapacity];
+    public fixed char AssignedSquawk[SquawkCapacity];
+    public fixed char Scratchpad[ScratchpadCapacity];
+    public fixed char RawScratchpad[RawScratchpadCapacity];
+    public fixed char OwnedByCallsign[CallsignCapacity];
+    public fixed char FutureOwnerCallsign[CallsignCapacity];
+
+    public int ClearedFlightLevel;
+    public int AssignedHeading;
+    public int AssignedSpeed;
+    public int AssignedMach;
+    public int AssignedVerticalRate;
+    public int ClearanceQueuePosition;
+
+    public byte ClearanceIssued;
+    public byte OwnedByMe;
+    public byte AssignedSpeedVariance;  // PluginSdk.ControllerData.AssignedSpeedVariance
+    public byte AttentionState;          // PluginSdk.ControllerData.AttentionState
+    public byte GroundStatus;            // PluginSdk.ControllerData.GroundStatus
+    public byte _pad0;
+    public byte _pad1;
+    public byte _pad2;
+}
+
 /// <summary>
 /// Flightplan data marshalled across the function-pointer boundary.
 /// Carries the identity + plan strings; Route, waypoints, and time fields
