@@ -29,8 +29,9 @@ internal static class HostedClrAbi
     /// v2 — adds <see cref="PluginRuntimeTable.LoadSamplePlugin"/>.
     /// v3 — adds <see cref="PluginRuntimeTable.OnAircraftConnected"/>.
     /// v4 — adds <see cref="HostFunctionTable.Logger_Log"/>.
+    /// v5 — adds <see cref="PluginRuntimeTable.OnAircraftDisconnected"/>.
     /// </remarks>
-    public const int Version = 4;
+    public const int Version = 5;
 }
 
 /// <summary>
@@ -111,6 +112,9 @@ internal unsafe struct PluginRuntimeTable
     /// OnAircraftConnected handler via EventDispatcher.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, int, void> OnAircraftConnected;
+
+    /// <summary>AircraftDisconnected — callsign only.</summary>
+    public delegate* unmanaged[Cdecl]<char*, void> OnAircraftDisconnected;
 }
 
 /// <summary>
