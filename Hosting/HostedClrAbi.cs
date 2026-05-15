@@ -27,8 +27,9 @@ internal static class HostedClrAbi
     /// <remarks>
     /// v1 — initial: Ping, Aircraft_GetCount, Aircraft_TryGetByCallsign.
     /// v2 — adds <see cref="PluginRuntimeTable.LoadSamplePlugin"/>.
+    /// v3 — adds <see cref="PluginRuntimeTable.OnAircraftConnected"/>.
     /// </remarks>
-    public const int Version = 2;
+    public const int Version = 3;
 }
 
 /// <summary>
@@ -87,14 +88,19 @@ internal unsafe struct PluginRuntimeTable
     /// <summary>
     /// Phase B.2 smoke-test entry. Takes a null-terminated UTF-16 path to
     /// a plugin DLL, loads it via a collectible AssemblyLoadContext, finds
-    /// a static <c>RunSample(IAircraftApi)</c> method, invokes it. Returns
+    /// a BasePlugin-derived type, instantiates, calls Initialize. Returns
     /// 0 on success or a negative status code.
-    ///
-    /// This is provisional — Phase C replaces it with the full
-    /// LoadPlugin/UnloadPlugin/DispatchEvent surface once the existing
-    /// Plugin/PluginManager.cs is ported into PluginRuntime.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, int> LoadSamplePlugin;
+
+    /// <summary>
+    /// AOT NeoRadar's IEventBus AircraftConnected subscription marshals
+    /// through here. Parameters: null-terminated UTF-16 callsign, CID
+    /// (or -1 if the aircraft has no CID). PluginRuntime constructs the
+    /// AircraftConnectedEvent and fans it to every loaded plugin's
+    /// OnAircraftConnected handler via EventDispatcher.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, int, void> OnAircraftConnected;
 }
 
 /// <summary>
