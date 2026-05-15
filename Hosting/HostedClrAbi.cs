@@ -32,8 +32,9 @@ internal static class HostedClrAbi
     /// v5 — adds <see cref="PluginRuntimeTable.OnAircraftDisconnected"/>.
     /// v6 — adds Controller_TryGetByCallsign + ControllerConnected/Disconnected events.
     /// v7 — adds Fsd_GetConnection + FsdConnected/Disconnected events.
+    /// v8 — adds Flightplan_TryGetByCallsign + FlightplanUpdated/Removed events.
     /// </remarks>
-    public const int Version = 7;
+    public const int Version = 8;
 }
 
 /// <summary>
@@ -87,6 +88,15 @@ internal unsafe struct HostFunctionTable
     /// the snapshot), 0 if disconnected (output is zeroed).
     /// </summary>
     public delegate* unmanaged[Cdecl]<FsdConnectionSnapshot*, int> Fsd_GetConnection;
+
+    // --- Flightplan ---------------------------------------------------
+
+    /// <summary>
+    /// Look up a flightplan by callsign. Returns 1 on hit, 0 on miss.
+    /// Route + waypoints stay empty in the SDK record produced from this
+    /// snapshot — full Route marshalling is deferred.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, FlightplanSnapshot*, int> Flightplan_TryGetByCallsign;
 
     // --- Logger -------------------------------------------------------
 
@@ -152,6 +162,15 @@ internal unsafe struct PluginRuntimeTable
 
     /// <summary>FsdDisconnected — signal only, no data to carry.</summary>
     public delegate* unmanaged[Cdecl]<void> OnFsdDisconnected;
+
+    /// <summary>
+    /// FlightplanUpdated — snapshot pointer carries the marshalled state.
+    /// PluginRuntime reads it eagerly before returning.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<FlightplanSnapshot*, void> OnFlightplanUpdated;
+
+    /// <summary>FlightplanRemoved — callsign only.</summary>
+    public delegate* unmanaged[Cdecl]<char*, void> OnFlightplanRemoved;
 }
 
 /// <summary>
@@ -163,6 +182,38 @@ internal unsafe struct PluginRuntimeTable
 /// callsigns are at most 12 characters; 16 covers everything with room
 /// for the null terminator.
 /// </summary>
+/// <summary>
+/// Flightplan data marshalled across the function-pointer boundary.
+/// Carries the identity + plan strings; Route, waypoints, and time fields
+/// stay empty in the SDK Flightplan record produced from this snapshot.
+/// Route marshalling needs full waypoint + segment serialisation —
+/// deferred until a plugin actually needs it inline.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Pack = 8)]
+internal unsafe struct FlightplanSnapshot
+{
+    public const int CallsignCapacity = 24;
+    public const int RuleCapacity = 8;
+    public const int AcTypeCapacity = 16;
+    public const int IcaoCapacity = 8;
+    public const int AltitudeCapacity = 16;
+    public const int RemarksCapacity = 256;
+
+    public fixed char Callsign[CallsignCapacity];
+    public fixed char FlightRule[RuleCapacity];
+    public fixed char AcType[AcTypeCapacity];
+    public fixed char Origin[IcaoCapacity];
+    public fixed char Destination[IcaoCapacity];
+    public fixed char Alternate[IcaoCapacity];
+    public fixed char PlannedAltitude[AltitudeCapacity];
+    public fixed char Remarks[RemarksCapacity];
+
+    public byte IsValid;
+    public byte _pad0;
+    public byte _pad1;
+    public byte _pad2;
+}
+
 /// <summary>
 /// FSD connection state marshalled across the function-pointer boundary.
 /// Plugins fetch this on demand via api.Fsd.GetConnection. Mirrors
