@@ -13,4 +13,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
+
+  <!-- Hosting/* types are an internal product protocol (function-pointer ABI
+       between AOT NeoRadar and JIT PluginRuntime). Plugin authors who only
+       reference PluginSdk see the public SDK surface and not these types.
+       Friend assemblies access them via InternalsVisibleTo. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="NeoRadar" />
+    <InternalsVisibleTo Include="NeoRadar.PluginRuntime" />
+  </ItemGroup>
 </Project>

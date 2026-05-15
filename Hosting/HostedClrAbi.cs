@@ -4,21 +4,31 @@ using System.Runtime.InteropServices;
 namespace NeoRadar.PluginSdk.Hosting;
 
 // Function-pointer ABI between AOT NeoRadar and the JIT NeoRadar.PluginRuntime
-// (per doc 29). Both runtimes reference NeoRadar.PluginSdk so they agree on
-// these layouts at compile time.
+// (per doc 29). The types in this file are an internal product protocol —
+// plugin authors do NOT see them.
+//
+// They live in PluginSdk for one reason: both AOT NeoRadar and JIT
+// PluginRuntime need to agree on the layouts at compile time, and PluginSdk
+// is the natural shared compile-time assembly. They are declared `internal`
+// + InternalsVisibleTo so plugin authors who reference PluginSdk see only
+// the public SDK surface (ICoreApi, BasePlugin, Aircraft, etc.).
 //
 // VERSION BUMPS: any time a struct member is added/removed/reordered, bump
-// AbiVersion. The AOT and JIT sides both check the version at boot — a
-// mismatch aborts with a clear log instead of corrupting memory.
+// HostedClrAbi.Version. The AOT and JIT sides both check the version at
+// boot — a mismatch aborts with a clear log instead of corrupting memory.
 
-public static class HostedClrAbi
+internal static class HostedClrAbi
 {
     /// <summary>
     /// Increment on any layout change to <see cref="HostFunctionTable"/>,
     /// <see cref="PluginRuntimeTable"/>, or any POD struct that crosses the
     /// boundary. Both sides assert this matches at Bootstrap.Start.
     /// </summary>
-    public const int Version = 1;
+    /// <remarks>
+    /// v1 — initial: Ping, Aircraft_GetCount, Aircraft_TryGetByCallsign.
+    /// v2 — adds <see cref="PluginRuntimeTable.LoadSamplePlugin"/>.
+    /// </remarks>
+    public const int Version = 2;
 }
 
 /// <summary>
@@ -33,7 +43,7 @@ public static class HostedClrAbi
 /// static methods.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
-public unsafe struct HostFunctionTable
+internal unsafe struct HostFunctionTable
 {
     /// <summary>Must equal <see cref="HostedClrAbi.Version"/>. Bootstrap.Start aborts on mismatch.</summary>
     public int Version;
@@ -68,15 +78,23 @@ public unsafe struct HostFunctionTable
 /// lifecycle hooks) eventually route through this table.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
-public unsafe struct PluginRuntimeTable
+internal unsafe struct PluginRuntimeTable
 {
     /// <summary>Must equal <see cref="HostedClrAbi.Version"/>.</summary>
     public int Version;
     public int _pad0;
 
-    // Phase B.1 has no methods here yet — Bootstrap returns a populated
-    // Version field and reserved padding. Phase B.2 onwards adds
-    // LoadPlugin, UnloadPlugin, DispatchEvent, OnFrameUpdate, etc.
+    /// <summary>
+    /// Phase B.2 smoke-test entry. Takes a null-terminated UTF-16 path to
+    /// a plugin DLL, loads it via a collectible AssemblyLoadContext, finds
+    /// a static <c>RunSample(IAircraftApi)</c> method, invokes it. Returns
+    /// 0 on success or a negative status code.
+    ///
+    /// This is provisional — Phase C replaces it with the full
+    /// LoadPlugin/UnloadPlugin/DispatchEvent surface once the existing
+    /// Plugin/PluginManager.cs is ported into PluginRuntime.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, int> LoadSamplePlugin;
 }
 
 /// <summary>
@@ -89,7 +107,7 @@ public unsafe struct PluginRuntimeTable
 /// for the null terminator.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
-public unsafe struct AircraftSnapshot
+internal unsafe struct AircraftSnapshot
 {
     public const int CallsignCapacity = 16;
     public const int SquawkCapacity = 8;
