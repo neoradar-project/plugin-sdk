@@ -30,8 +30,9 @@ internal static class HostedClrAbi
     /// v3 — adds <see cref="PluginRuntimeTable.OnAircraftConnected"/>.
     /// v4 — adds <see cref="HostFunctionTable.Logger_Log"/>.
     /// v5 — adds <see cref="PluginRuntimeTable.OnAircraftDisconnected"/>.
+    /// v6 — adds Controller_TryGetByCallsign + ControllerConnected/Disconnected events.
     /// </remarks>
-    public const int Version = 5;
+    public const int Version = 6;
 }
 
 /// <summary>
@@ -70,6 +71,13 @@ internal unsafe struct HostFunctionTable
     /// returns 1. On miss returns 0. On error returns a negative status.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, AircraftSnapshot*, int> Aircraft_TryGetByCallsign;
+
+    // --- Controller ---------------------------------------------------
+
+    /// <summary>
+    /// Look up a controller by callsign. Returns 1 on hit, 0 on miss.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, ControllerSnapshot*, int> Controller_TryGetByCallsign;
 
     // --- Logger -------------------------------------------------------
 
@@ -115,6 +123,16 @@ internal unsafe struct PluginRuntimeTable
 
     /// <summary>AircraftDisconnected — callsign only.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnAircraftDisconnected;
+
+    /// <summary>
+    /// ControllerConnected — the SDK ControllerConnectedEvent needs more
+    /// than primitives can carry inline, so the snapshot pointer is passed
+    /// instead. PluginRuntime reads it eagerly before returning.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<ControllerSnapshot*, void> OnControllerConnected;
+
+    /// <summary>ControllerDisconnected — callsign only.</summary>
+    public delegate* unmanaged[Cdecl]<char*, void> OnControllerDisconnected;
 }
 
 /// <summary>
@@ -126,6 +144,38 @@ internal unsafe struct PluginRuntimeTable
 /// callsigns are at most 12 characters; 16 covers everything with room
 /// for the null terminator.
 /// </summary>
+/// <summary>
+/// Controller data marshalled across the function-pointer boundary.
+/// Mirrors NeoRadar.Core.Controller.Controller for the fields plugins
+/// typically need — identity, position, capabilities. Array fields
+/// (Frequencies, AtisLines) are left as empty arrays in the SDK record
+/// produced from this snapshot; richer array marshalling is a Phase C
+/// follow-up if any plugin actually needs the live frequencies list
+/// inline with the event.
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Pack = 8)]
+internal unsafe struct ControllerSnapshot
+{
+    public const int CallsignCapacity = 24;
+    public const int NameCapacity = 64;
+    public const int AtisLetterCapacity = 8;
+    public const int SectorFileNameCapacity = 64;
+
+    public fixed char Callsign[CallsignCapacity];
+    public fixed char Name[NameCapacity];
+    public fixed char AtisLetter[AtisLetterCapacity];
+    public fixed char SectorFileName[SectorFileNameCapacity];
+
+    public int Cid;            // 0 if unset (NeoRadar.Core stores it as int; SDK Controller.Cid is a string for display)
+    public byte Rating;        // PluginSdk.Controller.Rating enum value
+    public byte Facility;      // PluginSdk.Controller.FacilityType enum value
+    public byte IsATC;
+    public byte IsATIS;
+
+    public double Latitude;
+    public double Longitude;
+}
+
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
 internal unsafe struct AircraftSnapshot
 {
