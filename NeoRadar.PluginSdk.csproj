@@ -3,6 +3,9 @@
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>NeoRadar</RootNamespace>
     <Nullable>enable</Nullable>
+    <!-- Hosting/ namespace uses delegate* unmanaged + fixed-size struct buffers
+         for the function-pointer ABI between AOT NeoRadar and JIT PluginRuntime. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!-- Why: plugins pin a specific SDK assembly version; bumping major signals
          a breaking change for plugin authors. Tracks PluginSdkVersion constant. -->
     <Version>0.1.0</Version>
