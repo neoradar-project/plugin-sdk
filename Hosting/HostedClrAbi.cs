@@ -31,8 +31,9 @@ internal static class HostedClrAbi
     /// v4 — adds <see cref="HostFunctionTable.Logger_Log"/>.
     /// v5 — adds <see cref="PluginRuntimeTable.OnAircraftDisconnected"/>.
     /// v6 — adds Controller_TryGetByCallsign + ControllerConnected/Disconnected events.
+    /// v7 — adds Fsd_GetConnection + FsdConnected/Disconnected events.
     /// </remarks>
-    public const int Version = 6;
+    public const int Version = 7;
 }
 
 /// <summary>
@@ -78,6 +79,14 @@ internal unsafe struct HostFunctionTable
     /// Look up a controller by callsign. Returns 1 on hit, 0 on miss.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, ControllerSnapshot*, int> Controller_TryGetByCallsign;
+
+    // --- Fsd ----------------------------------------------------------
+
+    /// <summary>
+    /// Read the live FSD connection state. Returns 1 if connected (fills
+    /// the snapshot), 0 if disconnected (output is zeroed).
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<FsdConnectionSnapshot*, int> Fsd_GetConnection;
 
     // --- Logger -------------------------------------------------------
 
@@ -133,6 +142,16 @@ internal unsafe struct PluginRuntimeTable
 
     /// <summary>ControllerDisconnected — callsign only.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnControllerDisconnected;
+
+    /// <summary>
+    /// FsdConnected — callsign of the local connection. Core fires it
+    /// signal-only; this side reads server type + facility off the
+    /// IFsdConnectionClient at fire time and marshals together.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, int, void> OnFsdConnected;
+
+    /// <summary>FsdDisconnected — signal only, no data to carry.</summary>
+    public delegate* unmanaged[Cdecl]<void> OnFsdDisconnected;
 }
 
 /// <summary>
@@ -144,6 +163,33 @@ internal unsafe struct PluginRuntimeTable
 /// callsigns are at most 12 characters; 16 covers everything with room
 /// for the null terminator.
 /// </summary>
+/// <summary>
+/// FSD connection state marshalled across the function-pointer boundary.
+/// Plugins fetch this on demand via api.Fsd.GetConnection. Mirrors
+/// PluginSdk.Fsd.ConnectionInfo for the fields readable from
+/// IFsdConnectionClient — AtisLines / Frequencies arrays land empty in
+/// the SDK record (deferred to Phase C array-marshalling follow-up).
+/// </summary>
+[StructLayout(LayoutKind.Sequential, Pack = 8)]
+internal unsafe struct FsdConnectionSnapshot
+{
+    public const int CallsignCapacity = 24;
+    public const int NameCapacity = 64;
+
+    public fixed char Callsign[CallsignCapacity];
+    public fixed char Name[NameCapacity];
+
+    public int Cid;
+    public byte Rating;     // PluginSdk.Fsd.NetworkRating
+    public byte Facility;   // PluginSdk.Fsd.NetworkFacility
+    public byte ServerType; // PluginSdk.Fsd.ServerType
+    public byte IsATC;
+    public byte IsConnected;
+    public byte _pad0;
+    public byte _pad1;
+    public byte _pad2;
+}
+
 /// <summary>
 /// Controller data marshalled across the function-pointer boundary.
 /// Mirrors NeoRadar.Core.Controller.Controller for the fields plugins
