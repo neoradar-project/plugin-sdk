@@ -28,8 +28,9 @@ internal static class HostedClrAbi
     /// v1 — initial: Ping, Aircraft_GetCount, Aircraft_TryGetByCallsign.
     /// v2 — adds <see cref="PluginRuntimeTable.LoadSamplePlugin"/>.
     /// v3 — adds <see cref="PluginRuntimeTable.OnAircraftConnected"/>.
+    /// v4 — adds <see cref="HostFunctionTable.Logger_Log"/>.
     /// </remarks>
-    public const int Version = 3;
+    public const int Version = 4;
 }
 
 /// <summary>
@@ -68,6 +69,15 @@ internal unsafe struct HostFunctionTable
     /// returns 1. On miss returns 0. On error returns a negative status.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, AircraftSnapshot*, int> Aircraft_TryGetByCallsign;
+
+    // --- Logger -------------------------------------------------------
+
+    /// <summary>
+    /// Forward a log line from plugin code into NeoRadar's Serilog pipeline.
+    /// <paramref name="level"/> matches <see cref="PluginSdk.Logger.LogLevel"/>;
+    /// <paramref name="message"/> is a null-terminated UTF-16 string.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<int, char*, void> Logger_Log;
 
     // Future methods append below in version-stable order. Bumping the
     // major version reorders or removes members.
