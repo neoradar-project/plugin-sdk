@@ -152,8 +152,14 @@ internal static class HostedClrAbi
     ///        existing PluginAutoLoader.Run drives discovery from
     ///        UserSettings.AutoLoadPluginPaths (.nrplugin archives extracted
     ///        on AOT side, .dll paths handed through unchanged).
+    /// v35 — NotifyPluginUnloaded host fn. PluginRegistry.Remove fires it
+    ///        after Alc.Unload so HostedClrPluginManager converges manual-
+    ///        unload + soft-sandbox-auto-disable on the same cleanup path
+    ///        (drop _pathById, run archive temp-dir cleanup, fire
+    ///        PluginUnloaded). Without this, an auto-disabled .nrplugin
+    ///        leaks its extracted temp dir for the rest of the session.
     /// </remarks>
-    public const int Version = 34;
+    public const int Version = 35;
 }
 
 /// <summary>
@@ -528,6 +534,15 @@ internal unsafe struct HostFunctionTable
     /// posts a Feedback toast through IFeedbackStore.SetFeedback.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, char*, void> NotifyPluginDisabled;
+
+    /// <summary>
+    /// Notify AOT NeoRadar that a plugin has unloaded. Fired by
+    /// <c>PluginRegistry.Remove</c> after <c>Alc.Unload</c> regardless of
+    /// whether Remove was driven by manual UnloadPlugin or by soft-sandbox
+    /// Disable. HostedClrPluginManager hooks this to drop its path tracker,
+    /// run the archive temp-dir cleanup, and fire PluginUnloaded.
+    /// </summary>
+    public delegate* unmanaged[Cdecl]<char*, void> NotifyPluginUnloaded;
 
     /// <summary>
     /// Read the active package path into a caller-provided UTF-16 buffer.
