@@ -158,8 +158,11 @@ internal static class HostedClrAbi
     ///        (drop _pathById, run archive temp-dir cleanup, fire
     ///        PluginUnloaded). Without this, an auto-disabled .nrplugin
     ///        leaks its extracted temp dir for the rest of the session.
+    /// v36 — NotifyPluginDisabled gains pluginId. AOT tracks
+    ///        DisabledPluginInfo (id, path, reason) so the Plugin Settings
+    ///        UI can show a faulted badge + reload-after-disable button.
     /// </remarks>
-    public const int Version = 35;
+    public const int Version = 36;
 }
 
 /// <summary>
@@ -530,10 +533,12 @@ internal unsafe struct HostFunctionTable
 
     /// <summary>
     /// Notify AOT NeoRadar that a plugin has been disabled by the soft-sandbox.
-    /// Args: pluginName (UTF-16, null-terminated), reason (UTF-16). AOT-side
-    /// posts a Feedback toast through IFeedbackStore.SetFeedback.
+    /// Args: pluginId (UTF-16, null-terminated), pluginName (UTF-16), reason
+    /// (UTF-16). AOT-side posts a Feedback toast through
+    /// IFeedbackStore.SetFeedback AND stashes a DisabledPluginInfo so the
+    /// Plugin Settings UI can show a faulted badge + reload button.
     /// </summary>
-    public delegate* unmanaged[Cdecl]<char*, char*, void> NotifyPluginDisabled;
+    public delegate* unmanaged[Cdecl]<char*, char*, char*, void> NotifyPluginDisabled;
 
     /// <summary>
     /// Notify AOT NeoRadar that a plugin has unloaded. Fired by
