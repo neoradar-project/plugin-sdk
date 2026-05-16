@@ -150,7 +150,7 @@ internal static class HostedClrAbi
     ///        UnloadPlugin, UnloadAllPlugins, GetLoadedPluginsJson. AOT
     ///        HostedClrPluginManager replaces IPluginManager in DI; the
     ///        existing PluginAutoLoader.Run drives discovery from
-    ///        CoreBuilder.PluginsFolderPath (.nrplugin archives extracted
+    ///        UserSettings.AutoLoadPluginPaths (.nrplugin archives extracted
     ///        on AOT side, .dll paths handed through unchanged).
     /// </remarks>
     public const int Version = 34;
