@@ -126,7 +126,7 @@ internal static class HostedClrAbi
     ///          filter list; AOT registers a filter that sync-RPCs into the
     ///          plugin and ANDs the result)
     ///        - OnRenderObjectHovered (Core IPluginEventSink gains
-    ///          SendHoverEvent; PluginRenderModule.OnPointerMoved fires it
+    ///          SendHoverEvent; PluginScreensModule.OnPointerMoved fires it
     ///          on hit-test result)
     /// v30 — Phase D cleanup: NotifyPluginDisabled host fn. PluginRegistry.
     ///        Disable invokes it; AOT-side posts a Feedback toast via
