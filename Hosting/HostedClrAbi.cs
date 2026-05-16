@@ -3,166 +3,24 @@ using System.Runtime.InteropServices;
 
 namespace NeoRadar.PluginSdk.Hosting;
 
-// Function-pointer ABI between AOT NeoRadar and the JIT NeoRadar.PluginRuntime
-// (per doc 29). The types in this file are an internal product protocol —
-// plugin authors do NOT see them.
+// Function-pointer ABI between AOT NeoRadar and the JIT NeoRadar.PluginRuntime.
+// Plugin authors don't see this — types are `internal` + InternalsVisibleTo,
+// so the public SDK surface (ICoreApi, BasePlugin, etc.) stays clean. Both
+// sides include this file at compile time so the layouts match by definition.
 //
-// They live in PluginSdk for one reason: both AOT NeoRadar and JIT
-// PluginRuntime need to agree on the layouts at compile time, and PluginSdk
-// is the natural shared compile-time assembly. They are declared `internal`
-// + InternalsVisibleTo so plugin authors who reference PluginSdk see only
-// the public SDK surface (ICoreApi, BasePlugin, Aircraft, etc.).
-//
-// VERSION BUMPS: any time a struct member is added/removed/reordered, bump
-// HostedClrAbi.Version. The AOT and JIT sides both check the version at
-// boot — a mismatch aborts with a clear log instead of corrupting memory.
+// Bump HostedClrAbi.Version on any layout change to HostFunctionTable,
+// PluginRuntimeTable, or any POD struct that crosses the boundary. Both
+// sides assert this matches at Bootstrap.Start — a mismatch aborts with a
+// clear log instead of corrupting memory.
 
 internal static class HostedClrAbi
 {
     /// <summary>
-    /// Increment on any layout change to <see cref="HostFunctionTable"/>,
-    /// <see cref="PluginRuntimeTable"/>, or any POD struct that crosses the
-    /// boundary. Both sides assert this matches at Bootstrap.Start.
+    /// Layout version. Increment on any field add/remove/reorder in the
+    /// tables or in any boundary-crossing POD struct. Per-version history
+    /// lives in git log — `git log --oneline -- HostedClrAbi.cs`.
     /// </summary>
-    /// <remarks>
-    /// v1 — initial: Ping, Aircraft_GetCount, Aircraft_TryGetByCallsign.
-    /// v2 — adds <see cref="PluginRuntimeTable.LoadSamplePlugin"/>.
-    /// v3 — adds <see cref="PluginRuntimeTable.OnAircraftConnected"/>.
-    /// v4 — adds <see cref="HostFunctionTable.Logger_Log"/>.
-    /// v5 — adds <see cref="PluginRuntimeTable.OnAircraftDisconnected"/>.
-    /// v6 — adds Controller_TryGetByCallsign + ControllerConnected/Disconnected events.
-    /// v7 — adds Fsd_GetConnection + FsdConnected/Disconnected events.
-    /// v8 — adds Flightplan_TryGetByCallsign + FlightplanUpdated/Removed events.
-    /// v9 — adds ControllerData_TryGetByCallsign + ControllerData_SetGroundStatus
-    ///       + OnControllerDataUpdated event (first mutator-shaped sub-API).
-    /// v10 — adds Airport surface (Is*RunwayActive, SetAirportStatus,
-    ///        SetRunwayStatus, RemoveRunwayStatus, SetShowCenterlines)
-    ///        + 5 airport events. GetConfigurationByIcao deferred pending
-    ///        array marshalling for the runway lists.
-    /// v11 — adds Package_GetPath. Caller-provided UTF-16 buffer + capacity;
-    ///        AOT writes the path (null-terminated) and returns char count
-    ///        written, 0 if no package loaded, negative on error / truncation.
-    /// v12 — adds Aircraft_Enumerate. Caller-provided AircraftSnapshot array
-    ///        + capacity; AOT fills the first min(snapshot.Length, capacity)
-    ///        entries. Returns count on success, -snapshot.Length when the
-    ///        buffer is too small (capacity hint for retry).
-    /// v13 — adds Controller_Enumerate (same capacity-hint shape as v12).
-    /// v14 — adds Flightplan_Enumerate (same capacity-hint shape).
-    /// v15 — adds Airport_GetConfigurationsJson. AOT writes UTF-8 JSON via
-    ///        Utf8JsonWriter (AOT-safe, reflection-free); JIT parses via
-    ///        JsonDocument. Template for future array-rich payloads
-    ///        (Controller.Frequencies, Flightplan.Route, etc.) where the
-    ///        fixed-buffer POD shape doesn't fit.
-    /// v16 — adds the JIT→AOT→JIT callback bridge. First user is Squawk:
-    ///        Squawk_RegisterProvider / Unregister / SetActive /
-    ///        GetAvailableProvidersJson on the host side; Squawk_GenerateSquawk
-    ///        on the plugin-runtime side. Plugin gives the host a managed
-    ///        callback; host invokes it later via a function pointer keyed
-    ///        by an opaque ulong callback id. Same template will apply to
-    ///        Chat / Tag / Rendering / Window.
-    /// v17 — adds Chat command registration + execute callback. Definition,
-    ///        args, and result marshalled as UTF-8 JSON via Utf8JsonWriter
-    ///        (AOT) / JsonDocument (JIT). SendClientMessage primitive params.
-    /// v18 — adds Tag registration core: Tag_RegisterTagItem,
-    ///        Tag_RegisterTagAction, Tag_UpdateTagValue. Pure registration
-    ///        + push, no callback inversion needed (tag-action events flow
-    ///        through the existing event delivery path). Dropdown methods
-    ///        on the JIT-side adapter return false/null stubs; full JSON
-    ///        marshal lands as a follow-up.
-    /// v19 — adds 8 events: OnSquawkAssigned, OnFsdError,
-    ///        OnFsdConnectionModelUpdated, OnAtcPositionUpdate,
-    ///        OnAtisLinesUpdate, OnCapabilitiesUpdate,
-    ///        OnFlightplanRouteChanged, OnFlightplanVoiceTypeChanged.
-    /// v20 — adds 11 ControllerData granular events:
-    ///        OnAircraftBeaconCodeChanged, OnAircraftHandoffCancelled,
-    ///        OnAircraftOwnedByChanged, OnAircraftHandoffRejected,
-    ///        OnAircraftTerminatedTracking, OnAircraftInitiatedTracking,
-    ///        OnAircraftTemporaryAltitudeChanged, OnAircraftCDMStatusChanged,
-    ///        OnAircraftScratchpadUpdated, OnAircraftHeadingChanged,
-    ///        OnAircraftAssignedSpeedChanged.
-    /// v21 — adds OnPositionUpdate (per-batch — AircraftSnapshot[] marshal)
-    ///        + OnATISInfoMessageReceived.
-    /// v22 — adds OnFlightplanMessageReceived (TextMessageReceived filtered
-    ///        by Kind=Flightplan).
-    /// v23 — adds full Tag dropdown JSON marshal:
-    ///        Tag_SetActionDropdown, Tag_UpdateActionDropdown,
-    ///        Tag_RemoveActionDropdown, Tag_GetDropdownForActionJson.
-    ///        Schema: nested DropdownComponent tree with Style + Data + Children.
-    /// v24 — adds IWindowApi registration: Window_OpenWindow,
-    ///        Window_UpdateElement, Window_CloseWindow. Plugin's
-    ///        WindowDefinition (Element tree + Style) marshalled as JSON
-    ///        into a Core PluginWindowCommand enqueued on
-    ///        IPluginWindowQueue. OnWindowEvent callback path layers on
-    ///        top with the IPluginEventSink replacement.
-    /// v25 — adds OnTagAction + OnTagDropdownAction. Data dict marshalled
-    ///        as JSON via the same pattern as Chat ExecuteCommand args.
-    /// v26 — first rendering wave: screen registration lifecycle
-    ///        (Rendering_RegisterScreen / Unregister / SetEnabled /
-    ///        IsScreenEnabled), per-frame callback (Render_OnFrameUpdate),
-    ///        and the screen-space IPluginGraphics surface
-    ///        (AddScreenLine/Rect/StrokeRect/Point/Text + Remove + Clear +
-    ///        SetVisible + SetColor + SetText). World-space draws + mutate
-    ///        the rest land in v27+.
-    /// v27 — IPluginGraphics complete: world-space adds
-    ///        (AddWorldLine/Polyline/Polygon/Point/Text), remaining mutate
-    ///        verbs (SetTransform/MinZoom/HitTestVisible/ScreenAnchor/
-    ///        ScreenPoints/ScreenSize + BringToFront/SendToBack), pointer
-    ///        capture (Capture/Release/HasCapture), coord helpers
-    ///        (LatLonToWorld/WorldToLatLon/ScreenToWorld/WorldToScreen),
-    ///        viewport accessor.
-    /// v28 — per-screen IPluginScreenRenderer pointer + key callbacks
-    ///        (Render_OnPointerPressed/Moved/Released/Wheel/Entered/Exited,
-    ///        Render_OnKeyDown/Up, Render_OnEnabled/Disabled) +
-    ///        broadcast OnRenderObjectClicked + OnViewportChanged events
-    ///        via the HostedPluginEventSink. Sync-RPC bool returns
-    ///        (Pressed/Wheel/KeyDown/KeyUp) use the existing out-param
-    ///        pattern proven on Squawk_GenerateSquawk.
-    /// v29 — last 4 BasePlugin events:
-    ///        - OnIsControllerATC (Core publishes new IsControllerATCResolved
-    ///          event from HandleATCResponse)
-    ///        - OnFsdConnectionStateChange (synthesised from
-    ///          FsdConnected/FsdDisconnected in the AOT bridge)
-    ///        - OnTagShowDropdown (Core TagDropdownCoordinator gains a
-    ///          filter list; AOT registers a filter that sync-RPCs into the
-    ///          plugin and ANDs the result)
-    ///        - OnRenderObjectHovered (Core IPluginEventSink gains
-    ///          SendHoverEvent; PluginScreensModule.OnPointerMoved fires it
-    ///          on hit-test result)
-    /// v30 — Phase D cleanup: NotifyPluginDisabled host fn. PluginRegistry.
-    ///        Disable invokes it; AOT-side posts a Feedback toast via
-    ///        IFeedbackStore so faulted/slow plugins surface to the user.
-    /// v31 — Controller_GetExtrasJson + Fsd_GetExtrasJson. JIT-side fills
-    ///        the SDK Controller.Frequencies/AtisLines/AtisLetter and
-    ///        ConnectionInfo.AtisLines/Frequencies fields by fetching a
-    ///        small UTF-8 JSON blob per record. Same template as v15.
-    /// v32 — Flightplan_GetRouteJson. Full Core Route → SDK Route
-    ///        marshalled as UTF-8 JSON: RawRoute, Waypoints, Segments,
-    ///        ExplicitSegments, OriginalSegments, ParsingErrors, SID/STAR,
-    ///        Suggested SID/STAR, runways, HasDirectApplied,
-    ///        CurrentDirectWaypoint. JIT-side fills Flightplan.Route
-    ///        after the snapshot fetch.
-    /// v33 — last mutators / reads:
-    ///        - Aircraft_GetDistanceFromOrigin / ToDestination (haversine
-    ///          aircraft↔airport in nm; NaN sentinel for unavailable).
-    ///        - ControllerData_Enumerate (capacity-hint shape).
-    ///        - Airport_DeleteAirport mutator.
-    /// v34 — full IPluginManager lifecycle: LoadPlugin (returning id),
-    ///        UnloadPlugin, UnloadAllPlugins, GetLoadedPluginsJson. AOT
-    ///        HostedClrPluginManager replaces IPluginManager in DI; the
-    ///        existing PluginAutoLoader.Run drives discovery from
-    ///        UserSettings.AutoLoadPluginPaths (.nrplugin archives extracted
-    ///        on AOT side, .dll paths handed through unchanged).
-    /// v35 — NotifyPluginUnloaded host fn. PluginRegistry.Remove fires it
-    ///        after Alc.Unload so HostedClrPluginManager converges manual-
-    ///        unload + soft-sandbox-auto-disable on the same cleanup path
-    ///        (drop _pathById, run archive temp-dir cleanup, fire
-    ///        PluginUnloaded). Without this, an auto-disabled .nrplugin
-    ///        leaks its extracted temp dir for the rest of the session.
-    /// v36 — NotifyPluginDisabled gains pluginId. AOT tracks
-    ///        DisabledPluginInfo (id, path, reason) so the Plugin Settings
-    ///        UI can show a faulted badge + reload-after-disable button.
-    /// </remarks>
-    public const int Version = 36;
+    public const int Version = 37;
 }
 
 /// <summary>
@@ -427,7 +285,7 @@ internal unsafe struct HostFunctionTable
     public delegate* unmanaged[Cdecl]<char*, ulong, char*, char*, int> Window_UpdateElement;
     public delegate* unmanaged[Cdecl]<char*, ulong, int> Window_CloseWindow;
 
-    // --- Rendering (v26 screen lifecycle) -----------------------------
+    // --- Rendering: screen lifecycle ----------------------------------
 
     /// <summary>Args: pluginId, definitionJson + len, callbackId. Returns screen handle (ulong; 0 on failure).</summary>
     public delegate* unmanaged[Cdecl]<char*, byte*, int, ulong, ulong> Rendering_RegisterScreen;
@@ -796,8 +654,10 @@ internal unsafe struct PluginRuntimeTable
     public delegate* unmanaged[Cdecl]<ulong, void> Render_OnEnabled;
     public delegate* unmanaged[Cdecl]<ulong, void> Render_OnDisabled;
 
-    // Broadcast render events — routed through HostedPluginEventSink.
-    public delegate* unmanaged[Cdecl]<ulong, double, double, double, double, int, void> OnRenderObjectClicked;
+    // Render-object events — routed through HostedPluginEventSink. pluginId
+    // identifies the owning plugin so the JIT side delivers only to that
+    // plugin's handler. OnViewportChanged is global (no owner concept).
+    public delegate* unmanaged[Cdecl]<char*, ulong, double, double, double, double, int, void> OnRenderObjectClicked;
     public delegate* unmanaged[Cdecl]<double, double, double, double, double, double, void> OnViewportChanged;
 
     // --- v29 final 4 events --------------------------------------------
@@ -817,10 +677,10 @@ internal unsafe struct PluginRuntimeTable
     public delegate* unmanaged[Cdecl]<char*, char*, int*, void> OnTagShowDropdown;
 
     /// <summary>
-    /// OnRenderObjectHovered — analogous to OnRenderObjectClicked.
-    /// Args: handle, worldX, worldY, screenX, screenY (no button).
+    /// OnRenderObjectHovered — analogous to <see cref="OnRenderObjectClicked"/>
+    /// but with no button. pluginId routes to the owning plugin's handler.
     /// </summary>
-    public delegate* unmanaged[Cdecl]<ulong, double, double, double, double, void> OnRenderObjectHovered;
+    public delegate* unmanaged[Cdecl]<char*, ulong, double, double, double, double, void> OnRenderObjectHovered;
 }
 
 /// <summary>
