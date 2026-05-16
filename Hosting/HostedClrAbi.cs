@@ -764,7 +764,15 @@ internal unsafe struct PluginRuntimeTable
     /// viewportCenterX, viewportCenterY, zoom, pixelsPerMeter,
     /// widthPixels, heightPixels.
     /// </summary>
-    public delegate* unmanaged[Cdecl]<ulong, ulong, double, ulong, double, double, double, double, double, double, void> Render_OnFrameUpdate;
+    // Render_OnFrameUpdate args:
+    //   callbackId, screenHandle, deltaTime, frameNumber,
+    //   centerX, centerY, zoom, pixelsPerMeter,
+    //   widthPixels, heightPixels        — Viewport pixel dims (physical)
+    //   screenWidthDip, screenHeightDip  — ScreenSize (DIP, plugin coord space)
+    // ScreenSize must travel separately from viewport pixel dims: on Retina
+    // they differ by the dpi factor, and conflating them sent pixel-sized
+    // ScreenSize to plugins.
+    public delegate* unmanaged[Cdecl]<ulong, ulong, double, ulong, double, double, double, double, double, double, double, double, void> Render_OnFrameUpdate;
 
     // --- v28 per-screen pointer / key / enable callbacks ----------------
     //
@@ -773,12 +781,16 @@ internal unsafe struct PluginRuntimeTable
     // For event-consume callbacks (Pressed/Wheel/KeyDown/KeyUp) the last
     // parameter is `int* consumed` — the JIT entry writes 0/1 back to it.
 
-    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, int*, void> Render_OnPointerPressed;
-    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, void> Render_OnPointerMoved;
-    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, void> Render_OnPointerReleased;
-    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, float, float, int, int, ulong, int*, void> Render_OnPointerWheel;
-    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, void> Render_OnPointerEntered;
-    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, void> Render_OnPointerExited;
+    // Pointer args: callbackId, screenX, screenY, hasWorld, worldX, worldY,
+    // button (int), modifiers (int), clickCount, hasHit, hitObjectId, hitScreenId.
+    // Both hit-ref fields are needed: plugins key Dictionary<GraphicsObjectRef,…>
+    // by (ScreenId, ObjectId) — dropping ScreenId silently breaks every lookup.
+    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, ulong, int*, void> Render_OnPointerPressed;
+    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, ulong, void> Render_OnPointerMoved;
+    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, ulong, void> Render_OnPointerReleased;
+    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, float, float, int, int, ulong, ulong, int*, void> Render_OnPointerWheel;
+    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, ulong, void> Render_OnPointerEntered;
+    public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, ulong, void> Render_OnPointerExited;
     public delegate* unmanaged[Cdecl]<ulong, int, int, char*, int*, void> Render_OnKeyDown;
     public delegate* unmanaged[Cdecl]<ulong, int, int, char*, int*, void> Render_OnKeyUp;
     public delegate* unmanaged[Cdecl]<ulong, void> Render_OnEnabled;
