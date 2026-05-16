@@ -294,7 +294,7 @@ internal unsafe struct HostFunctionTable
     public delegate* unmanaged[Cdecl]<ulong, int, int> Rendering_SetScreenEnabled;
     public delegate* unmanaged[Cdecl]<ulong, int> Rendering_IsScreenEnabled;
 
-    // --- IPluginGraphics screen-space (v26) ---------------------------
+    // --- IPluginGraphics screen-space adds ----------------------------
     //
     // Each Add* returns the GraphicsObjectRef.ObjectId (ulong; 0 on failure).
     // The plugin pairs it with the screen handle to reconstruct the SDK ref.
@@ -315,7 +315,7 @@ internal unsafe struct HostFunctionTable
 
     public delegate* unmanaged[Cdecl]<ulong, float*, int> Graphics_GetScreenSize;
 
-    // --- v27 world-space adds -----------------------------------------
+    // --- IPluginGraphics world-space adds -----------------------------
     //
     // Vector2 arrays flattened as float* (X,Y pairs). For polyline/polygon
     // shapes the outer level is signalled by a separate `int* lengths` +
@@ -327,7 +327,7 @@ internal unsafe struct HostFunctionTable
     public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, float, float, ulong> Graphics_AddWorldPoint;
     public delegate* unmanaged[Cdecl]<ulong, float, float, char*, float, float, float, float, float, ulong> Graphics_AddWorldText;
 
-    // --- v27 mutate ---------------------------------------------------
+    // --- IPluginGraphics mutate ---------------------------------------
 
     public delegate* unmanaged[Cdecl]<ulong, ulong, float, float, float, float, float, float, float, int> Graphics_SetTransform;
     public delegate* unmanaged[Cdecl]<ulong, ulong, float, int> Graphics_SetMinZoom;
@@ -338,13 +338,13 @@ internal unsafe struct HostFunctionTable
     public delegate* unmanaged[Cdecl]<ulong, ulong, int> Graphics_BringToFront;
     public delegate* unmanaged[Cdecl]<ulong, ulong, int> Graphics_SendToBack;
 
-    // --- v27 pointer capture ------------------------------------------
+    // --- IPluginGraphics pointer capture ------------------------------
 
     public delegate* unmanaged[Cdecl]<ulong, void> Graphics_CapturePointer;
     public delegate* unmanaged[Cdecl]<ulong, void> Graphics_ReleasePointer;
     public delegate* unmanaged[Cdecl]<ulong, int> Graphics_HasCapture;
 
-    // --- v27 coord helpers --------------------------------------------
+    // --- IPluginGraphics coord helpers --------------------------------
 
     public delegate* unmanaged[Cdecl]<ulong, double, double, float*, int> Graphics_LatLonToWorld;
     public delegate* unmanaged[Cdecl]<ulong, float, float, double*, int> Graphics_WorldToLatLon;
@@ -434,10 +434,9 @@ internal unsafe struct PluginRuntimeTable
     public int _pad0;
 
     /// <summary>
-    /// Phase B.2 smoke-test entry. Takes a null-terminated UTF-16 path to
-    /// a plugin DLL, loads it via a collectible AssemblyLoadContext, finds
-    /// a BasePlugin-derived type, instantiates, calls Initialize. Returns
-    /// 0 on success or a negative status code.
+    /// Direct load entry kept for ABI compatibility — takes a plugin DLL
+    /// path and returns 0 on success / negative status. Prefer
+    /// <see cref="LoadPlugin"/> which also returns the assigned id.
     /// </summary>
     public delegate* unmanaged[Cdecl]<char*, int> LoadSamplePlugin;
 
@@ -546,7 +545,7 @@ internal unsafe struct PluginRuntimeTable
     /// </summary>
     public delegate* unmanaged[Cdecl]<ulong, char*, byte*, int, byte*, int, int> Chat_ExecuteCommand;
 
-    // --- v19 events ----------------------------------------------------
+    // --- Squawk / Fsd / Controller / Flightplan events -----------------
 
     /// <summary>SquawkAssigned — callsign + squawk + providerName.</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, char*, void> OnSquawkAssigned;
@@ -572,7 +571,7 @@ internal unsafe struct PluginRuntimeTable
     /// <summary>FlightplanVoiceTypeChanged — callsign + oldVoice + newVoice (enum bytes).</summary>
     public delegate* unmanaged[Cdecl]<char*, byte, byte, void> OnFlightplanVoiceTypeChanged;
 
-    // --- v20 ControllerData granular events ---------------------------
+    // --- ControllerData granular events -------------------------------
 
     public delegate* unmanaged[Cdecl]<char*, char*, char*, void> OnAircraftBeaconCodeChanged;
     public delegate* unmanaged[Cdecl]<char*, char*, char*, void> OnAircraftHandoffCancelled;
@@ -586,7 +585,7 @@ internal unsafe struct PluginRuntimeTable
     public delegate* unmanaged[Cdecl]<char*, int, int, void> OnAircraftHeadingChanged;
     public delegate* unmanaged[Cdecl]<char*, int, int, void> OnAircraftAssignedSpeedChanged;
 
-    // --- v21 batch + text-message events ------------------------------
+    // --- Position batch / text-message / window / tag events -----------
 
     /// <summary>Per-batch position update — array pointer + count.</summary>
     public delegate* unmanaged[Cdecl]<AircraftSnapshot*, int, void> OnPositionUpdate;
@@ -632,7 +631,7 @@ internal unsafe struct PluginRuntimeTable
     // ScreenSize to plugins.
     public delegate* unmanaged[Cdecl]<ulong, ulong, double, ulong, double, double, double, double, double, double, double, double, void> Render_OnFrameUpdate;
 
-    // --- v28 per-screen pointer / key / enable callbacks ----------------
+    // --- per-screen pointer / key / enable callbacks --------------------
     //
     // Pointer args: screenX, screenY, hasWorld, worldX, worldY, button (int),
     // modifiers (int), clickCount, hasHit, hitObjectId.
@@ -660,7 +659,7 @@ internal unsafe struct PluginRuntimeTable
     public delegate* unmanaged[Cdecl]<char*, ulong, double, double, double, double, int, void> OnRenderObjectClicked;
     public delegate* unmanaged[Cdecl]<double, double, double, double, double, double, void> OnViewportChanged;
 
-    // --- v29 final 4 events --------------------------------------------
+    // --- ATC / connection-state / hover / tag-show-dropdown ------------
 
     /// <summary>OnIsControllerATC — callsign + isATC.</summary>
     public delegate* unmanaged[Cdecl]<char*, int, void> OnIsControllerATC;
@@ -766,10 +765,8 @@ internal unsafe struct FlightplanSnapshot
 
 /// <summary>
 /// FSD connection state marshalled across the function-pointer boundary.
-/// Plugins fetch this on demand via api.Fsd.GetConnection. Mirrors
-/// PluginSdk.Fsd.ConnectionInfo for the fields readable from
-/// IFsdConnectionClient — AtisLines / Frequencies arrays land empty in
-/// the SDK record (deferred to Phase C array-marshalling follow-up).
+/// Plugins fetch via api.Fsd.GetConnection. AtisLines / Frequencies arrive
+/// separately through Fsd_GetExtrasJson.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
 internal unsafe struct FsdConnectionSnapshot
@@ -793,12 +790,8 @@ internal unsafe struct FsdConnectionSnapshot
 
 /// <summary>
 /// Controller data marshalled across the function-pointer boundary.
-/// Mirrors NeoRadar.Core.Controller.Controller for the fields plugins
-/// typically need — identity, position, capabilities. Array fields
-/// (Frequencies, AtisLines) are left as empty arrays in the SDK record
-/// produced from this snapshot; richer array marshalling is a Phase C
-/// follow-up if any plugin actually needs the live frequencies list
-/// inline with the event.
+/// Mirrors NeoRadar.Core.Controller.Controller — identity, position,
+/// capabilities. Frequencies / AtisLines arrive via Controller_GetExtrasJson.
 /// </summary>
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
 internal unsafe struct ControllerSnapshot

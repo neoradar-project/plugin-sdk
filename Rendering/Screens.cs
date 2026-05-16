@@ -12,10 +12,10 @@ public enum ScreenScope
     /// <summary>Overlay on the main radar in pixel coordinates. Independent of the camera.</summary>
     MainScreen,
 
-    /// <summary>Dedicated inset window with its own viewport (camera, pan, zoom). Phase 3.</summary>
+    /// <summary>Dedicated inset window with its own viewport (camera, pan, zoom).</summary>
     PluginInsetWorld,
 
-    /// <summary>Dedicated inset window with no viewport — pure screen space. Phase 2.</summary>
+    /// <summary>Dedicated inset window with no viewport — pure screen space.</summary>
     PluginInsetScreen,
 }
 
