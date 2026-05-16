@@ -544,9 +544,9 @@ internal unsafe struct HostFunctionTable
 }
 
 /// <summary>
-/// JIT PluginRuntime → AOT NeoRadar function-pointer surface. NeoRadar's
-/// PluginManager invocation paths (LoadPlugin, UnloadPlugin, plugin
-/// lifecycle hooks) eventually route through this table.
+/// AOT NeoRadar → JIT PluginRuntime function-pointer surface. The desktop's
+/// HostedClrPluginManager invokes LoadPlugin / UnloadPlugin / etc. through
+/// this table.
 /// </summary>
 [StructLayout(LayoutKind.Sequential)]
 internal unsafe struct PluginRuntimeTable
