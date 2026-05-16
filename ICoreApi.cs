@@ -2,7 +2,6 @@ namespace NeoRadar.PluginSdk;
 
 /// <summary>
 /// Modular Core API surface plugins receive in <see cref="BasePlugin.Initialize"/>.
-/// Mirrors <c>PluginSDK::CoreAPI</c> in the C++ neoradar-sdk one-to-one.
 /// </summary>
 public interface ICoreApi
 {
