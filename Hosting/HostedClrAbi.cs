@@ -9,232 +9,109 @@ namespace NeoRadar.PluginSdk.Hosting;
 
 internal static class HostedClrAbi
 {
-    /// <summary>
-    /// Layout version. Increment on any field add/remove/reorder in the
-    /// tables or in any boundary-crossing POD struct. Per-version history
-    /// lives in git log — `git log --oneline -- HostedClrAbi.cs`.
-    /// </summary>
+    // Increment on any field add/remove/reorder in the tables or any boundary-crossing POD struct.
     public const int Version = 37;
 }
 
-/// <summary>
-/// AOT NeoRadar → JIT PluginRuntime function-pointer surface. Plugin code
-/// inside PluginRuntime calls into NeoRadar via these pointers (after going
-/// through its own adapter classes which marshal managed types to/from the
-/// POD shape these pointers expect).
-///
-/// All members declared as <c>delegate* unmanaged[Cdecl]&lt;...&gt;</c>:
-/// they are raw native function pointers, no managed thunk, no marshalling
-/// trampoline. Calls go directly to AOT-NeoRadar's UnmanagedCallersOnly
-/// static methods.
-/// </summary>
+// AOT NeoRadar → JIT PluginRuntime surface. Members are raw native fn-pointers
+// (delegate* unmanaged[Cdecl]) calling AOT UnmanagedCallersOnly statics directly.
 [StructLayout(LayoutKind.Sequential)]
 internal unsafe struct HostFunctionTable
 {
-    /// <summary>Must equal <see cref="HostedClrAbi.Version"/>. Bootstrap.Start aborts on mismatch.</summary>
     public int Version;
     public int _pad0;  // align the next 64-bit pointer cleanly
 
-    /// <summary>Returns <c>value * 2</c>. Used to validate the function-pointer
-    /// boundary works at all before exercising real methods.</summary>
+    // Boundary smoke test: returns value * 2.
     public delegate* unmanaged[Cdecl]<int, int> Ping;
 
-    /// <summary>Returns the number of aircraft currently tracked by NeoRadar.</summary>
     public delegate* unmanaged[Cdecl]<int> Aircraft_GetCount;
 
-    /// <summary>
-    /// Look up an aircraft by callsign. <paramref name="callsign"/> is a
-    /// null-terminated UTF-16 string (Windows) / UTF-8 (macOS — TBD in
-    /// macOS port). On a match, fills <paramref name="output"/> and
-    /// returns 1. On miss returns 0. On error returns a negative status.
-    /// </summary>
+    // callsign is null-terminated UTF-16 (Windows) / UTF-8 (macOS). 1 on hit, 0 on miss, negative on error.
     public delegate* unmanaged[Cdecl]<char*, AircraftSnapshot*, int> Aircraft_TryGetByCallsign;
 
-    /// <summary>
-    /// Great-circle distance in nautical miles from the aircraft's current
-    /// position to its flight-plan origin airport. Returns <c>double.NaN</c>
-    /// if the aircraft / flightplan / origin waypoint is unavailable.
-    /// </summary>
+    // Great-circle nm to flightplan origin; NaN when unavailable.
     public delegate* unmanaged[Cdecl]<char*, double> Aircraft_GetDistanceFromOrigin;
 
-    /// <summary>As <see cref="Aircraft_GetDistanceFromOrigin"/> for destination.</summary>
     public delegate* unmanaged[Cdecl]<char*, double> Aircraft_GetDistanceToDestination;
 
-    /// <summary>
-    /// Fill <paramref name="output"/> with up to <paramref name="capacity"/>
-    /// aircraft snapshots taken from a single lock-free collection snapshot.
-    /// Returns:
-    ///   ≥ 0  number of snapshots written (snapshot length)
-    ///   -1   null output or negative capacity
-    ///   -2   collection unbound
-    ///   &lt; -2 negated snapshot length when <paramref name="capacity"/> is
-    ///         too small — caller retries with a bigger buffer.
-    /// </summary>
+    // Capacity-hint protocol: ≥0 count written; -1 null/neg capacity; -2 unbound; <-2 negated required length, caller retries bigger.
     public delegate* unmanaged[Cdecl]<AircraftSnapshot*, int, int> Aircraft_Enumerate;
 
-    /// <summary>
-    /// Look up a controller by callsign. Returns 1 on hit, 0 on miss.
-    /// </summary>
     public delegate* unmanaged[Cdecl]<char*, ControllerSnapshot*, int> Controller_TryGetByCallsign;
 
-    /// <summary>Enumerate all controllers. Same capacity-hint protocol as <see cref="Aircraft_Enumerate"/>.</summary>
     public delegate* unmanaged[Cdecl]<ControllerSnapshot*, int, int> Controller_Enumerate;
 
-    /// <summary>
-    /// Fetch per-controller array fields not in the POD snapshot:
-    /// frequencies (int[]) + atisLines (string[]). UTF-8 JSON, capacity-hint
-    /// protocol matches <see cref="Airport_GetConfigurationsJson"/>.
-    /// Schema: <c>{"freqs":[12345],"atis":["INFO B","WIND 250/10"]}</c>.
-    /// </summary>
+    // Array fields outside the POD snapshot as UTF-8 JSON {"freqs":[…],"atis":[…]}. Capacity-hint protocol.
     public delegate* unmanaged[Cdecl]<char*, byte*, int, int> Controller_GetExtrasJson;
 
-    /// <summary>
-    /// Read the live FSD connection state. Returns 1 if connected (fills
-    /// the snapshot), 0 if disconnected (output is zeroed).
-    /// </summary>
+    // 1 if connected (fills snapshot), 0 if disconnected (output zeroed).
     public delegate* unmanaged[Cdecl]<FsdConnectionSnapshot*, int> Fsd_GetConnection;
 
-    /// <summary>
-    /// Fetch ConnectionInfo array fields not in the POD snapshot:
-    /// frequencies (int[]) + atisLines (string[]). Same JSON shape as
-    /// <see cref="Controller_GetExtrasJson"/>.
-    /// </summary>
+    // Same JSON shape as Controller_GetExtrasJson.
     public delegate* unmanaged[Cdecl]<byte*, int, int> Fsd_GetExtrasJson;
 
-    /// <summary>
-    /// Look up a flightplan by callsign. Returns 1 on hit, 0 on miss.
-    /// Route + waypoints stay empty in the SDK record produced from this
-    /// snapshot — full Route marshalling is deferred.
-    /// </summary>
+    // Route + waypoints stay empty in the produced record — fetch via Flightplan_GetRouteJson.
     public delegate* unmanaged[Cdecl]<char*, FlightplanSnapshot*, int> Flightplan_TryGetByCallsign;
 
-    /// <summary>Enumerate all flightplans. Same capacity-hint protocol as <see cref="Aircraft_Enumerate"/>.</summary>
     public delegate* unmanaged[Cdecl]<FlightplanSnapshot*, int, int> Flightplan_Enumerate;
 
-    /// <summary>
-    /// Fetch the parsed Route for a flightplan as UTF-8 JSON. Capacity-hint
-    /// protocol matches <see cref="Airport_GetConfigurationsJson"/>. Schema
-    /// covers RawRoute, Waypoints, Segments / ExplicitSegments / OriginalSegments,
-    /// ParsingErrors, SID/STAR, Suggested SID/STAR, Dep/Arr runways,
-    /// HasDirectApplied, CurrentDirectWaypoint, IsAmended.
-    /// </summary>
+    // Parsed Route as UTF-8 JSON; capacity-hint protocol.
     public delegate* unmanaged[Cdecl]<char*, byte*, int, int> Flightplan_GetRouteJson;
 
-    /// <summary>Returns 1 if the named runway is an active departure runway, 0 otherwise.</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, int> Airport_IsDepRunwayActive;
 
-    /// <summary>Returns 1 if the named runway is an active arrival runway, 0 otherwise.</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, int> Airport_IsArrRunwayActive;
 
-    /// <summary>
-    /// Mutator — set runway status. Type matches PluginSdk.Airport.RunwayType
-    /// (Departure=0, Arrival=1). Returns 1 on success, 0 on miss.
-    /// </summary>
+    // Type matches PluginSdk.Airport.RunwayType (Departure=0, Arrival=1).
     public delegate* unmanaged[Cdecl]<char*, char*, int, int> Airport_SetRunwayStatus;
 
-    /// <summary>Mutator — remove runway status (deactivate).</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, int, int> Airport_RemoveRunwayStatus;
 
-    /// <summary>
-    /// Mutator — set airport status. Status matches PluginSdk.Airport.AirportStatus
-    /// (Active=0, Observed=1).
-    /// </summary>
+    // Status matches PluginSdk.Airport.AirportStatus (Active=0, Observed=1).
     public delegate* unmanaged[Cdecl]<char*, int, int> Airport_SetAirportStatus;
 
-    /// <summary>Mutator — toggle whether extended runway centerlines render for this airport.</summary>
     public delegate* unmanaged[Cdecl]<char*, int, int> Airport_SetShowCenterlines;
 
-    /// <summary>Mutator — remove an airport entirely. Returns 1 on success, 0 on miss.</summary>
     public delegate* unmanaged[Cdecl]<char*, int> Airport_DeleteAirport;
 
-    /// <summary>
-    /// Serialise every <see cref="PluginSdk.Airport.AirportConfig"/> into a
-    /// UTF-8 JSON byte stream. Caller provides an output buffer + capacity
-    /// (byte count). Returns:
-    ///   ≥ 0  bytes written (no null terminator)
-    ///   -1   null output or negative capacity
-    ///   -2   collection unbound
-    ///   &lt; -2 negated required-byte count when capacity is too small
-    ///         — caller retries with a bigger buffer.
-    /// JSON schema: [{ "icao":"…", "arr":["…"], "dep":["…"], "status":0|1, "centerlines":true|false }].
-    /// </summary>
+    // AirportConfig[] as UTF-8 JSON; capacity-hint protocol.
     public delegate* unmanaged[Cdecl]<byte*, int, int> Airport_GetConfigurationsJson;
 
-    /// <summary>
-    /// Register a plugin-owned squawk provider on AOT NeoRadar's
-    /// ISquawkManager. Returns 1 on success, 0 if a provider with the same
-    /// name is already registered, negative on error.
-    /// </summary>
+    // 1 on success, 0 if the name is already registered, negative on error.
     public delegate* unmanaged[Cdecl]<char*, int, ulong, int> Squawk_RegisterProvider;
 
-    /// <summary>Unregister by name. Returns 1 on success, 0 on miss.</summary>
     public delegate* unmanaged[Cdecl]<char*, int> Squawk_UnregisterProvider;
 
-    /// <summary>Set the active provider. Returns 1 on success, 0 if not registered.</summary>
     public delegate* unmanaged[Cdecl]<char*, int> Squawk_SetActiveProvider;
 
-    /// <summary>
-    /// Serialise the registered provider name list as JSON
-    /// (<c>["name1","name2",…]</c>). Same capacity-hint protocol as
-    /// <see cref="Airport_GetConfigurationsJson"/>.
-    /// </summary>
+    // Provider names as JSON array; capacity-hint protocol.
     public delegate* unmanaged[Cdecl]<byte*, int, int> Squawk_GetAvailableProvidersJson;
 
-    /// <summary>
-    /// Register a plugin command. Args: pluginId, pluginName, command name,
-    /// command definition JSON (matches PluginSdk.Chat.CommandDefinition),
-    /// callback id (for execute callbacks), output buffer for the returned
-    /// command id (UTF-16) + capacity. Returns chars written to
-    /// <c>outCommandId</c> on success, 0 if the name is reserved/colliding,
-    /// negative on error.
-    /// </summary>
+    // Args: pluginId, pluginName, name, definition JSON, callbackId, out command id (UTF-16) + capacity. Returns chars written, 0 on collision.
     public delegate* unmanaged[Cdecl]<char*, char*, char*, byte*, int, ulong, char*, int, int> Chat_RegisterCommand;
 
-    /// <summary>Unregister by command id. Returns 1 on success, 0 on miss.</summary>
     public delegate* unmanaged[Cdecl]<char*, int> Chat_UnregisterCommand;
 
-    /// <summary>
-    /// Push a client-text-message into NeoRadar's chat. Args:
-    /// sentFrom, message, hasColour (0/1), R, G, B, isUrgent, useDedicatedChannel.
-    /// </summary>
+    // Args: sentFrom, message, hasColour, R, G, B, isUrgent, useDedicatedChannel.
     public delegate* unmanaged[Cdecl]<char*, char*, int, byte, byte, byte, int, int, int> Chat_SendClientMessage;
 
-    /// <summary>
-    /// Register a tag item. Args: pluginId, item-name, default value, allowed
-    /// actions JSON (UTF-8 string array) + length, output tag id (UTF-16) +
-    /// capacity. Returns chars written, 0 on collision, negative on error.
-    /// </summary>
+    // Args: pluginId, name, default value, allowed-actions JSON + len, out tag id (UTF-16) + capacity. Returns chars written, 0 on collision.
     public delegate* unmanaged[Cdecl]<char*, char*, char*, byte*, int, char*, int, int> Tag_RegisterTagItem;
 
-    /// <summary>
-    /// Register a tag action. Args: pluginId, action-name, description,
-    /// requiresInput (0/1), output action id (UTF-16) + capacity. Returns
-    /// chars written, 0 on collision, negative on error.
-    /// </summary>
+    // Args: pluginId, name, description, requiresInput, out action id (UTF-16) + capacity. Returns chars written, 0 on collision.
     public delegate* unmanaged[Cdecl]<char*, char*, char*, int, char*, int, int> Tag_RegisterTagAction;
 
-    /// <summary>
-    /// Push a tag value update. Args: tagId, value, callsign, listId,
-    /// hasColour (0/1), R, G, B, hasBgColour (0/1), bgR, bgG, bgB,
-    /// context-data JSON (UTF-8 object) + length. Returns 1 on success,
-    /// 0 if the tag isn't registered.
-    /// </summary>
+    // Args: tagId, value, callsign, listId, hasColour + RGB, hasBgColour + bgRGB, context-data JSON + len.
     public delegate* unmanaged[Cdecl]<char*, char*, char*, char*, int, byte, byte, byte, int, byte, byte, byte, byte*, int, int> Tag_UpdateTagValue;
 
-    /// <summary>Attach a dropdown to an action. Args: pluginId, actionId, dropdownJson + len. Returns 1 on success, 0 on miss.</summary>
+    // Args: pluginId, actionId, dropdownJson + len.
     public delegate* unmanaged[Cdecl]<char*, char*, byte*, int, int> Tag_SetActionDropdown;
 
-    /// <summary>Replace an existing dropdown. Same args as SetActionDropdown.</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, byte*, int, int> Tag_UpdateActionDropdown;
 
-    /// <summary>Detach the dropdown. Returns 1 on success, 0 on miss.</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, int> Tag_RemoveActionDropdown;
 
-    /// <summary>
-    /// Read back an action's dropdown definition as JSON. Same capacity-hint
-    /// protocol as <see cref="Airport_GetConfigurationsJson"/>. Returns 0
-    /// when the action has no dropdown.
-    /// </summary>
+    // Capacity-hint protocol; 0 when the action has no dropdown.
     public delegate* unmanaged[Cdecl]<char*, byte*, int, int> Tag_GetDropdownForActionJson;
 
     // Window_OpenWindow returns the assigned window handle as a ulong (0 = failure).
@@ -242,7 +119,7 @@ internal unsafe struct HostFunctionTable
     public delegate* unmanaged[Cdecl]<char*, ulong, char*, char*, int> Window_UpdateElement;
     public delegate* unmanaged[Cdecl]<char*, ulong, int> Window_CloseWindow;
 
-    /// <summary>Args: pluginId, definitionJson + len, callbackId. Returns screen handle (ulong; 0 on failure).</summary>
+    // Args: pluginId, definitionJson + len, callbackId. Returns screen handle (0 on failure).
     public delegate* unmanaged[Cdecl]<char*, byte*, int, ulong, ulong> Rendering_RegisterScreen;
 
     public delegate* unmanaged[Cdecl]<ulong, int> Rendering_UnregisterScreen;
@@ -289,216 +166,104 @@ internal unsafe struct HostFunctionTable
     public delegate* unmanaged[Cdecl]<ulong, float, float, float*, int> Graphics_ScreenToWorld;
     public delegate* unmanaged[Cdecl]<ulong, float, float, float*, int> Graphics_WorldToScreen;
 
-    /// <summary>
-    /// Fill <paramref name="output"/> with the screen's viewport snapshot
-    /// (6 doubles: CenterX, CenterY, Zoom, WidthPixels, HeightPixels,
-    /// PixelsPerMeter). Returns 1 on success, 0 if the screen has no
-    /// viewport bound (screen-only scope).
-    /// </summary>
+    // 6 doubles: CenterX, CenterY, Zoom, WidthPixels, HeightPixels, PixelsPerMeter. 0 if no viewport bound (screen-only scope).
     public delegate* unmanaged[Cdecl]<ulong, double*, int> Graphics_GetViewport;
 
-    /// <summary>
-    /// Look up the controller-data row keyed by aircraft callsign.
-    /// Returns 1 on hit, 0 on miss.
-    /// </summary>
     public delegate* unmanaged[Cdecl]<char*, ControllerDataSnapshot*, int> ControllerData_TryGetByCallsign;
 
-    /// <summary>
-    /// Mutator — set the ground status (None/Start/Push/Taxi/Dep) for an
-    /// aircraft. <paramref name="status"/> matches
-    /// <see cref="PluginSdk.ControllerData.GroundStatus"/>. Returns 1 on
-    /// success, 0 if the callsign isn't tracked, negative on error.
-    /// </summary>
+    // status matches PluginSdk.ControllerData.GroundStatus.
     public delegate* unmanaged[Cdecl]<char*, int, int> ControllerData_SetGroundStatus;
 
-    /// <summary>Enumerate every controller-data row. Same capacity-hint shape.</summary>
     public delegate* unmanaged[Cdecl]<ControllerDataSnapshot*, int, int> ControllerData_Enumerate;
 
-    /// <summary>
-    /// Forward a log line from plugin code into NeoRadar's Serilog pipeline.
-    /// <paramref name="level"/> matches <see cref="PluginSdk.Logger.LogLevel"/>;
-    /// <paramref name="message"/> is a null-terminated UTF-16 string.
-    /// </summary>
+    // level matches PluginSdk.Logger.LogLevel; message is null-terminated UTF-16.
     public delegate* unmanaged[Cdecl]<int, char*, void> Logger_Log;
 
-    /// <summary>
-    /// Notify AOT NeoRadar that a plugin has been disabled by the soft-sandbox.
-    /// Args: pluginId (UTF-16, null-terminated), pluginName (UTF-16), reason
-    /// (UTF-16). AOT-side posts a Feedback toast through
-    /// IFeedbackStore.SetFeedback AND stashes a DisabledPluginInfo so the
-    /// Plugin Settings UI can show a faulted badge + reload button.
-    /// </summary>
+    // Soft-sandbox disabled a plugin. Args: pluginId, pluginName, reason (all UTF-16). AOT posts a Feedback toast + stashes a faulted badge.
     public delegate* unmanaged[Cdecl]<char*, char*, char*, void> NotifyPluginDisabled;
 
-    /// <summary>
-    /// Notify AOT NeoRadar that a plugin has unloaded. Fired by
-    /// <c>PluginRegistry.Remove</c> after <c>Alc.Unload</c> regardless of
-    /// whether Remove was driven by manual UnloadPlugin or by soft-sandbox
-    /// Disable. HostedClrPluginManager hooks this to drop its path tracker,
-    /// run the archive temp-dir cleanup, and fire PluginUnloaded.
-    /// </summary>
+    // Fired by PluginRegistry.Remove after Alc.Unload (manual or soft-sandbox). AOT drops its path tracker, cleans the temp dir, fires PluginUnloaded.
     public delegate* unmanaged[Cdecl]<char*, void> NotifyPluginUnloaded;
 
-    /// <summary>
-    /// Read the active package path into a caller-provided UTF-16 buffer.
-    /// <paramref name="capacity"/> is the buffer's element count (must include
-    /// space for the null terminator). Return values:
-    ///   &gt; 0  number of chars written (excluding null terminator)
-    ///   = 0  no package loaded; buffer left untouched
-    ///   &lt; 0 error (-1 null args, -2 store unbound, -3 truncation).
-    /// </summary>
+    // UTF-16 buffer; capacity includes null terminator. >0 chars written, 0 no package, <0 error (-1 null, -2 unbound, -3 truncation).
     public delegate* unmanaged[Cdecl]<char*, int, int> Package_GetPath;
 
-    // Future methods append below in version-stable order. Bumping the
-    // major version reorders or removes members.
+    // Future methods append below in version-stable order; bumping the major version reorders or removes members.
 }
 
-/// <summary>
-/// AOT NeoRadar → JIT PluginRuntime function-pointer surface. The desktop's
-/// HostedClrPluginManager invokes LoadPlugin / UnloadPlugin / etc. through
-/// this table.
-/// </summary>
+// AOT NeoRadar → JIT PluginRuntime lifecycle + event surface, invoked by HostedClrPluginManager.
 [StructLayout(LayoutKind.Sequential)]
 internal unsafe struct PluginRuntimeTable
 {
-    /// <summary>Must equal <see cref="HostedClrAbi.Version"/>.</summary>
     public int Version;
     public int _pad0;
 
-    /// <summary>
-    /// Direct load entry kept for ABI compatibility — takes a plugin DLL
-    /// path and returns 0 on success / negative status. Prefer
-    /// <see cref="LoadPlugin"/> which also returns the assigned id.
-    /// </summary>
+    // Direct load entry kept for ABI compat; prefer LoadPlugin which also returns the assigned id.
     public delegate* unmanaged[Cdecl]<char*, int> LoadSamplePlugin;
 
-    /// <summary>
-    /// Real plugin load entry. Args: dllPath (UTF-16), output id buffer
-    /// (UTF-16) + capacity. Returns:
-    ///   &gt; 0  chars written to outId (plugin loaded)
-    ///   = 0  id buffer too small (load attempted, caller retries)
-    ///   &lt; 0 PluginLoader status code (file missing / bad assembly / etc.)
-    /// </summary>
+    // Args: dllPath, out id buffer (UTF-16) + capacity. >0 chars written; 0 id buffer too small; <0 PluginLoader status.
     public delegate* unmanaged[Cdecl]<char*, char*, int, int> LoadPlugin;
 
-    /// <summary>Unload a plugin by id. Returns 1 on success, 0 on miss.</summary>
     public delegate* unmanaged[Cdecl]<char*, int> UnloadPlugin;
 
-    /// <summary>Unload every loaded plugin. Returns the count unloaded.</summary>
     public delegate* unmanaged[Cdecl]<int> UnloadAllPlugins;
 
-    /// <summary>
-    /// Serialise every loaded plugin's (id, path, manifest) tuple as JSON.
-    /// Schema: <c>[{"id":"…","path":"…","name":"…","version":"…","author":"…","sdkMajor":N,"description":"…"}]</c>.
-    /// Capacity-hint protocol matches the rest of the JSON-blob calls.
-    /// </summary>
+    // (id, path, manifest) tuples as JSON; capacity-hint protocol.
     public delegate* unmanaged[Cdecl]<byte*, int, int> GetLoadedPluginsJson;
 
-    /// <summary>
-    /// AOT NeoRadar's IEventBus AircraftConnected subscription marshals
-    /// through here. Parameters: null-terminated UTF-16 callsign, CID
-    /// (or -1 if the aircraft has no CID). PluginRuntime constructs the
-    /// AircraftConnectedEvent and fans it to every loaded plugin's
-    /// OnAircraftConnected handler via EventDispatcher.
-    /// </summary>
+    // callsign (UTF-16) + CID (-1 if none). PluginRuntime fans the event to every plugin.
     public delegate* unmanaged[Cdecl]<char*, int, void> OnAircraftConnected;
 
-    /// <summary>AircraftDisconnected — callsign only.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnAircraftDisconnected;
 
-    /// <summary>
-    /// ControllerConnected — the SDK ControllerConnectedEvent needs more
-    /// than primitives can carry inline, so the snapshot pointer is passed
-    /// instead. PluginRuntime reads it eagerly before returning.
-    /// </summary>
+    // Snapshot pointer (event needs more than primitives); read eagerly before returning.
     public delegate* unmanaged[Cdecl]<ControllerSnapshot*, void> OnControllerConnected;
 
-    /// <summary>ControllerDisconnected — callsign only.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnControllerDisconnected;
 
-    /// <summary>
-    /// FsdConnected — callsign of the local connection. Core fires it
-    /// signal-only; this side reads server type + facility off the
-    /// IFsdConnectionClient at fire time and marshals together.
-    /// </summary>
+    // Core fires signal-only; this side reads server type + facility off IFsdConnectionClient and marshals together.
     public delegate* unmanaged[Cdecl]<char*, int, void> OnFsdConnected;
 
-    /// <summary>FsdDisconnected — signal only, no data to carry.</summary>
     public delegate* unmanaged[Cdecl]<void> OnFsdDisconnected;
 
-    /// <summary>
-    /// FlightplanUpdated — snapshot pointer carries the marshalled state.
-    /// PluginRuntime reads it eagerly before returning.
-    /// </summary>
+    // Snapshot pointer read eagerly before returning.
     public delegate* unmanaged[Cdecl]<FlightplanSnapshot*, void> OnFlightplanUpdated;
 
-    /// <summary>FlightplanRemoved — callsign only.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnFlightplanRemoved;
 
-    /// <summary>
-    /// ControllerDataUpdated — callsign only. The SDK event carries just
-    /// the callsign; the plugin calls api.ControllerData.GetByCallsign to
-    /// fetch the full row if it wants the data.
-    /// </summary>
+    // callsign only; plugin calls ControllerData.GetByCallsign for the row.
     public delegate* unmanaged[Cdecl]<char*, void> OnControllerDataUpdated;
 
-    /// <summary>AirportAdded — ICAO only.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnAirportAdded;
 
-    /// <summary>AirportRemoved — ICAO only.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnAirportRemoved;
 
-    /// <summary>AirportStatusChanged — ICAO + status byte.</summary>
     public delegate* unmanaged[Cdecl]<char*, int, void> OnAirportStatusChanged;
 
-    /// <summary>RunwayStatusChanged — ICAO + runway + active flag + isArrival flag.</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, int, int, void> OnRunwayStatusChanged;
 
-    /// <summary>AirportConfigurationsUpdated — total count.</summary>
     public delegate* unmanaged[Cdecl]<int, void> OnAirportConfigurationsUpdated;
 
-    /// <summary>
-    /// AOT-side <c>HostedPluginSquawkProvider.GenerateSquawk</c> marshals
-    /// through this slot. Parameters: callback id (set at register time),
-    /// callsign (UTF-16, null-terminated), aircraft snapshot pointer, hasFp
-    /// flag, flightplan snapshot pointer (only valid when hasFp != 0),
-    /// output buffer (UTF-16) + capacity. Returns the count of chars
-    /// written, 0 if the provider returned empty, negative on error.
-    /// </summary>
+    // Args: callbackId, callsign, aircraft snapshot, hasFp, flightplan snapshot (valid only when hasFp), out buffer (UTF-16) + capacity. Returns chars written, 0 empty.
     public delegate* unmanaged[Cdecl]<ulong, char*, AircraftSnapshot*, int, FlightplanSnapshot*, char*, int, int> Squawk_GenerateSquawk;
 
-    /// <summary>
-    /// AOT-side <c>HostedPluginCommandProvider.Execute</c> marshals through
-    /// this slot. Args: callback id, command id (UTF-16, null-terminated),
-    /// args JSON (UTF-8 string array) + byte count, output result JSON
-    /// (UTF-8 <c>{"success":bool,"message":"…"}</c>) + capacity. Returns
-    /// bytes written; -(required + 100) on insufficient capacity; -1 / -2
-    /// for null args / unknown callback.
-    /// </summary>
+    // Args: callbackId, commandId, args JSON (UTF-8) + len, out result JSON {"success":bool,"message":"…"} + capacity. Capacity-hint protocol.
     public delegate* unmanaged[Cdecl]<ulong, char*, byte*, int, byte*, int, int> Chat_ExecuteCommand;
 
-    /// <summary>SquawkAssigned — callsign + squawk + providerName.</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, char*, void> OnSquawkAssigned;
 
-    /// <summary>FsdError — message.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnFsdError;
 
-    /// <summary>FsdConnectionModelUpdated — callsign.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnFsdConnectionModelUpdated;
 
-    /// <summary>AtcPositionUpdate — callsign + lat/lon.</summary>
     public delegate* unmanaged[Cdecl]<char*, double, double, void> OnAtcPositionUpdate;
 
-    /// <summary>AtisLinesUpdate — callsign + line count.</summary>
     public delegate* unmanaged[Cdecl]<char*, int, void> OnAtisLinesUpdate;
 
-    /// <summary>CapabilitiesUpdate — callsign.</summary>
     public delegate* unmanaged[Cdecl]<char*, void> OnCapabilitiesUpdate;
 
-    /// <summary>FlightplanRouteChanged — callsign + raw route string.</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, void> OnFlightplanRouteChanged;
 
-    /// <summary>FlightplanVoiceTypeChanged — callsign + oldVoice + newVoice (enum bytes).</summary>
     public delegate* unmanaged[Cdecl]<char*, byte, byte, void> OnFlightplanVoiceTypeChanged;
 
     public delegate* unmanaged[Cdecl]<char*, char*, char*, void> OnAircraftBeaconCodeChanged;
@@ -513,48 +278,24 @@ internal unsafe struct PluginRuntimeTable
     public delegate* unmanaged[Cdecl]<char*, int, int, void> OnAircraftHeadingChanged;
     public delegate* unmanaged[Cdecl]<char*, int, int, void> OnAircraftAssignedSpeedChanged;
 
-    /// <summary>Per-batch position update — array pointer + count.</summary>
     public delegate* unmanaged[Cdecl]<AircraftSnapshot*, int, void> OnPositionUpdate;
 
-    /// <summary>ATIS-info message received — sender callsign, icao, atisLetter.</summary>
     public delegate* unmanaged[Cdecl]<char*, char*, char*, void> OnATISInfoMessageReceived;
 
-    /// <summary>Flightplan-message received — callsign, requestType (int), request body.</summary>
     public delegate* unmanaged[Cdecl]<char*, int, char*, void> OnFlightplanMessageReceived;
 
-    /// <summary>
-    /// Window event — pluginId, windowHandle, elementId, eventType, value.
-    /// AOT side routes window UI events through this slot via the
-    /// IPluginEventSink replacement.
-    /// </summary>
+    // Args: pluginId, windowHandle, elementId, eventType, value.
     public delegate* unmanaged[Cdecl]<char*, ulong, char*, char*, char*, void> OnWindowEvent;
 
-    /// <summary>
-    /// Tag action invoked — actionId, tagId, callsign, button, hasUserInput,
-    /// userInput, dataJson (UTF-8), dataJsonLen.
-    /// </summary>
+    // Args: actionId, tagId, callsign, button, hasUserInput, userInput, dataJson (UTF-8) + len.
     public delegate* unmanaged[Cdecl]<char*, char*, char*, int, int, char*, byte*, int, void> OnTagAction;
 
-    /// <summary>
-    /// Tag dropdown action invoked — actionId, componentId, tagId, callsign,
-    /// hasUserInput, userInput, dataJson (UTF-8), dataJsonLen.
-    /// </summary>
+    // Args: actionId, componentId, tagId, callsign, hasUserInput, userInput, dataJson (UTF-8) + len.
     public delegate* unmanaged[Cdecl]<char*, char*, char*, char*, int, char*, byte*, int, void> OnTagDropdownAction;
 
-    /// <summary>
-    /// Per-frame callback for a registered plugin screen. Args:
-    /// callbackId, screenHandle, deltaTimeSeconds, frameNumber,
-    /// viewportCenterX, viewportCenterY, zoom, pixelsPerMeter,
-    /// widthPixels, heightPixels.
-    /// </summary>
-    // Render_OnFrameUpdate args:
-    //   callbackId, screenHandle, deltaTime, frameNumber,
-    //   centerX, centerY, zoom, pixelsPerMeter,
-    //   widthPixels, heightPixels        — Viewport pixel dims (physical)
-    //   screenWidthDip, screenHeightDip  — ScreenSize (DIP, plugin coord space)
-    // ScreenSize must travel separately from viewport pixel dims: on Retina
-    // they differ by the dpi factor, and conflating them sent pixel-sized
-    // ScreenSize to plugins.
+    // Args: callbackId, screenHandle, deltaTime, frameNumber, centerX, centerY, zoom, pixelsPerMeter,
+    //   widthPixels/heightPixels (viewport physical px), screenWidthDip/screenHeightDip (DIP, plugin coord space).
+    // ScreenSize travels separately from pixel dims: on Retina they differ by the dpi factor.
     public delegate* unmanaged[Cdecl]<ulong, ulong, double, ulong, double, double, double, double, double, double, double, double, void> Render_OnFrameUpdate;
 
     // Pointer args: callbackId, screenX, screenY, hasWorld, worldX, worldY, button, modifiers, clickCount, hasHit, hitObjectId, hitScreenId.
@@ -575,30 +316,18 @@ internal unsafe struct PluginRuntimeTable
     public delegate* unmanaged[Cdecl]<char*, ulong, double, double, double, double, int, void> OnRenderObjectClicked;
     public delegate* unmanaged[Cdecl]<double, double, double, double, double, double, void> OnViewportChanged;
 
-    /// <summary>OnIsControllerATC — callsign + isATC.</summary>
     public delegate* unmanaged[Cdecl]<char*, int, void> OnIsControllerATC;
 
-    /// <summary>OnFsdConnectionStateChange — state (PluginSdk.Fsd.ConnectionState int).</summary>
     public delegate* unmanaged[Cdecl]<int, void> OnFsdConnectionStateChange;
 
-    /// <summary>
-    /// OnTagShowDropdown sync-RPC. AOT calls when Core's TagDropdownCoordinator
-    /// is about to show a dropdown; JIT side queries every loaded plugin's
-    /// OnTagShowDropdown override; writes 0 to <paramref name="allowOut"/>
-    /// if any returns false. Caller treats unwritten output as 1 (allow).
-    /// </summary>
+    // Sync-RPC. JIT queries every plugin's OnTagShowDropdown; writes 0 to allowOut if any returns false. Unwritten output = 1 (allow).
     public delegate* unmanaged[Cdecl]<char*, char*, int*, void> OnTagShowDropdown;
 
-    /// <summary>
-    /// OnRenderObjectHovered — analogous to <see cref="OnRenderObjectClicked"/>
-    /// but with no button. pluginId routes to the owning plugin's handler.
-    /// </summary>
+    // Like OnRenderObjectClicked but no button; pluginId routes to the owning plugin.
     public delegate* unmanaged[Cdecl]<char*, ulong, double, double, double, double, void> OnRenderObjectHovered;
 }
 
-/// <summary>
-/// ControllerData row marshalled across the function-pointer boundary. Layout pinned by <see cref="HostedClrAbi.Version"/>.
-/// </summary>
+// ControllerData row marshalled across the boundary. Layout pinned by HostedClrAbi.Version.
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
 internal unsafe struct ControllerDataSnapshot
 {
@@ -633,9 +362,7 @@ internal unsafe struct ControllerDataSnapshot
     public byte _pad2;
 }
 
-/// <summary>
-/// Flightplan POD shape. Route / waypoints / time fields don't fit and arrive via Flightplan_GetRouteJson.
-/// </summary>
+// Flightplan POD shape. Route / waypoints / time fields don't fit and arrive via Flightplan_GetRouteJson.
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
 internal unsafe struct FlightplanSnapshot
 {
@@ -661,11 +388,7 @@ internal unsafe struct FlightplanSnapshot
     public byte _pad2;
 }
 
-/// <summary>
-/// FSD connection state marshalled across the function-pointer boundary.
-/// Plugins fetch via api.Fsd.GetConnection. AtisLines / Frequencies arrive
-/// separately through Fsd_GetExtrasJson.
-/// </summary>
+// FSD connection POD shape. AtisLines / Frequencies arrive separately via Fsd_GetExtrasJson.
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
 internal unsafe struct FsdConnectionSnapshot
 {
@@ -686,9 +409,7 @@ internal unsafe struct FsdConnectionSnapshot
     public byte _pad2;
 }
 
-/// <summary>
-/// Controller POD shape. Frequencies / AtisLines arrive via Controller_GetExtrasJson.
-/// </summary>
+// Controller POD shape. Frequencies / AtisLines arrive via Controller_GetExtrasJson.
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
 internal unsafe struct ControllerSnapshot
 {
