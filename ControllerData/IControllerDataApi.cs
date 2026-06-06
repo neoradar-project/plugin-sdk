@@ -8,6 +8,6 @@ public interface IControllerDataApi
 
     ControllerDataModel? GetByCallsign(string callsign);
 
-    /// <summary>Set ground status. Rate-limited to 1 call per second per callsign.</summary>
+    /// <summary>Set ground status. Rate-limited to roughly one call per second per plugin; excess calls return false.</summary>
     bool SetGroundStatus(string callsign, GroundStatus groundStatus);
 }
