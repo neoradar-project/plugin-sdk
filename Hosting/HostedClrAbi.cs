@@ -10,7 +10,7 @@ namespace NeoRadar.PluginSdk.Hosting;
 internal static class HostedClrAbi
 {
     // Increment on any field add/remove/reorder in the tables or any boundary-crossing POD struct.
-    public const int Version = 37;
+    public const int Version = 38;
 }
 
 // AOT NeoRadar → JIT PluginRuntime surface. Members are raw native fn-pointers
@@ -95,11 +95,11 @@ internal unsafe struct HostFunctionTable
     // Args: sentFrom, message, hasColour, R, G, B, isUrgent, useDedicatedChannel.
     public delegate* unmanaged[Cdecl]<char*, char*, int, byte, byte, byte, int, int, int> Chat_SendClientMessage;
 
-    // Args: pluginId, name, default value, allowed-actions JSON + len, out tag id (UTF-16) + capacity. Returns chars written, 0 on collision.
-    public delegate* unmanaged[Cdecl]<char*, char*, char*, byte*, int, char*, int, int> Tag_RegisterTagItem;
+    // Args: pluginId, name, default value, title, description, valueType, allowed-actions JSON + len, out tag id (UTF-16) + capacity. Returns chars written, 0 on collision.
+    public delegate* unmanaged[Cdecl]<char*, char*, char*, char*, char*, int, byte*, int, char*, int, int> Tag_RegisterTagItem;
 
-    // Args: pluginId, name, description, requiresInput, out action id (UTF-16) + capacity. Returns chars written, 0 on collision.
-    public delegate* unmanaged[Cdecl]<char*, char*, char*, int, char*, int, int> Tag_RegisterTagAction;
+    // Args: pluginId, name, description, title, requiresInput, out action id (UTF-16) + capacity. Returns chars written, 0 on collision.
+    public delegate* unmanaged[Cdecl]<char*, char*, char*, char*, int, char*, int, int> Tag_RegisterTagAction;
 
     // Args: tagId, value, callsign, listId, hasColour + RGB, hasBgColour + bgRGB, context-data JSON + len.
     public delegate* unmanaged[Cdecl]<char*, char*, char*, char*, int, byte, byte, byte, int, byte, byte, byte, byte*, int, int> Tag_UpdateTagValue;

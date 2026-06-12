@@ -2,12 +2,32 @@ using System.Collections.Generic;
 
 namespace NeoRadar.PluginSdk.Tag;
 
+/// <summary>The kind of value a tag item resolves to, so hosts can offer a typed editor / sample input.</summary>
+public enum TagValueType
+{
+    String,
+    Int,
+    Double,
+    Bool,
+    Enum,
+}
+
 public sealed record TagItemDefinition(
     string Name,
     string DefaultValue,
-    IReadOnlyList<string> AllowedActions);
+    IReadOnlyList<string> AllowedActions)
+{
+    // Optional presentation metadata. Defaulted so existing 3-arg construction stays source- and
+    // binary-compatible; the host falls back to Name when Title is empty.
+    public string Title { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
+    public TagValueType ValueType { get; init; } = TagValueType.String;
+}
 
-public sealed record TagActionDefinition(string Name, bool RequiresInput, string Description);
+public sealed record TagActionDefinition(string Name, bool RequiresInput, string Description)
+{
+    public string Title { get; init; } = string.Empty;
+}
 
 public sealed record TagContext(
     string Callsign,
