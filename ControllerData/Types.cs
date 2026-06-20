@@ -15,6 +15,7 @@ public enum AttentionState
     Assumed = 3,
     OutgoingTransfer = 4,
     Intruder = 5,
+    Concerned = 6,
 }
 
 public enum GroundStatus
