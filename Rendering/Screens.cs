@@ -15,7 +15,7 @@ public enum ScreenScope
     /// <summary>Dedicated inset window with its own viewport (camera, pan, zoom).</summary>
     PluginInsetWorld,
 
-    /// <summary>Dedicated inset window with no viewport — pure screen space.</summary>
+    /// <summary>Dedicated inset window with no viewport: pure screen space.</summary>
     PluginInsetScreen,
 }
 
@@ -66,7 +66,7 @@ public readonly record struct ScreenHandle(ulong Value)
 /// <summary>
 /// Opaque handle for a retained graphics object. Plugins keep these in their own
 /// dictionaries to associate scene objects with metadata. Scoped to a single
-/// screen — refs from one screen never address objects in another.
+/// screen: refs from one screen never address objects in another.
 /// </summary>
 public readonly record struct GraphicsObjectRef(ulong ScreenId, ulong ObjectId)
 {

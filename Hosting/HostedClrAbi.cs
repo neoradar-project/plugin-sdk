@@ -50,7 +50,7 @@ internal unsafe struct HostFunctionTable
     // Same JSON shape as Controller_GetExtrasJson.
     public delegate* unmanaged[Cdecl]<byte*, int, int> Fsd_GetExtrasJson;
 
-    // Route + waypoints stay empty in the produced record — fetch via Flightplan_GetRouteJson.
+    // Route + waypoints stay empty in the produced record; fetch via Flightplan_GetRouteJson.
     public delegate* unmanaged[Cdecl]<char*, FlightplanSnapshot*, int> Flightplan_TryGetByCallsign;
 
     public delegate* unmanaged[Cdecl]<FlightplanSnapshot*, int, int> Flightplan_Enumerate;
@@ -126,7 +126,7 @@ internal unsafe struct HostFunctionTable
     public delegate* unmanaged[Cdecl]<ulong, int, int> Rendering_SetScreenEnabled;
     public delegate* unmanaged[Cdecl]<ulong, int> Rendering_IsScreenEnabled;
 
-    // Add* returns ObjectId (ulong; 0 on failure). RGBA passed as four floats — RgbaColor is already float-shaped.
+    // Add* returns ObjectId (ulong; 0 on failure). RGBA passed as four floats; RgbaColor is already float-shaped.
     public delegate* unmanaged[Cdecl]<ulong, float*, int, float, float, float, float, float, ulong> Graphics_AddScreenLine;
     public delegate* unmanaged[Cdecl]<ulong, float, float, float, float, float, float, float, float, ulong> Graphics_AddScreenRect;
     public delegate* unmanaged[Cdecl]<ulong, float, float, float, float, float, float, float, float, float, ulong> Graphics_AddScreenStrokeRect;
@@ -299,7 +299,7 @@ internal unsafe struct PluginRuntimeTable
     public delegate* unmanaged[Cdecl]<ulong, ulong, double, ulong, double, double, double, double, double, double, double, double, void> Render_OnFrameUpdate;
 
     // Pointer args: callbackId, screenX, screenY, hasWorld, worldX, worldY, button, modifiers, clickCount, hasHit, hitObjectId, hitScreenId.
-    // hitScreenId is required: plugins key Dictionary<GraphicsObjectRef,…> by (ScreenId, ObjectId) — dropping it silently breaks every lookup.
+    // hitScreenId is required: plugins key Dictionary<GraphicsObjectRef,…> by (ScreenId, ObjectId); dropping it silently breaks every lookup.
     // For event-consume callbacks (Pressed/Wheel/KeyDown/KeyUp) the trailing `int* consumed` is set 0/1 by the JIT entry.
     public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, ulong, int*, void> Render_OnPointerPressed;
     public delegate* unmanaged[Cdecl]<ulong, float, float, int, float, float, int, int, int, int, ulong, ulong, void> Render_OnPointerMoved;

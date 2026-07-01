@@ -8,9 +8,9 @@ public static class PluginSdkVersion
     /// </summary>
     public const int Major = 0;
 
-    /// <summary>Minor version — additive changes within the same major.</summary>
+    /// <summary>Minor version: additive changes within the same major.</summary>
     public const int Minor = 1;
 
-    /// <summary>Patch — non-breaking fixes.</summary>
+    /// <summary>Patch: non-breaking fixes.</summary>
     public const int Patch = 0;
 }

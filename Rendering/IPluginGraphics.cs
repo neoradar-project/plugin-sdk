@@ -7,7 +7,7 @@ namespace NeoRadar.PluginSdk.Rendering;
 /// <summary>
 /// Retained-mode drawing surface for one screen. Add objects once; mutate or
 /// remove them as state changes. The host renders every frame from the scene
-/// state — there is no per-frame "draw" call.
+/// state; there is no per-frame "draw" call.
 /// </summary>
 public interface IPluginGraphics
 {

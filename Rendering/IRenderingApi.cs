@@ -45,7 +45,7 @@ public interface IRenderingInterface
     bool CenterOnLatLon(ScreenHandle handle, double lat, double lon, double? zoom = null) => false;
 
     // ── Legacy (queue-based) drawing API ──
-    // Returns Invalid handles by default — kept for source-compatibility
+    // Returns Invalid handles by default; kept for source-compatibility
     // with plugins authored against the older IRenderingInterface shape.
     // New plugins use the screen-based API above.
 

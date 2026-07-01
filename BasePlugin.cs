@@ -1,9 +1,8 @@
 namespace NeoRadar.PluginSdk;
 
 /// <summary>
-/// Base class plugins inherit from. Provides Initialize / Shutdown / Manifest plus a full
-/// set of virtual event handlers the host calls when the corresponding Core event fires.
-/// Override only the handlers you care about; empty virtual defaults keep unused ones cost-free.
+/// Base class plugins inherit from: Initialize / Shutdown / Manifest plus virtual event handlers
+/// the host calls when the corresponding Core event fires. Override only the handlers you need.
 /// </summary>
 public abstract class BasePlugin
 {
