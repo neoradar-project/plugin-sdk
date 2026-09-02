@@ -37,8 +37,10 @@ public enum BatchInvalidationFrequency
 
 /// <summary>
 /// Declarative screen registration. <see cref="ZOrder"/> slots between host modules:
-/// ExtendedCenterlines=-10, GeoJson=0, RangeRings=10, SpeedVector=45, Targets=50,
-/// Tags=60, MouseDistanceMeasurer=70. Default 100 paints above all host chrome.
+/// SectorDisplay=-20, ExtendedCenterlines=-10, GeoJson=0, MouseDistanceMeasurer=5,
+/// RangeRings=10, SpeedVector=45, AircraftDistanceMeasurer=46, RouteDraw=47, Rdf=48,
+/// Targets=50, HeadingTool=55, Tags=60, FeedbackOverlay=90. Default 100 paints above
+/// all host chrome.
 /// </summary>
 public sealed record ScreenDefinition(
     string Name,
