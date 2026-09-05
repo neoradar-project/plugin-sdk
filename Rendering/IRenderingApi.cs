@@ -45,9 +45,8 @@ public interface IRenderingInterface
     bool CenterOnLatLon(ScreenHandle handle, double lat, double lon, double? zoom = null) => false;
 
     // ── Legacy (queue-based) drawing API ──
-    // Returns Invalid handles by default; kept for source-compatibility
-    // with plugins authored against the older IRenderingInterface shape.
-    // New plugins use the screen-based API above.
+    // Returns Invalid handles by default; kept for source-compatibility with plugins authored
+    // against the older IRenderingInterface shape. New plugins use the screen-based API above.
 
     /// <summary>Legacy: queue-based draw. Use <see cref="RegisterScreen"/> instead.</summary>
     ObjectHandle DrawLine(DrawLineParams parameters) => ObjectHandle.Invalid;

@@ -7,7 +7,7 @@
          for the function-pointer ABI between AOT NeoRadar and JIT PluginRuntime. -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!-- Plugins load a private JIT copy of the SDK in PluginRuntime's ALC, but
-         the AOT NeoRadar.exe links the Default ALC copy — analyse against AOT. -->
+         the AOT NeoRadar.exe links the Default ALC copy - analyse against AOT. -->
     <IsAotCompatible>true</IsAotCompatible>
     <!-- Why: plugins pin a specific SDK assembly version; bumping major signals
          a breaking change for plugin authors. Tracks PluginSdkVersion constant. -->
