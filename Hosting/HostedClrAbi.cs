@@ -10,7 +10,7 @@ namespace NeoRadar.PluginSdk.Hosting;
 internal static class HostedClrAbi
 {
     // Increment on any field add/remove/reorder in the tables or any boundary-crossing POD struct.
-    public const int Version = 38;
+    public const int Version = 39;
 }
 
 // AOT NeoRadar → JIT PluginRuntime surface. Members are raw native fn-pointers
@@ -26,7 +26,7 @@ internal unsafe struct HostFunctionTable
 
     public delegate* unmanaged[Cdecl]<int> Aircraft_GetCount;
 
-    // callsign is null-terminated UTF-16 (Windows) / UTF-8 (macOS). 1 on hit, 0 on miss, negative on error.
+    // callsign is null-terminated UTF-16 on every platform. 1 on hit, 0 on miss, negative on error.
     public delegate* unmanaged[Cdecl]<char*, AircraftSnapshot*, int> Aircraft_TryGetByCallsign;
 
     // Great-circle nm to flightplan origin; NaN when unavailable.
@@ -244,7 +244,8 @@ internal unsafe struct PluginRuntimeTable
 
     public delegate* unmanaged[Cdecl]<int, void> OnAirportConfigurationsUpdated;
 
-    // Args: callbackId, callsign, aircraft snapshot, hasFp, flightplan snapshot (valid only when hasFp), out buffer (UTF-16) + capacity. Returns chars written, 0 empty.
+    // Args: callbackId, callsign, aircraft snapshot, hasFp, flightplan snapshot (valid only when hasFp), out buffer (UTF-16) + capacity.
+    // Returns chars written, 0 empty. Capacity-hint protocol; the hint includes the null terminator.
     public delegate* unmanaged[Cdecl]<ulong, char*, AircraftSnapshot*, int, FlightplanSnapshot*, char*, int, int> Squawk_GenerateSquawk;
 
     // Args: callbackId, commandId, args JSON (UTF-8) + len, out result JSON {"success":bool,"message":"…"} + capacity. Capacity-hint protocol.

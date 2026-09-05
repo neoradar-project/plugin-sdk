@@ -24,5 +24,6 @@
   <ItemGroup>
     <InternalsVisibleTo Include="NeoRadar" />
     <InternalsVisibleTo Include="NeoRadar.PluginRuntime" />
+    <InternalsVisibleTo Include="NeoRadar.PluginRuntime.Tests" />
   </ItemGroup>
 </Project>
