@@ -11,6 +11,10 @@ a `v*` tag. Everything `public` here is a customer contract.
   was compiled against (its assembly reference) with the copy it ships and refuses any other
   major.minor. `PluginSdkVersionTests.AssemblyVersion_MatchesTheConstants` pins the two together;
   bump both in the same commit, then tag `v<version>` so `pack.yml` publishes.
+- **This assembly carries the constants, never the rule.** The compatibility decision is
+  `SdkVersionGate` in `@client` (`src/NeoRadar.PluginRuntime/`), evaluated against the client's own
+  copy. No predicates or refusal messages here: a plugin author cannot influence the check, and a
+  policy change must not need an SDK release.
 - **`PluginSdkVersion.BuildId` is generated at build from the git commit** (`GeneratePluginSdkBuildId`
   in the csproj, `-dirty` on uncommitted changes). Plugins pass it as `Manifest.SdkBuildId`; the client
   refuses a plugin whose build id differs from the copy it ships, which closes the same-version,

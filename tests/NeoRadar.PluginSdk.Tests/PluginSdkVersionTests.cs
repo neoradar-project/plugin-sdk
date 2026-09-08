@@ -18,37 +18,15 @@ public sealed class PluginSdkVersionTests
     }
 
     [Fact]
-    public void IsCompatible_RequiresTheExactMajorAndMinor()
-    {
-        Assert.True(PluginSdkVersion.IsCompatible(PluginSdkVersion.Major, PluginSdkVersion.Minor));
-        Assert.False(PluginSdkVersion.IsCompatible(PluginSdkVersion.Major, PluginSdkVersion.Minor + 1));
-        Assert.False(PluginSdkVersion.IsCompatible(PluginSdkVersion.Major, PluginSdkVersion.Minor - 1));
-        Assert.False(PluginSdkVersion.IsCompatible(PluginSdkVersion.Major + 1, PluginSdkVersion.Minor));
-    }
+    public void Current_MatchesTheConstants()
+        => Assert.Equal(
+            $"{PluginSdkVersion.Major}.{PluginSdkVersion.Minor}.{PluginSdkVersion.Patch}",
+            PluginSdkVersion.Current);
 
     [Fact]
     public void BuildId_IsStampedFromTheCommit()
     {
         Assert.NotEqual("unknown", PluginSdkVersion.BuildId);
         Assert.True(PluginSdkVersion.BuildId.Length >= 7, PluginSdkVersion.BuildId);
-    }
-
-    [Fact]
-    public void DescribeBuildMismatch_NamesBothBuilds()
-    {
-        string message = PluginSdkVersion.DescribeBuildMismatch("UK Radar Plugin", "0123456789ab");
-
-        Assert.Contains("0123456789ab", message);
-        Assert.Contains(PluginSdkVersion.BuildId, message);
-    }
-
-    [Fact]
-    public void DescribeMismatch_NamesBothVersions()
-    {
-        string message = PluginSdkVersion.DescribeMismatch("UK Radar Plugin", new Version(0, 9, 0, 0));
-
-        Assert.Contains("0.9", message);
-        Assert.Contains(PluginSdkVersion.Current, message);
-        Assert.DoesNotContain("\u2014", message);
     }
 }

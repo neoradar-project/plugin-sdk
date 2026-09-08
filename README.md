@@ -9,14 +9,15 @@ A plugin is a plain managed `.dll` that references only this assembly.
 `PluginSdkVersion` (major, minor, patch) is the contract version and equals this package's
 version. The client ships one copy of the SDK and refuses to load a plugin compiled against a
 different major or minor, so a plugin is always rebuilt against the SDK release its target client
-ships. While the major is 0 a breaking change bumps the minor.
+ships. That comparison runs inside the client against the copy it ships; nothing in this package
+takes part in it. While the major is 0 a breaking change bumps the minor.
 
 ## Referencing the SDK
 
 From the GitHub Packages feed (needs a PAT with `read:packages`):
 
 ```xml
-<PackageReference Include="NeoRadar.PluginSdk" Version="0.2.0" ExcludeAssets="runtime" />
+<PackageReference Include="NeoRadar.PluginSdk" Version="0.3.0" ExcludeAssets="runtime" />
 ```
 
 ```xml

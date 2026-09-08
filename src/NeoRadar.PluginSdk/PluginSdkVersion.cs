@@ -1,12 +1,14 @@
-using System;
-
 namespace NeoRadar.PluginSdk;
 
+/// <summary>
+/// Version constants a plugin inlines into its <see cref="PluginManifest"/>. The client compares
+/// them with its own copy of this assembly; the comparison is client code, not part of the SDK.
+/// </summary>
 public static partial class PluginSdkVersion
 {
     /// <summary>
-    /// Major version of the SDK contract. Plugins declaring a different major
-    /// in their <see cref="PluginManifest.SdkMajorVersion"/> are refused.
+    /// Major version of the SDK contract. Plugins pass it as
+    /// <see cref="PluginManifest.SdkMajorVersion"/>; the client refuses any other value.
     /// </summary>
     public const int Major = 0;
 
@@ -19,49 +21,6 @@ public static partial class PluginSdkVersion
     /// <summary>Patch: non-breaking fixes.</summary>
     public const int Patch = 0;
 
-    /// <summary>Full version string, e.g. "0.2.0". Reported to plugins and in host logs.</summary>
+    /// <summary>Full version string, e.g. "0.3.0". Reported to plugins and in host logs.</summary>
     public static string Current => $"{Major}.{Minor}.{Patch}";
-
-    /// <summary>
-    /// True when a plugin declaring <paramref name="pluginSdkMajor"/> can bind against this SDK.
-    /// </summary>
-    public static bool IsMajorCompatible(int pluginSdkMajor) => pluginSdkMajor == Major;
-
-    /// <summary>
-    /// True when a plugin compiled against <paramref name="major"/>.<paramref name="minor"/> can bind
-    /// against this SDK. Exact major and minor: the host refuses a plugin built against any other release.
-    /// </summary>
-    public static bool IsCompatible(int major, int minor) => major == Major && minor == Minor;
-
-    /// <summary>
-    /// Message for a plugin refused because it was compiled against another build of this SDK
-    /// version. <see cref="BuildId"/> is a compile-time constant, so a plugin passing it through
-    /// <see cref="PluginManifest.SdkBuildId"/> carries the exact build it was compiled against.
-    /// </summary>
-    public static string DescribeBuildMismatch(string pluginName, string? pluginBuildId) =>
-        $"Plugin '{pluginName}' was compiled against NeoRadar.PluginSdk {Current} build "
-        + $"{pluginBuildId ?? "(none)"} but this host ships build {BuildId}. Rebuild the plugin against "
-        + "the host's SDK build.";
-
-    /// <summary>Message for a plugin refused because it was compiled against another SDK release.</summary>
-    public static string DescribeMismatch(string pluginName, Version compiledAgainst) =>
-        $"Plugin '{pluginName}' was compiled against NeoRadar.PluginSdk {compiledAgainst.Major}.{compiledAgainst.Minor} "
-        + $"but this host ships {Current}. Rebuild the plugin against SDK {Current}.";
-
-    /// <summary>
-    /// Message for a refused plugin, naming both majors and the fix.
-    /// </summary>
-    public static string DescribeMajorMismatch(string pluginName, int pluginSdkMajor) =>
-        $"Plugin '{pluginName}' declares SdkMajorVersion {pluginSdkMajor} but this host ships "
-        + $"NeoRadar.PluginSdk {Current} (major {Major}). Rebuild the plugin against SDK {Current} "
-        + "and set Manifest.SdkMajorVersion = PluginSdkVersion.Major.";
-
-    /// <summary>
-    /// Message for a plugin that loaded but hit a missing SDK member, i.e. it was compiled against
-    /// a different minor of the same major.
-    /// </summary>
-    public static string DescribeBindingFailure(string pluginName, string detail) =>
-        $"Plugin '{pluginName}' was built against a different NeoRadar.PluginSdk than this host "
-        + $"({Current}) and references a member that no longer exists: {detail}. "
-        + $"Rebuild it against SDK {Current}. Breaking renames in 0.x land on a minor bump.";
 }
