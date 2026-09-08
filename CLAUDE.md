@@ -11,6 +11,10 @@ a `v*` tag. Everything `public` here is a customer contract.
   was compiled against (its assembly reference) with the copy it ships and refuses any other
   major.minor. `PluginSdkVersionTests.AssemblyVersion_MatchesTheConstants` pins the two together;
   bump both in the same commit, then tag `v<version>` so `pack.yml` publishes.
+- **`PluginSdkVersion.BuildId` is generated at build from the git commit** (`GeneratePluginSdkBuildId`
+  in the csproj, `-dirty` on uncommitted changes). Plugins pass it as `Manifest.SdkBuildId`; the client
+  refuses a plugin whose build id differs from the copy it ships, which closes the same-version,
+  different-surface gap the version numbers alone leave open.
 - **A breaking change to the public surface bumps `Minor` while `Major` is 0.** Renames, removed
   members, changed signatures, changed event payloads. Additive changes need no bump but do need
   the consumers' submodule pins moved before a plugin can use them.

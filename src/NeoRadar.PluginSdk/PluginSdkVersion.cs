@@ -2,7 +2,7 @@ using System;
 
 namespace NeoRadar.PluginSdk;
 
-public static class PluginSdkVersion
+public static partial class PluginSdkVersion
 {
     /// <summary>
     /// Major version of the SDK contract. Plugins declaring a different major
@@ -14,7 +14,7 @@ public static class PluginSdkVersion
     /// Minor version. While <see cref="Major"/> is 0 the public surface may still break
     /// between minors; a break bumps this and nothing else.
     /// </summary>
-    public const int Minor = 2;
+    public const int Minor = 3;
 
     /// <summary>Patch: non-breaking fixes.</summary>
     public const int Patch = 0;
@@ -32,6 +32,16 @@ public static class PluginSdkVersion
     /// against this SDK. Exact major and minor: the host refuses a plugin built against any other release.
     /// </summary>
     public static bool IsCompatible(int major, int minor) => major == Major && minor == Minor;
+
+    /// <summary>
+    /// Message for a plugin refused because it was compiled against another build of this SDK
+    /// version. <see cref="BuildId"/> is a compile-time constant, so a plugin passing it through
+    /// <see cref="PluginManifest.SdkBuildId"/> carries the exact build it was compiled against.
+    /// </summary>
+    public static string DescribeBuildMismatch(string pluginName, string? pluginBuildId) =>
+        $"Plugin '{pluginName}' was compiled against NeoRadar.PluginSdk {Current} build "
+        + $"{pluginBuildId ?? "(none)"} but this host ships build {BuildId}. Rebuild the plugin against "
+        + "the host's SDK build.";
 
     /// <summary>Message for a plugin refused because it was compiled against another SDK release.</summary>
     public static string DescribeMismatch(string pluginName, Version compiledAgainst) =>

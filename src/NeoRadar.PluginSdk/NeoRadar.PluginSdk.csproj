@@ -7,7 +7,7 @@
     <PackageId>NeoRadar.PluginSdk</PackageId>
     <!-- Equals PluginSdkVersion.Current; PluginSdkVersionTests pins it. The host refuses a plugin
          compiled against any other major.minor. -->
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Authors>NeoRadar</Authors>
     <Description>Public SDK for NeoRadar plugins: the BasePlugin entry point, ICoreApi and the event and model types.</Description>
     <RepositoryUrl>https://github.com/neoradar-project/plugin-sdk</RepositoryUrl>
@@ -23,4 +23,28 @@
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <!-- BuildId is the SDK commit a plugin compiled against; the host refuses any other build of the
+       same version. See PluginSdkVersionTests.BuildId_IsStampedFromTheCommit. -->
+  <Target Name="GeneratePluginSdkBuildId" BeforeTargets="CoreCompile">
+    <Exec Command="git rev-parse --short=12 HEAD" WorkingDirectory="$(MSBuildProjectDirectory)"
+          ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_PluginSdkCommit" />
+    </Exec>
+    <Exec Command="git status --porcelain --untracked-files=no -- ." WorkingDirectory="$(MSBuildProjectDirectory)"
+          ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_PluginSdkDirty" />
+    </Exec>
+    <PropertyGroup>
+      <_PluginSdkBuildId>$(_PluginSdkCommit)</_PluginSdkBuildId>
+      <_PluginSdkBuildId Condition="'$(_PluginSdkBuildId)' == ''">unknown</_PluginSdkBuildId>
+      <_PluginSdkBuildId Condition="'$(_PluginSdkDirty)' != ''">$(_PluginSdkBuildId)-dirty</_PluginSdkBuildId>
+      <_PluginSdkBuildIdFile>$(IntermediateOutputPath)PluginSdkBuildId.g.cs</_PluginSdkBuildIdFile>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(_PluginSdkBuildIdFile)" Overwrite="true" WriteOnlyWhenDifferent="true"
+                      Lines="namespace NeoRadar.PluginSdk%3B;;public static partial class PluginSdkVersion;{;    /// &lt;summary&gt;The SDK commit this assembly was built from, with -dirty for uncommitted changes.&lt;/summary&gt;;    public const string BuildId = &quot;$(_PluginSdkBuildId)&quot;%3B;}" />
+    <ItemGroup>
+      <Compile Include="$(_PluginSdkBuildIdFile)" />
+    </ItemGroup>
+  </Target>
 </Project>

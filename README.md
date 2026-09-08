@@ -39,7 +39,10 @@ Rules that bite:
   resolves the SDK from the copy it ships; a second copy next to your DLL splits the `BasePlugin`
   type identity and the plugin silently fails to load.
 - Build with `dotnet build`, never `dotnet publish`.
-- `Manifest.SdkMajorVersion` must be `PluginSdkVersion.Major`.
+- `Manifest.SdkMajorVersion` must be `PluginSdkVersion.Major` and `Manifest.SdkBuildId` must be
+  `PluginSdkVersion.BuildId`. Both are compile-time constants, so the plugin carries the exact SDK
+  build it was compiled against, and the client refuses a plugin compiled against any other build
+  of the same version.
 - Event handlers run on client threads and are watched; keep them short and catch your own
   exceptions.
 

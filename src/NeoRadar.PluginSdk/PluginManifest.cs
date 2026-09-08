@@ -6,4 +6,5 @@ public sealed record PluginManifest(
     string Version,
     int SdkMajorVersion,
     string? Description = null,
-    string? Website = null);
+    string? Website = null,
+    string? SdkBuildId = null);
