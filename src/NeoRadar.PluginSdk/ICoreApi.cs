@@ -42,4 +42,10 @@ public interface ICoreApi
 
     /// <summary>Show a transient toast in the client.</summary>
     Feedback.IFeedbackApi Feedback { get; }
+
+    /// <summary>Persisted string settings, scoped to the plugin or to the active profile.</summary>
+    Settings.ISettingsApi Settings { get; }
+
+    /// <summary>Named entries the plugin adds to the client's plugin list.</summary>
+    Menu.IMenuApi Menu { get; }
 }

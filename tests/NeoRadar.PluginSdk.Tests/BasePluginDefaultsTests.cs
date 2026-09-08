@@ -70,6 +70,28 @@ public sealed class BasePluginDefaultsTests
         Assert.Contains(nameof(BasePlugin.OnSupervisorMessageReceived), names);
         Assert.Contains(nameof(BasePlugin.OnServerMessageReceived), names);
         Assert.Contains(nameof(BasePlugin.OnAtcMessageReceived), names);
+        Assert.Contains(nameof(BasePlugin.OnActiveProfileChanged), names);
+        Assert.Contains(nameof(BasePlugin.OnTimer), names);
+        Assert.Contains(nameof(BasePlugin.OnMenuItemClicked), names);
+    }
+
+    // The sweep builds every payload by reflection, so a new event type has to be constructible
+    // from defaults: a null profile name, tick zero, an empty item id.
+    [Fact]
+    public void ProfileTimerAndMenuPayloads_BuildFromDefaults()
+    {
+        MinimalPlugin plugin = new();
+        Settings.ActiveProfileChangedEvent profile = new(null);
+        Timer.TimerEvent tick = new(0L);
+        Menu.MenuItemClickedEvent click = new(string.Empty, false);
+
+        plugin.OnActiveProfileChanged(profile);
+        plugin.OnTimer(tick);
+        plugin.OnMenuItemClicked(click);
+
+        Assert.Null(profile.ProfileName);
+        Assert.Equal(0L, tick.Tick);
+        Assert.False(click.Checked);
     }
 
     [Fact]

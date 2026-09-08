@@ -101,4 +101,23 @@ public abstract class BasePlugin
     // Focus events
     /// <summary>Fires when the client's selected aircraft changes, including when it is cleared.</summary>
     public virtual void OnSelectedAircraftChanged(Focus.SelectedAircraftChangedEvent evt) { }
+
+    // Settings events
+    /// <summary>
+    /// Fires after the client loaded a different profile, so the plugin re-reads its profile-scoped
+    /// settings here. <c>ProfileName</c> is null when no profile is active.
+    /// </summary>
+    public virtual void OnActiveProfileChanged(Settings.ActiveProfileChangedEvent evt) { }
+
+    // Timer events
+    /// <summary>
+    /// Roughly one call per second on a host thread, for periodic work that would otherwise need a
+    /// plugin-owned thread. Watched like every other handler, so a slow tick earns a strike, and
+    /// never re-entered: the host skips a tick while the previous one is still running.
+    /// </summary>
+    public virtual void OnTimer(Timer.TimerEvent evt) { }
+
+    // Menu events
+    /// <summary>Fires when a controller clicks one of the plugin's menu entries.</summary>
+    public virtual void OnMenuItemClicked(Menu.MenuItemClickedEvent evt) { }
 }

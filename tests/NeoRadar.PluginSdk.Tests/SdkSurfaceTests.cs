@@ -74,14 +74,103 @@ public sealed class SdkSurfaceTests
             "Focus",
             "Navdata",
             "Feedback",
+            "Settings",
+            "Menu",
         };
 
         string[] actual = typeof(ICoreApi).GetProperties(Declared).Select(p => p.Name).ToArray();
 
-        Assert.Equal(17, expected.Length);
+        Assert.Equal(19, expected.Length);
         Assert.Equal(
             expected.OrderBy(n => n, StringComparer.Ordinal),
             actual.OrderBy(n => n, StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void SettingsApi_ExposesBothScopesAndTheActiveProfile()
+    {
+        string[] methods = typeof(Settings.ISettingsApi).GetMethods(Declared)
+            .Where(m => !m.IsSpecialName)
+            .Select(m => m.Name)
+            .OrderBy(n => n, StringComparer.Ordinal)
+            .ToArray();
+        string[] properties = typeof(Settings.ISettingsApi).GetProperties(Declared)
+            .Select(p => p.Name)
+            .ToArray();
+
+        Assert.Equal(
+            new[] { "Get", "GetForProfile", "Keys", "Remove", "RemoveForProfile", "Set", "SetForProfile" },
+            methods);
+        Assert.Equal(new[] { "ActiveProfile" }, properties);
+    }
+
+    [Fact]
+    public void MenuApi_ExposesRegisterUpdateAndRemove()
+    {
+        string[] methods = typeof(Menu.IMenuApi).GetMethods(Declared)
+            .Select(m => m.Name)
+            .OrderBy(n => n, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(new[] { "RegisterMenuItem", "RemoveMenuItem", "UpdateMenuItem" }, methods);
+    }
+
+    // The mutation members let a plugin rebuild a window in place instead of closing and reopening
+    // it; each one needs a host command and an ABI entry.
+    [Fact]
+    public void WindowInterface_DeclaresTheMutationMembers()
+    {
+        string[] names = typeof(Window.IWindowInterface).GetMethods(Declared)
+            .Select(m => m.Name)
+            .ToArray();
+
+        Assert.Contains("SetElementVisible", names);
+        Assert.Contains("SetElementEnabled", names);
+        Assert.Contains("SetElementStyle", names);
+        Assert.Contains("ReplaceChildren", names);
+        Assert.Contains("AppendChild", names);
+        Assert.Contains("RemoveChild", names);
+        Assert.Contains("SetSelectedIndex", names);
+        Assert.Contains("SetChecked", names);
+    }
+
+    [Fact]
+    public void WindowInterface_MutationMembersTakeAHandleAndReturnBool()
+    {
+        string[] mutations =
+        {
+            "SetElementVisible",
+            "SetElementEnabled",
+            "SetElementStyle",
+            "ReplaceChildren",
+            "AppendChild",
+            "RemoveChild",
+            "SetSelectedIndex",
+            "SetChecked",
+        };
+
+        foreach (string name in mutations)
+        {
+            MethodInfo method = typeof(Window.IWindowInterface).GetMethod(name)!;
+
+            Assert.Equal(typeof(bool), method.ReturnType);
+            Assert.Equal(typeof(Window.WindowHandle), method.GetParameters()[0].ParameterType);
+            Assert.Equal(typeof(string), method.GetParameters()[1].ParameterType);
+        }
+    }
+
+    [Fact]
+    public void BasePlugin_DeclaresTheProfileTimerAndMenuHandlers()
+    {
+        Assert.Equal(
+            typeof(Settings.ActiveProfileChangedEvent),
+            typeof(BasePlugin).GetMethod(nameof(BasePlugin.OnActiveProfileChanged))!.GetParameters()[0].ParameterType);
+        Assert.Equal(
+            typeof(Timer.TimerEvent),
+            typeof(BasePlugin).GetMethod(nameof(BasePlugin.OnTimer))!.GetParameters()[0].ParameterType);
+        Assert.Equal(
+            typeof(Menu.MenuItemClickedEvent),
+            typeof(BasePlugin).GetMethod(nameof(BasePlugin.OnMenuItemClicked))!.GetParameters()[0].ParameterType);
     }
 
     // The retained-mode IPluginGraphics is the only drawing path; the legacy queue-based Draw*
