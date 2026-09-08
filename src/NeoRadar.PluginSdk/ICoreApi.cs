@@ -30,4 +30,16 @@ public interface ICoreApi
     Rendering.IRenderingApi Rendering { get; }
 
     Window.IWindowApi Window { get; }
+
+    /// <summary>Play a sound file the plugin ships with itself.</summary>
+    Sound.ISoundApi Sound { get; }
+
+    /// <summary>Read and set the client's selected aircraft.</summary>
+    Focus.IFocusApi Focus { get; }
+
+    /// <summary>Read-only runway, navaid and airport lookups.</summary>
+    Navdata.INavdataApi Navdata { get; }
+
+    /// <summary>Show a transient toast in the client.</summary>
+    Feedback.IFeedbackApi Feedback { get; }
 }

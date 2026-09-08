@@ -42,6 +42,8 @@ public abstract class BasePlugin
     public virtual void OnAircraftHandoffCancelled(ControllerData.AircraftHandoffCancelledEvent evt) { }
     public virtual void OnAircraftOwnedByChanged(ControllerData.AircraftOwnedByChangedEvent evt) { }
     public virtual void OnAircraftHandoffRejected(ControllerData.AircraftHandoffRejectedEvent evt) { }
+    /// <summary>Fires for a handoff the user starts and for one offered to the user.</summary>
+    public virtual void OnAircraftHandoffInitiated(ControllerData.AircraftHandoffInitiatedEvent evt) { }
     public virtual void OnAircraftTerminatedTracking(ControllerData.AircraftTerminatedTrackingEvent evt) { }
     public virtual void OnAircraftInitiatedTracking(ControllerData.AircraftInitiatedTrackingEvent evt) { }
     public virtual void OnAircraftTemporaryAltitudeChanged(ControllerData.AircraftTemporaryAltitudeChangedEvent evt) { }
@@ -66,6 +68,18 @@ public abstract class BasePlugin
     // Chat / text-message events
     public virtual void OnFlightplanMessageReceived(Chat.FlightplanMessageReceivedEvent evt) { }
     public virtual void OnATISInfoMessageReceived(Chat.ATISInfoMessageReceivedEvent evt) { }
+    /// <summary>A direct message to or from the user; <c>FromMe</c> marks the outbound copy.</summary>
+    public virtual void OnPrivateMessageReceived(Chat.PrivateMessageReceivedEvent evt) { }
+    /// <summary>A message on a frequency the user monitors; <c>FromMe</c> marks the outbound copy.</summary>
+    public virtual void OnFrequencyMessageReceived(Chat.FrequencyMessageReceivedEvent evt) { }
+    /// <summary>A network-wide broadcast; <c>FromMe</c> marks the outbound copy.</summary>
+    public virtual void OnBroadcastMessageReceived(Chat.BroadcastMessageReceivedEvent evt) { }
+    /// <summary>A supervisor or wallop message; <c>FromMe</c> marks the outbound copy.</summary>
+    public virtual void OnSupervisorMessageReceived(Chat.SupervisorMessageReceivedEvent evt) { }
+    /// <summary>A message from the FSD server itself.</summary>
+    public virtual void OnServerMessageReceived(Chat.ServerMessageReceivedEvent evt) { }
+    /// <summary>A message on the controller-only channel.</summary>
+    public virtual void OnAtcMessageReceived(Chat.AtcMessageReceivedEvent evt) { }
 
     // Squawk events
     public virtual void OnSquawkAssigned(Squawk.SquawkAssignedEvent evt) { }
@@ -83,4 +97,8 @@ public abstract class BasePlugin
 
     // Window events
     public virtual void OnWindowEvent(Window.WindowEvent evt) { }
+
+    // Focus events
+    /// <summary>Fires when the client's selected aircraft changes, including when it is cleared.</summary>
+    public virtual void OnSelectedAircraftChanged(Focus.SelectedAircraftChangedEvent evt) { }
 }

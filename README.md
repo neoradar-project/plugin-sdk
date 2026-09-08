@@ -17,7 +17,7 @@ takes part in it. While the major is 0 a breaking change bumps the minor.
 From the GitHub Packages feed (needs a PAT with `read:packages`):
 
 ```xml
-<PackageReference Include="NeoRadar.PluginSdk" Version="0.3.0" ExcludeAssets="runtime" />
+<PackageReference Include="NeoRadar.PluginSdk" Version="0.4.0" ExcludeAssets="runtime" />
 ```
 
 ```xml

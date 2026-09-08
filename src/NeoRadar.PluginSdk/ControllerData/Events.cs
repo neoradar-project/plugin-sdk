@@ -10,6 +10,12 @@ public sealed record AircraftOwnedByChangedEvent(string Callsign, string OldOwne
 
 public sealed record AircraftHandoffRejectedEvent(string Callsign, string From);
 
+/// <summary>
+/// A handoff was offered. Fires both for a handoff the user starts, where <c>FromController</c>
+/// is the user, and for one offered to the user, where <c>ToController</c> is the user.
+/// </summary>
+public sealed record AircraftHandoffInitiatedEvent(string Callsign, string FromController, string ToController);
+
 public sealed record AircraftTerminatedTrackingEvent(string Callsign);
 
 public sealed record AircraftInitiatedTrackingEvent(string Callsign);

@@ -22,5 +22,10 @@ public interface IChatApi
 
     bool UnregisterCommand(string commandId);
 
-    void SendClientMessage(ClientTextMessageEvent message);
+    /// <summary>
+    /// Post a message into the client's chat. Returns false when the call was throttled, so a
+    /// plugin can retry or queue it: sending is rate limited to roughly one call per second per
+    /// plugin. The message is local to this client and is never sent to the network.
+    /// </summary>
+    bool SendClientMessage(ClientTextMessageEvent message);
 }

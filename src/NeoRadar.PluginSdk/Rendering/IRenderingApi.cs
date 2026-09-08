@@ -43,40 +43,6 @@ public interface IRenderingInterface
     /// pair, with an optional zoom override. Convenience over the mercator form.
     /// </summary>
     bool CenterOnLatLon(ScreenHandle handle, double lat, double lon, double? zoom = null) => false;
-
-    // ── Legacy (queue-based) drawing API ──
-    // Returns Invalid handles by default; kept for source-compatibility with plugins authored
-    // against the older IRenderingInterface shape. New plugins use the screen-based API above.
-
-    /// <summary>Legacy: queue-based draw. Use <see cref="RegisterScreen"/> instead.</summary>
-    ObjectHandle DrawLine(DrawLineParams parameters) => ObjectHandle.Invalid;
-
-    /// <summary>Legacy: queue-based draw. Use <see cref="RegisterScreen"/> instead.</summary>
-    ObjectHandle DrawFill(DrawFillParams parameters) => ObjectHandle.Invalid;
-
-    /// <summary>Legacy: queue-based draw. Use <see cref="RegisterScreen"/> instead.</summary>
-    ObjectHandle DrawText(DrawTextParams parameters) => ObjectHandle.Invalid;
-
-    /// <summary>Legacy: queue-based draw. Use <see cref="RegisterScreen"/> instead.</summary>
-    ObjectHandle DrawPoints(DrawPointParams parameters) => ObjectHandle.Invalid;
-
-    /// <summary>Legacy: queue-based mutator.</summary>
-    bool SetVisible(ObjectHandle handle, bool visible) => false;
-
-    /// <summary>Legacy: queue-based mutator.</summary>
-    bool SetColor(ObjectHandle handle, Color color) => false;
-
-    /// <summary>Legacy: queue-based mutator.</summary>
-    bool Remove(ObjectHandle handle) => false;
-
-    /// <summary>Legacy: queue-based mutator.</summary>
-    void RemoveAll() { }
-
-    ViewportInfo GetViewport();
-
-    Point2D WorldToScreen(double worldX, double worldY);
-
-    Point2D ScreenToWorld(double screenX, double screenY);
 }
 
 public interface IRenderingApi
