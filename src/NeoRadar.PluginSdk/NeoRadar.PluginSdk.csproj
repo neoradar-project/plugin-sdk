@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>NeoRadar</RootNamespace>
+    <!-- NeoRadar.exe is AOT and links this assembly; plugins bind to the JIT copy the host ships. -->
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsPackable>true</IsPackable>
+    <PackageId>NeoRadar.PluginSdk</PackageId>
+    <!-- Equals PluginSdkVersion.Current; PluginSdkVersionTests pins it. The host refuses a plugin
+         compiled against any other major.minor. -->
+    <Version>0.2.0</Version>
+    <Authors>NeoRadar</Authors>
+    <Description>Public SDK for NeoRadar plugins: the BasePlugin entry point, ICoreApi and the event and model types.</Description>
+    <RepositoryUrl>https://github.com/neoradar-project/plugin-sdk</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

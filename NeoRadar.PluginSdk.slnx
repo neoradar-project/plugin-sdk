@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NeoRadar.PluginSdk/NeoRadar.PluginSdk.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NeoRadar.PluginSdk.Tests/NeoRadar.PluginSdk.Tests.csproj" />
+  </Folder>
+</Solution>

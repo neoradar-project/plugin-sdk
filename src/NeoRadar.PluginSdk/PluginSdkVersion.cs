@@ -1,3 +1,5 @@
+using System;
+
 namespace NeoRadar.PluginSdk;
 
 public static class PluginSdkVersion
@@ -24,6 +26,17 @@ public static class PluginSdkVersion
     /// True when a plugin declaring <paramref name="pluginSdkMajor"/> can bind against this SDK.
     /// </summary>
     public static bool IsMajorCompatible(int pluginSdkMajor) => pluginSdkMajor == Major;
+
+    /// <summary>
+    /// True when a plugin compiled against <paramref name="major"/>.<paramref name="minor"/> can bind
+    /// against this SDK. Exact major and minor: the host refuses a plugin built against any other release.
+    /// </summary>
+    public static bool IsCompatible(int major, int minor) => major == Major && minor == Minor;
+
+    /// <summary>Message for a plugin refused because it was compiled against another SDK release.</summary>
+    public static string DescribeMismatch(string pluginName, Version compiledAgainst) =>
+        $"Plugin '{pluginName}' was compiled against NeoRadar.PluginSdk {compiledAgainst.Major}.{compiledAgainst.Minor} "
+        + $"but this host ships {Current}. Rebuild the plugin against SDK {Current}.";
 
     /// <summary>
     /// Message for a refused plugin, naming both majors and the fix.
