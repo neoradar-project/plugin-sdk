@@ -48,4 +48,7 @@ public interface ICoreApi
 
     /// <summary>Named entries the plugin adds to the client's plugin list.</summary>
     Menu.IMenuApi Menu { get; }
+
+    /// <summary>The client's colours, so plugin-drawn surfaces can match the theme.</summary>
+    Theme.IThemeApi Theme { get; }
 }

@@ -17,6 +17,17 @@ public sealed class PluginSdkVersionTests
         Assert.Equal(PluginSdkVersion.Patch, assembly.Build);
     }
 
+    // The released contract version. Changing it is a deliberate edit that moves the csproj
+    // Version, both consumers' submodule pins and the v<version> tag in the same round.
+    [Fact]
+    public void Current_IsTheReleasedVersion()
+    {
+        Assert.Equal(0, PluginSdkVersion.Major);
+        Assert.Equal(5, PluginSdkVersion.Minor);
+        Assert.Equal(0, PluginSdkVersion.Patch);
+        Assert.Equal("0.5.0", PluginSdkVersion.Current);
+    }
+
     [Fact]
     public void Current_MatchesTheConstants()
         => Assert.Equal(

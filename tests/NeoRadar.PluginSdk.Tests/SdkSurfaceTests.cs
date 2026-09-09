@@ -76,11 +76,12 @@ public sealed class SdkSurfaceTests
             "Feedback",
             "Settings",
             "Menu",
+            "Theme",
         };
 
         string[] actual = typeof(ICoreApi).GetProperties(Declared).Select(p => p.Name).ToArray();
 
-        Assert.Equal(19, expected.Length);
+        Assert.Equal(20, expected.Length);
         Assert.Equal(
             expected.OrderBy(n => n, StringComparer.Ordinal),
             actual.OrderBy(n => n, StringComparer.Ordinal));
@@ -115,6 +116,18 @@ public sealed class SdkSurfaceTests
         Assert.Equal(new[] { "RegisterMenuItem", "RemoveMenuItem", "UpdateMenuItem" }, methods);
     }
 
+    // The palette is pulled at call time, never pushed, so a plugin cannot hold a stale copy
+    // across a theme change.
+    [Fact]
+    public void ThemeApi_ExposesGetPaletteOnly()
+    {
+        MethodInfo[] methods = typeof(Theme.IThemeApi).GetMethods(Declared);
+
+        Assert.Equal(new[] { "GetPalette" }, methods.Select(m => m.Name).ToArray());
+        Assert.Equal(typeof(Theme.ThemePalette), methods[0].ReturnType);
+        Assert.Empty(methods[0].GetParameters());
+    }
+
     // The mutation members let a plugin rebuild a window in place instead of closing and reopening
     // it; each one needs a host command and an ABI entry.
     [Fact]
@@ -132,6 +145,9 @@ public sealed class SdkSurfaceTests
         Assert.Contains("RemoveChild", names);
         Assert.Contains("SetSelectedIndex", names);
         Assert.Contains("SetChecked", names);
+        Assert.Contains("SetOptions", names);
+        Assert.Contains("SetTableRows", names);
+        Assert.Contains("SetTableSelection", names);
     }
 
     [Fact]
@@ -147,6 +163,9 @@ public sealed class SdkSurfaceTests
             "RemoveChild",
             "SetSelectedIndex",
             "SetChecked",
+            "SetOptions",
+            "SetTableRows",
+            "SetTableSelection",
         };
 
         foreach (string name in mutations)

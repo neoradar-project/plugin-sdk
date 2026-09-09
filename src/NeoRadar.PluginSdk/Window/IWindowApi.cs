@@ -62,6 +62,24 @@ public interface IWindowInterface
     /// </summary>
     bool SetChecked(WindowHandle window, string elementId, bool @checked);
 
+    /// <summary>
+    /// Replace a Select or Radio element's options in place; the control is not rebuilt and no
+    /// <c>change</c> is raised. Returns false for an unknown window or element, or the wrong type.
+    /// </summary>
+    bool SetOptions(WindowHandle window, string elementId, IReadOnlyList<string> options, int selectedIndex);
+
+    /// <summary>
+    /// Replace a Table's rows in place, keeping the scroll position where the rows allow; no
+    /// <c>select</c> is raised. Returns false for an unknown window or element, or the wrong type.
+    /// </summary>
+    bool SetTableRows(WindowHandle window, string elementId, IReadOnlyList<TableRow> rows, int selectedIndex);
+
+    /// <summary>
+    /// Move a Table's selection; -1 clears it and no <c>select</c> is raised. Returns false for an
+    /// unknown window or element, or the wrong type.
+    /// </summary>
+    bool SetTableSelection(WindowHandle window, string elementId, int index);
+
     bool CloseWindow(WindowHandle window);
 }
 
