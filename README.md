@@ -64,14 +64,21 @@ Every interaction arrives at `OnWindowEvent` as a `WindowEvent`. The vocabulary 
 | `select` | a table, when the user changes the selection | the selected row id, empty when cleared |
 | `activate` | a table row double-clicked, or Enter pressed on it | the row id |
 | `sort` | a table header cell clicked | the column id |
+| `toggle` | a table `Check` cell clicked | `rowId\|columnId\|true` or `rowId\|columnId\|false`, the new state |
+| `cell` | a table `Button` cell clicked | `rowId\|columnId` |
 | `close` | the window closed; `ElementId` is empty | empty |
+
+`toggle` and `cell` pack their ids with `|`, so `|` is reserved in row and column ids. Neither also
+raises `select`: clicking a `Check` or `Button` cell leaves the row selection alone.
 
 `Clickable` turns a `Panel`, `Group`, `Grid`, `Label`, `Paragraph`, `Badge` or `Image` into a click
 target; buttons raise `click` whether or not it is set.
 
 `ElementType.Table` renders the `WindowElement.Table` definition: `TableColumn` per column with a
 Grid-style width (`120`, `auto`, `*`, `2*`), `TableRow` per row with cells aligned to the columns by
-index and an optional row `ElementStyle`. The table scrolls and virtualises inside its own bounds,
+index and an optional row `ElementStyle`. `TableColumn.Kind` decides what the column's cells render
+as: `Text` shows the cell text as is, `Check` a check box whose cell text is `true` or `false`, and
+`Button` a button whose cell text is its caption. The table scrolls and virtualises inside its own bounds,
 so bound it with `Style.Height` or `Style.MaxHeight`. The host never sorts: a `sort` event is a
 request, and the plugin re-sends the rows in the order it wants. `SetTableRows`, `SetTableSelection`
 and `SetOptions` replace rows, selection and Select or Radio choices in place without rebuilding the

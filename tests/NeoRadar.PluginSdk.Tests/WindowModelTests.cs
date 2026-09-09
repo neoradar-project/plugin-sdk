@@ -82,6 +82,24 @@ public sealed class WindowModelTests
         Assert.Equal("Callsign", column.Title);
         Assert.Equal("*", column.Width);
         Assert.Equal(HAlign.Left, column.Align);
+        Assert.Equal(TableColumnKind.Text, column.Kind);
+    }
+
+    [Fact]
+    public void TableColumn_TakesTheKindAsItsTrailingParameter()
+    {
+        TableColumn column = new("assumed", "Assumed", "40", HAlign.Center, TableColumnKind.Check);
+
+        Assert.Equal(TableColumnKind.Check, column.Kind);
+        Assert.Equal(HAlign.Center, column.Align);
+    }
+
+    [Fact]
+    public void TableColumnKind_PinsItsWireValues()
+    {
+        Assert.Equal(0, (int)TableColumnKind.Text);
+        Assert.Equal(1, (int)TableColumnKind.Check);
+        Assert.Equal(2, (int)TableColumnKind.Button);
     }
 
     [Fact]

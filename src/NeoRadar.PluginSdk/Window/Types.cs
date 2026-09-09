@@ -136,19 +136,42 @@ public sealed record ElementStyle
     public ElementRole Role { get; init; } = ElementRole.Default;
 }
 
+/// <summary>What a column's cells render as.</summary>
+public enum TableColumnKind : byte
+{
+    /// <summary>The cell text, shown as is.</summary>
+    Text = 0,
+
+    /// <summary>A check box; the cell text is <c>true</c> or <c>false</c>.</summary>
+    Check = 1,
+
+    /// <summary>A button; the cell text is its caption.</summary>
+    Button = 2,
+}
+
 /// <summary>One column of an <see cref="ElementType.Table"/>.</summary>
-/// <param name="Id">Stable identifier; a header click reports it as the <c>sort</c> value.</param>
+/// <param name="Id">Stable identifier; a header click reports it as the <c>sort</c> value, and a
+/// <c>toggle</c> or <c>cell</c> event names it. Ids must not contain <c>|</c>.</param>
 /// <param name="Title">Header text.</param>
 /// <param name="Width">Pixels ("120"), "auto", or star ("*", "2*"), the same grammar as Grid
 /// tracks.</param>
 /// <param name="Align">Horizontal alignment of the header and the column's cells.</param>
-public sealed record TableColumn(string Id, string Title, string Width = "*", HAlign Align = HAlign.Left);
+/// <param name="Kind">What the column's cells render as; <see cref="TableColumnKind.Text"/> by
+/// default.</param>
+public sealed record TableColumn(
+    string Id,
+    string Title,
+    string Width = "*",
+    HAlign Align = HAlign.Left,
+    TableColumnKind Kind = TableColumnKind.Text);
 
 /// <summary>One row of an <see cref="ElementType.Table"/>.</summary>
-/// <param name="Id">Stable identifier reported as the <c>select</c> and <c>activate</c>
-/// value.</param>
-/// <param name="Cells">Cell text, aligned with the columns by index; a missing cell renders
-/// empty.</param>
+/// <param name="Id">Stable identifier reported as the <c>select</c> and <c>activate</c> value, and
+/// named by a <c>toggle</c> or <c>cell</c> event. Ids must not contain <c>|</c>.</param>
+/// <param name="Cells">Cell text, aligned with the columns by index; a missing cell renders empty.
+/// A <see cref="TableColumnKind.Check"/> cell's text is <c>true</c> or <c>false</c>, a
+/// <see cref="TableColumnKind.Button"/> cell's text is its caption, and a
+/// <see cref="TableColumnKind.Text"/> cell is shown as is.</param>
 /// <param name="Style">Background and foreground for the whole row; the host keeps its own
 /// selection highlight on top.</param>
 public sealed record TableRow(string Id, IReadOnlyList<string> Cells, ElementStyle? Style = null);
@@ -252,11 +275,13 @@ public sealed record WindowDefinition(
 /// <param name="Window">Handle of the window the event came from.</param>
 /// <param name="ElementId">Id of the element that raised it; empty for <c>close</c>.</param>
 /// <param name="EventType">One of <c>click</c> (buttons and clickable elements), <c>change</c>
-/// (inputs, selects, checkboxes, toggles, radios, sliders), <c>select</c>, <c>activate</c> and
-/// <c>sort</c> (tables), or <c>close</c> (the window closed).</param>
+/// (inputs, selects, checkboxes, toggles, radios, sliders), <c>select</c>, <c>activate</c>,
+/// <c>sort</c>, <c>toggle</c> and <c>cell</c> (tables), or <c>close</c> (the window closed).</param>
 /// <param name="Value">The button name or mouse button for <c>click</c>, the new content for
 /// <c>change</c>, the row id for <c>select</c> and <c>activate</c>, the column id for <c>sort</c>,
-/// empty for <c>close</c>.</param>
+/// <c>rowId|columnId|true</c> or <c>rowId|columnId|false</c> for <c>toggle</c>,
+/// <c>rowId|columnId</c> for <c>cell</c>, empty for <c>close</c>. <c>|</c> is therefore reserved in
+/// row and column ids.</param>
 public sealed record WindowEvent(
     WindowHandle Window,
     string ElementId,
