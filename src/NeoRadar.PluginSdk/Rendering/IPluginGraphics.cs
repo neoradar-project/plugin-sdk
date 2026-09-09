@@ -25,8 +25,12 @@ public interface IPluginGraphics
     /// <summary>Add a single world-space point with a fixed-screen-size symbol.</summary>
     GraphicsObjectRef AddWorldPoint(Vector2 worldPos, PointSymbol symbol, RgbaColor color);
 
-    /// <summary>Add a world-space text label.</summary>
-    GraphicsObjectRef AddWorldText(Vector2 worldPos, string text, RgbaColor color, float fontSize = 12f);
+    /// <summary>
+    /// Add a world-space text label. <paramref name="align"/> places <paramref name="worldPos"/>
+    /// at the text's left edge, horizontal centre or right edge; a later
+    /// <see cref="SetText"/> keeps the alignment.
+    /// </summary>
+    GraphicsObjectRef AddWorldText(Vector2 worldPos, string text, RgbaColor color, float fontSize = 12f, TextAlign align = TextAlign.Left);
 
     // ── Add (screen-space; available everywhere) ──
 
@@ -42,8 +46,22 @@ public interface IPluginGraphics
     /// <summary>Add a screen-space point with a symbol.</summary>
     GraphicsObjectRef AddScreenPoint(Vector2 screenPos, PointSymbol symbol, RgbaColor color);
 
-    /// <summary>Add a screen-space text label.</summary>
-    GraphicsObjectRef AddScreenText(Vector2 anchor, string text, RgbaColor color, float fontSize = 12f);
+    /// <summary>
+    /// Add a screen-space text label. <paramref name="anchor"/> is the text's left edge,
+    /// horizontal centre or right edge at its baseline, per <paramref name="align"/>;
+    /// a later <see cref="SetText"/> keeps the alignment.
+    /// </summary>
+    GraphicsObjectRef AddScreenText(Vector2 anchor, string text, RgbaColor color, float fontSize = 12f, TextAlign align = TextAlign.Left);
+
+    // ── Measure ──
+
+    /// <summary>
+    /// The width and height <paramref name="text"/> occupies at <paramref name="fontSize"/>,
+    /// for layouts that must size themselves (button widths, column fitting). Synchronous and
+    /// cheap enough for a rebuild, not for every frame; cache the result alongside the text.
+    /// Returns <see cref="Vector2.Zero"/> when the host has no font atlas bound yet.
+    /// </summary>
+    Vector2 MeasureScreenText(string text, float fontSize);
 
     // ── Mutate (cheap; no rebuild) ──
 

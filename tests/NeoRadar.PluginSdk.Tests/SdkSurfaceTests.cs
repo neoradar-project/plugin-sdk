@@ -192,6 +192,57 @@ public sealed class SdkSurfaceTests
             typeof(BasePlugin).GetMethod(nameof(BasePlugin.OnMenuItemClicked))!.GetParameters()[0].ParameterType);
     }
 
+    // The values cross the function-pointer ABI as a single byte, so they are a wire contract
+    // with the client, not just a managed enum.
+    [Fact]
+    public void TextAlign_ValuesArePinnedToTheWireBytes()
+    {
+        Assert.Equal(typeof(byte), Enum.GetUnderlyingType(typeof(Rendering.TextAlign)));
+        Assert.Equal(0, (byte)Rendering.TextAlign.Left);
+        Assert.Equal(1, (byte)Rendering.TextAlign.Center);
+        Assert.Equal(2, (byte)Rendering.TextAlign.Right);
+        Assert.Equal(
+            new[] { "Left", "Center", "Right" },
+            Enum.GetNames<Rendering.TextAlign>());
+    }
+
+    // Both text calls gained align as a trailing optional parameter, so plugins compiled against
+    // the previous signature still bind.
+    [Theory]
+    [InlineData(nameof(Rendering.IPluginGraphics.AddScreenText))]
+    [InlineData(nameof(Rendering.IPluginGraphics.AddWorldText))]
+    public void TextAdders_TakeAnOptionalTrailingAlign(string methodName)
+    {
+        MethodInfo method = typeof(Rendering.IPluginGraphics).GetMethod(methodName)!;
+        ParameterInfo[] parameters = method.GetParameters();
+        ParameterInfo align = parameters[^1];
+        ParameterInfo fontSize = parameters[^2];
+
+        Assert.Equal("align", align.Name);
+        Assert.Equal(typeof(Rendering.TextAlign), align.ParameterType);
+        Assert.True(align.HasDefaultValue);
+        Assert.Equal(Rendering.TextAlign.Left, (Rendering.TextAlign)align.DefaultValue!);
+
+        Assert.Equal("fontSize", fontSize.Name);
+        Assert.True(fontSize.HasDefaultValue);
+        Assert.Equal(12f, (float)fontSize.DefaultValue!);
+    }
+
+    // Plugins centred text by guessing an em width before this existed; the host measures the
+    // real glyphs instead.
+    [Fact]
+    public void PluginGraphics_MeasuresScreenTextSynchronously()
+    {
+        MethodInfo method = typeof(Rendering.IPluginGraphics)
+            .GetMethod(nameof(Rendering.IPluginGraphics.MeasureScreenText))!;
+
+        Assert.Equal(typeof(System.Numerics.Vector2), method.ReturnType);
+        Assert.Equal(
+            new[] { typeof(string), typeof(float) },
+            method.GetParameters().Select(p => p.ParameterType).ToArray());
+        Assert.Equal(new[] { "text", "fontSize" }, method.GetParameters().Select(p => p.Name).ToArray());
+    }
+
     // The retained-mode IPluginGraphics is the only drawing path; the legacy queue-based Draw*
     // members silently did nothing and are gone.
     [Fact]

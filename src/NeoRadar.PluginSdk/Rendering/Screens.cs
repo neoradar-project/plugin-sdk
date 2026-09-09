@@ -106,6 +106,22 @@ public readonly record struct Transform2D(
         => new(position, rotationDegrees, Vector2.One, Vector2.Zero);
 }
 
+/// <summary>
+/// How a text object sits against its anchor: the anchor is the text's left edge,
+/// horizontal centre or right edge, at its baseline.
+/// </summary>
+public enum TextAlign : byte
+{
+    /// <summary>The anchor is the left edge of the text.</summary>
+    Left = 0,
+
+    /// <summary>The anchor is the horizontal centre of the text.</summary>
+    Center = 1,
+
+    /// <summary>The anchor is the right edge of the text.</summary>
+    Right = 2,
+}
+
 /// <summary>Common point symbols for <see cref="IPluginGraphics.AddWorldPoint"/>.</summary>
 public enum PointSymbol
 {

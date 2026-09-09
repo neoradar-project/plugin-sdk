@@ -89,6 +89,24 @@ control and without raising an event.
 `Warning` and `Danger` colour text and give containers the theme's subtle background. An explicit
 `BackgroundColor` or `TextColor` still wins.
 
+## Rendering
+
+`ICoreApi.Rendering.GetInterface()` registers screens; `Graphics(handle)` returns the retained-mode
+`IPluginGraphics` for one of them. Objects are added once and mutated afterwards; there is no
+per-frame draw call.
+
+`AddScreenText` and `AddWorldText` take a `TextAlign`. The anchor is the text's left edge, its
+horizontal centre or its right edge, at the baseline, so a label centred under a symbol is
+`TextAlign.Center` at the symbol's x rather than a guess at half the string's width. The host
+measures the real glyphs, and the alignment survives a later `SetText`, so a caption that changes
+length stays put.
+
+`MeasureScreenText(text, fontSize)` returns the width and height that text will occupy, for layouts
+that have to size themselves: button widths, column fitting, a panel sized to its longest row. It is
+synchronous and cheap enough to call while rebuilding a scene, but not once per frame; cache the
+result next to the text it measured. It returns `Vector2.Zero` before the host has a font atlas
+bound, which is the same condition under which `Graphics(handle)` returns `null`.
+
 ## Theme
 
 `ICoreApi.Theme.GetPalette()` returns the active `ThemePalette`: the map background a plugin draws
