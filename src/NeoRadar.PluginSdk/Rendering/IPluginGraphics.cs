@@ -34,13 +34,22 @@ public interface IPluginGraphics
 
     // ── Add (screen-space; available everywhere) ──
 
-    /// <summary>Add a screen-space polyline. Coordinates in pixels relative to the control.</summary>
+    /// <summary>
+    /// Add a screen-space polyline. Coordinates in pixels relative to the control.
+    /// <paramref name="width"/> is measured from the line's centre to its edge, so 0.5 draws a
+    /// one-pixel hairline. Line vertices are not snapped, because rounding them individually
+    /// would deform the geometry; use <see cref="AddScreenStrokeRect"/> for a crisp box.
+    /// </summary>
     GraphicsObjectRef AddScreenLine(IReadOnlyList<Vector2> points, RgbaColor color, float width = 1.4f);
 
     /// <summary>Add a filled screen-space rectangle.</summary>
     GraphicsObjectRef AddScreenRect(Rect bounds, RgbaColor fillColor);
 
-    /// <summary>Add a stroked screen-space rectangle outline.</summary>
+    /// <summary>
+    /// Add a stroked screen-space rectangle outline. Unlike <see cref="AddScreenLine"/>,
+    /// <paramref name="width"/> is the outline's full width, and the host snaps the box to whole
+    /// device pixels, so 1 is one crisp pixel at any display scaling.
+    /// </summary>
     GraphicsObjectRef AddScreenStrokeRect(Rect bounds, RgbaColor color, float width = 1f);
 
     /// <summary>Add a screen-space point with a symbol.</summary>
@@ -52,6 +61,23 @@ public interface IPluginGraphics
     /// a later <see cref="SetText"/> keeps the alignment.
     /// </summary>
     GraphicsObjectRef AddScreenText(Vector2 anchor, string text, RgbaColor color, float fontSize = 12f, TextAlign align = TextAlign.Left);
+
+    /// <summary>
+    /// Add a screen-space text label laid out inside <paramref name="bounds"/>. The host measures
+    /// the glyphs and the font's line box and places the text per <paramref name="align"/> and
+    /// <paramref name="verticalAlign"/>, so a label centres in a cell without the plugin knowing
+    /// the font's metrics. Prefer this over <see cref="AddScreenText"/> wherever text belongs to a
+    /// box rather than to a point. A later <see cref="SetText"/> re-lays the new text out in the
+    /// same rectangle, <see cref="SetScreenAnchor"/> moves the rectangle by its top-left corner,
+    /// and <see cref="SetScreenSize"/> resizes it. Text is never clipped to the rectangle.
+    /// </summary>
+    GraphicsObjectRef AddScreenTextInRect(
+        Rect bounds,
+        string text,
+        RgbaColor color,
+        float fontSize = 12f,
+        TextAlign align = TextAlign.Center,
+        TextVerticalAlign verticalAlign = TextVerticalAlign.Middle);
 
     // ── Measure ──
 

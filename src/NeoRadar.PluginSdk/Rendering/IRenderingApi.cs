@@ -30,6 +30,22 @@ public interface IRenderingInterface
     /// </summary>
     IPluginGraphics? Graphics(ScreenHandle handle);
 
+    // ── Screen z-order ──
+
+    /// <summary>
+    /// Draws this screen above every other screen sharing its
+    /// <see cref="ScreenDefinition.ZOrder"/>, until another screen at that ZOrder is raised.
+    /// Use it when the controller interacts with one of several overlapping screens.
+    /// </summary>
+    /// <remarks>
+    /// This orders whole screens against each other, which <see cref="IPluginGraphics.BringToFront"/>
+    /// cannot do: that reorders objects within one screen and refuses a handle from another.
+    /// ZOrder still wins, so a screen cannot be raised above one declared at a higher ZOrder,
+    /// and screens with distinct ZOrders are unaffected by this call.
+    /// Main-radar scopes only; an inset screen is a real window and its own z-order.
+    /// </remarks>
+    bool BringScreenToFront(ScreenHandle handle) => false;
+
     // ── PluginInsetWorld camera control ──
 
     /// <summary>Recentre a <see cref="ScreenScope.PluginInsetWorld"/> camera on a mercator point.</summary>

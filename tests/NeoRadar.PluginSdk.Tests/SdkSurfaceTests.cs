@@ -228,6 +228,39 @@ public sealed class SdkSurfaceTests
         Assert.Equal(12f, (float)fontSize.DefaultValue!);
     }
 
+    [Fact]
+    public void TextVerticalAlign_IsAByteEnumInDeclaredOrder()
+    {
+        Assert.Equal(typeof(byte), Enum.GetUnderlyingType(typeof(Rendering.TextVerticalAlign)));
+        Assert.Equal(0, (byte)Rendering.TextVerticalAlign.Top);
+        Assert.Equal(1, (byte)Rendering.TextVerticalAlign.Middle);
+        Assert.Equal(2, (byte)Rendering.TextVerticalAlign.Bottom);
+        Assert.Equal(
+            new[] { "Top", "Middle", "Bottom" },
+            Enum.GetNames<Rendering.TextVerticalAlign>());
+    }
+
+    // A cell label is centred by the host from real font metrics; a plugin approximating the
+    // baseline from a line height put text a pixel or two off centre in every cell.
+    [Fact]
+    public void PluginGraphics_LaysTextOutInARectangleCentredByDefault()
+    {
+        MethodInfo method = typeof(Rendering.IPluginGraphics)
+            .GetMethod(nameof(Rendering.IPluginGraphics.AddScreenTextInRect))!;
+        ParameterInfo[] parameters = method.GetParameters();
+
+        Assert.Equal(typeof(Rendering.GraphicsObjectRef), method.ReturnType);
+        Assert.Equal(
+            new[] { "bounds", "text", "color", "fontSize", "align", "verticalAlign" },
+            parameters.Select(p => p.Name).ToArray());
+        Assert.Equal(typeof(Rendering.Rect), parameters[0].ParameterType);
+        Assert.Equal(12f, (float)parameters[3].DefaultValue!);
+        Assert.Equal(Rendering.TextAlign.Center, (Rendering.TextAlign)parameters[4].DefaultValue!);
+        Assert.Equal(
+            Rendering.TextVerticalAlign.Middle,
+            (Rendering.TextVerticalAlign)parameters[5].DefaultValue!);
+    }
+
     // Plugins centred text by guessing an em width before this existed; the host measures the
     // real glyphs instead.
     [Fact]
@@ -241,6 +274,44 @@ public sealed class SdkSurfaceTests
             new[] { typeof(string), typeof(float) },
             method.GetParameters().Select(p => p.ParameterType).ToArray());
         Assert.Equal(new[] { "text", "fontSize" }, method.GetParameters().Select(p => p.Name).ToArray());
+    }
+
+    // IPluginGraphics.BringToFront orders objects inside one screen and refuses a handle from
+    // another, so a plugin drawing two overlapping panels as two screens could not raise either
+    // above the other. This orders whole screens.
+    [Fact]
+    public void RenderingInterface_RaisesAWholeScreen()
+    {
+        MethodInfo method = typeof(Rendering.IRenderingInterface)
+            .GetMethod(nameof(Rendering.IRenderingInterface.BringScreenToFront))!;
+
+        Assert.Equal(typeof(bool), method.ReturnType);
+        Assert.Equal(new[] { typeof(Rendering.ScreenHandle) }, method.GetParameters().Select(p => p.ParameterType).ToArray());
+        Assert.Equal(new[] { "handle" }, method.GetParameters().Select(p => p.Name).ToArray());
+    }
+
+    // Default-implemented, so a host that predates it stays loadable and simply declines.
+    [Fact]
+    public void RenderingInterface_BringScreenToFront_DefaultsToDeclining()
+    {
+        Rendering.IRenderingInterface rendering = new ScreenOrderStub();
+
+        Assert.False(rendering.BringScreenToFront(new Rendering.ScreenHandle(1UL)));
+    }
+
+    private sealed class ScreenOrderStub : Rendering.IRenderingInterface
+    {
+        public Rendering.ScreenHandle RegisterScreen(
+            Rendering.ScreenDefinition definition, Rendering.IPluginScreenRenderer renderer)
+            => Rendering.ScreenHandle.Invalid;
+
+        public bool UnregisterScreen(Rendering.ScreenHandle handle) => false;
+
+        public bool SetScreenEnabled(Rendering.ScreenHandle handle, bool enabled) => false;
+
+        public bool IsScreenEnabled(Rendering.ScreenHandle handle) => false;
+
+        public Rendering.IPluginGraphics? Graphics(Rendering.ScreenHandle handle) => null;
     }
 
     // The retained-mode IPluginGraphics is the only drawing path; the legacy queue-based Draw*

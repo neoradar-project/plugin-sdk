@@ -16,11 +16,11 @@ public static partial class PluginSdkVersion
     /// Minor version. While <see cref="Major"/> is 0 the public surface may still break
     /// between minors; a break bumps this and nothing else.
     /// </summary>
-    public const int Minor = 5;
+    public const int Minor = 7;
 
     /// <summary>Patch: non-breaking fixes.</summary>
     public const int Patch = 0;
 
-    /// <summary>Full version string, e.g. "0.5.0". Reported to plugins and in host logs.</summary>
+    /// <summary>Full version string, e.g. "0.6.0". Reported to plugins and in host logs.</summary>
     public static string Current => $"{Major}.{Minor}.{Patch}";
 }

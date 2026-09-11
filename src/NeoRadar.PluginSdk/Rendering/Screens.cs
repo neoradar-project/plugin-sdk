@@ -122,6 +122,23 @@ public enum TextAlign : byte
     Right = 2,
 }
 
+/// <summary>
+/// How a text object sits vertically against the rectangle it is laid out in, for
+/// <see cref="IPluginGraphics.AddScreenTextInRect"/>. The host measures the font's line box,
+/// so <see cref="Middle"/> centres the glyphs rather than the baseline.
+/// </summary>
+public enum TextVerticalAlign : byte
+{
+    /// <summary>The text's line box sits against the top of the rectangle.</summary>
+    Top = 0,
+
+    /// <summary>The text's line box is centred in the rectangle.</summary>
+    Middle = 1,
+
+    /// <summary>The text's line box sits against the bottom of the rectangle.</summary>
+    Bottom = 2,
+}
+
 /// <summary>Common point symbols for <see cref="IPluginGraphics.AddWorldPoint"/>.</summary>
 public enum PointSymbol
 {
