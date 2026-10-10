@@ -8,6 +8,13 @@ public sealed record FrequencyMessageReceivedEvent(
     IReadOnlyList<int> Frequencies,
     bool FromMe);
 
+/// <summary>A flightplan message seen on the network.</summary>
+/// <param name="RequestType">What the message asks for.</param>
+/// <param name="Callsign">Callsign of the aircraft the request is about, not of the sender.</param>
+/// <param name="Request">
+/// The request's argument: the text that followed <c>SET</c>, as sent, for
+/// <see cref="Chat.RequestType.SetBeaconCode"/>; empty for every other request.
+/// </param>
 public sealed record FlightplanMessageReceivedEvent(
     RequestType RequestType,
     string Callsign,

@@ -16,7 +16,7 @@ public static partial class PluginSdkVersion
     /// Minor version. While <see cref="Major"/> is 0 the public surface may still break
     /// between minors; a break bumps this and nothing else.
     /// </summary>
-    public const int Minor = 7;
+    public const int Minor = 8;
 
     /// <summary>Patch: non-breaking fixes.</summary>
     public const int Patch = 0;

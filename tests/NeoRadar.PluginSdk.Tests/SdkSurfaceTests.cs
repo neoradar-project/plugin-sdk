@@ -326,4 +326,24 @@ public sealed class SdkSurfaceTests
 
         Assert.Empty(members);
     }
+
+    // The client hands these numbers across its plugin boundary, so a reorder or a new member
+    // changes what every plugin reads and has to move the SDK version.
+    [Fact]
+    public void RequestType_HasExactlyTheFlightplanRequestsAtTheirValues()
+    {
+        Dictionary<string, int> members = Enum.GetValues<Chat.RequestType>()
+            .ToDictionary(v => v.ToString(), v => (int)v);
+
+        Assert.Equal(
+            new Dictionary<string, int>
+            {
+                ["Unknown"] = 0,
+                ["RequestBeaconCode"] = 1,
+                ["SetBeaconCode"] = 2,
+                ["ReleaseFlightplan"] = 3,
+            },
+            members);
+        Assert.Equal(default, Chat.RequestType.Unknown);
+    }
 }

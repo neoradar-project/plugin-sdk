@@ -19,14 +19,23 @@ public sealed record CommandDefinition(
     IReadOnlyList<CommandParameter> Parameters,
     bool LastParameterHasSpaces = false);
 
+/// <summary>
+/// What a flightplan message, a controller client's text message to the network's <c>FP</c>
+/// recipient, asks for about one aircraft.
+/// </summary>
 public enum RequestType
 {
+    /// <summary>The client could not tell what the message asks for.</summary>
     Unknown = 0,
-    Clearance = 1,
-    Pushback = 2,
-    TaxiOut = 3,
-    TaxiIn = 4,
-    Startup = 5,
+
+    /// <summary>A controller asks for a beacon code to be allocated to the aircraft (<c>GET</c>).</summary>
+    RequestBeaconCode = 1,
+
+    /// <summary>A controller sets the aircraft's beacon code (<c>SET</c>); the code is the request.</summary>
+    SetBeaconCode = 2,
+
+    /// <summary>A controller releases the aircraft's flightplan (<c>release</c>).</summary>
+    ReleaseFlightplan = 3,
 }
 
 public sealed record ValidationResult(bool IsValid, string? Message = null);
