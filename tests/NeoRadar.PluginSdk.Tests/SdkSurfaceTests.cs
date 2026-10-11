@@ -77,11 +77,12 @@ public sealed class SdkSurfaceTests
             "Settings",
             "Menu",
             "Theme",
+            "Expressions",
         };
 
         string[] actual = typeof(ICoreApi).GetProperties(Declared).Select(p => p.Name).ToArray();
 
-        Assert.Equal(20, expected.Length);
+        Assert.Equal(21, expected.Length);
         Assert.Equal(
             expected.OrderBy(n => n, StringComparer.Ordinal),
             actual.OrderBy(n => n, StringComparer.Ordinal));
@@ -114,6 +115,29 @@ public sealed class SdkSurfaceTests
             .ToArray();
 
         Assert.Equal(new[] { "RegisterMenuItem", "RemoveMenuItem", "UpdateMenuItem" }, methods);
+    }
+
+    // One push per value type and scope: a plugin cannot push text at a boolean by picking a string.
+    [Fact]
+    public void ExpressionApi_ExposesDeclareAndATypedPushPerScope()
+    {
+        string[] signatures = typeof(Expressions.IExpressionApi).GetMethods(Declared)
+            .Select(m => $"{m.ReturnType.Name} {m.Name}({string.Join(", ", m.GetParameters().Select(p => p.ParameterType.Name))})")
+            .OrderBy(n => n, StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(
+            new[]
+            {
+                "Boolean Push(String, String, Boolean)",
+                "Boolean Push(String, String, Double)",
+                "Boolean Push(String, String, String)",
+                "Boolean PushSession(String, Boolean)",
+                "Boolean PushSession(String, Double)",
+                "Boolean PushSession(String, String)",
+                "String Declare(ExpressionDefinition)",
+            },
+            signatures);
     }
 
     // The palette is pulled at call time, never pushed, so a plugin cannot hold a stale copy

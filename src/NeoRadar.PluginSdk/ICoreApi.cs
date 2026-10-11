@@ -51,4 +51,7 @@ public interface ICoreApi
 
     /// <summary>The client's colours, so plugin-drawn surfaces can match the theme.</summary>
     Theme.IThemeApi Theme { get; }
+
+    /// <summary>Typed values the plugin exports for package conditions.</summary>
+    Expressions.IExpressionApi Expressions { get; }
 }

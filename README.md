@@ -47,6 +47,47 @@ Rules that bite:
 - Event handlers run on client threads and are watched; keep them short and catch your own
   exceptions.
 
+## Expressions
+
+`ICoreApi.Expressions` exports typed values for package conditions. A package author reads one by
+its id wherever a package reads a key: to colour a tag, pick a variant, filter a list or exclude an
+aircraft from the safety nets. Use it for state a package should test; a tag item is for text a
+controller reads.
+
+```csharp
+// Initialize: declare once and keep the id, plugin:{Manifest.Name}:EXP_On Stand.
+string onStand = coreApi.Expressions.Declare(
+    ExpressionDefinition.Boolean("On Stand", defaultValue: false, "The aircraft has a stand allocated"));
+
+// On the event that changed it, per aircraft, with the overload of the declared type.
+coreApi.Expressions.Push(onStand, evt.Callsign, true);
+```
+
+```json
+{ "description": "on stand", "applyWhen": ["==", "plugin:UK Radar Plugin:EXP_On Stand", "1"] }
+```
+
+| Type | Declared with | Pushed with | A condition reads |
+|---|---|---|---|
+| Boolean | `ExpressionDefinition.Boolean(name, bool, description)` | `Push(id, callsign, bool)` | `"1"` or `"0"` |
+| Number | `ExpressionDefinition.Number(name, double, description)` | `Push(id, callsign, double)` | the invariant form, such as `"12.5"` |
+| Text | `ExpressionDefinition.Text(name, string, description)` | `Push(id, callsign, string)` | the text as pushed |
+
+- An aircraft the plugin has pushed nothing for reads the declared default. A plugin that is not
+  loaded reads empty.
+- A push of another type than declared, of an id another plugin declared, or of NaN or an infinity
+  returns false and stores nothing.
+- Push on the change. A push of the value already held does nothing; one that changes it redraws
+  that aircraft at once. The client keeps its own copy and never calls the plugin to evaluate a
+  condition.
+- Declare in `Initialize`. The client checks a package against what the loaded plugins declared
+  when a plugin finishes loading.
+- `Manifest.Name` and the expression name form the id a package writes, so renaming either breaks
+  every package that names it.
+- `with { Scope = ExpressionScope.Session }` and `PushSession(id, value)` hold one value for the
+  whole client with no callsign. The client stores and lists it, but a condition evaluated for an
+  aircraft reads a session-scoped expression as empty, so nothing a package reads today can use it.
+
 ## Windows
 
 `ICoreApi.Window.GetInterface()` opens a window from a `WindowDefinition` and mutates it in place
