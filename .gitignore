@@ -6,3 +6,9 @@ out/
 .vscode/
 *.user
 *.suo
+
+.claude/*
+!.claude/skills/
+!.claude/rules/
+!.claude/hooks/
+!.claude/settings.json
