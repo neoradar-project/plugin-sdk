@@ -26,12 +26,6 @@ public interface IPluginScreenRenderer
 
     bool OnPointerWheel(PointerWheelEvent e) => false;
 
-    /// <summary>Fires when the cursor enters a hit-test-visible object.</summary>
-    void OnPointerEntered(PointerEvent e) { }
-
-    /// <summary>Fires when the cursor leaves a hit-test-visible object.</summary>
-    void OnPointerExited(PointerEvent e) { }
-
     /// <summary>PluginInset* scopes only. Return <c>true</c> to consume.</summary>
     bool OnKeyDown(KeyEvent e) => false;
     bool OnKeyUp(KeyEvent e) => false;

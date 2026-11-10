@@ -15,11 +15,3 @@ public sealed record ViewportInfo(
     double WidthPixels,
     double HeightPixels,
     double PixelsPerMeter);
-
-public sealed record RenderObjectEvent(
-    ObjectHandle Handle,
-    double WorldX,
-    double WorldY,
-    double ScreenX,
-    double ScreenY,
-    int Button);

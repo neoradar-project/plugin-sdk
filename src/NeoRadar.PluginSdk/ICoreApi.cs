@@ -3,6 +3,11 @@ namespace NeoRadar.PluginSdk;
 /// <summary>
 /// Modular Core API surface plugins receive in <see cref="BasePlugin.Initialize"/>.
 /// </summary>
+/// <remarks>
+/// No member of this API or of the interfaces it hands out throws into a plugin. A query returns null
+/// or an empty list for something that is not there; a registration returns its id, or an empty
+/// string with nothing left registered; a command returns <c>true</c> only when the host applied it.
+/// </remarks>
 public interface ICoreApi
 {
     Package.IPackageApi Package { get; }

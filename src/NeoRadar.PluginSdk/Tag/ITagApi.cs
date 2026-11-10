@@ -19,5 +19,6 @@ public interface ITagInterface
 
 public interface ITagApi
 {
-    ITagInterface? GetInterface();
+    /// <summary>The host's interface; never null, and the same instance on every call.</summary>
+    ITagInterface GetInterface();
 }

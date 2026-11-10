@@ -79,7 +79,6 @@ public sealed record Flightplan
     public Waypoint? AlternateWaypoint { get; init; }
     public Route Route { get; init; } = new();
     public int PlannedAltitude { get; init; }
-    public string RawPlannedAltitude { get; init; } = string.Empty;
     public int PlannedTas { get; init; }
     public string FlightTimeHours { get; init; } = string.Empty;
     public string FlightTimeMinutes { get; init; } = string.Empty;

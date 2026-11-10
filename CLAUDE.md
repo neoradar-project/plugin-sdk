@@ -34,20 +34,23 @@ a `v*` tag. Everything `public` here is a customer contract.
 ## Invariants
 
 - **`PluginSdkVersion` equals the csproj `Version`.** The client compares the SDK version a plugin
-  was compiled against (its assembly reference) with the copy it ships and refuses any other
-  major.minor. `PluginSdkVersionTests.AssemblyVersion_MatchesTheConstants` pins the two together;
-  bump both in the same commit, then tag `v<version>` so `pack.yml` publishes.
+  was compiled against (its assembly reference) with the copy it ships: it loads the plugin when
+  the major.minor match and its own patch is at least the plugin's.
+  `PluginSdkVersionTests.AssemblyVersion_MatchesTheConstants` pins the two together; bump both in
+  the same commit, then tag `v<version>` so `pack.yml` publishes.
 - **This assembly carries the constants, never the rule.** The compatibility decision is
   `SdkVersionGate` in `@client` (`src/NeoRadar.PluginRuntime/`), evaluated against the client's own
   copy. No predicates or refusal messages here: a plugin author cannot influence the check, and a
   policy change must not need an SDK release.
-- **`PluginSdkVersion.BuildId` is generated at build from the git commit** (`GeneratePluginSdkBuildId`
-  in the csproj, `-dirty` on uncommitted changes). Plugins pass it as `Manifest.SdkBuildId`; the client
-  refuses a plugin whose build id differs from the copy it ships, which closes the same-version,
-  different-surface gap the version numbers alone leave open.
-- **A breaking change to the public surface bumps `Minor` while `Major` is 0.** Renames, removed
-  members, changed signatures, changed event payloads. Additive changes need no bump but do need
-  the consumers' submodule pins moved before a plugin can use them.
+- **The version says what changed.** A change that breaks a plugin (a member removed, renamed or
+  retyped, a signature or payload changed) bumps `Minor` and sets `Patch` to 0. An addition (a new
+  event, API method, type or optional member) bumps `Patch`. A change to no public member (docs,
+  tests, internals) bumps nothing.
+- **The public-API baseline enforces that rule.** `tests/NeoRadar.PluginSdk.Tests/PublicApi/public-api.txt`
+  records the version and every public member; `PublicApiBaselineTests` fails when the surface
+  differs from it, when an addition ships without the next patch or a break without the next minor,
+  and when the version moves with no public change. After the bump, rerun with
+  `NEORADAR_UPDATE_SDK_API=1` to rewrite it; the run refuses to for an unchanged version.
 - **AOT compatible.** `NeoRadar.exe` is AOT and links this assembly (`IsAotCompatible`). No
   reflection-driven serialisation, no dynamic code.
 - **No hosting internals.** The AOT-to-JIT function-pointer ABI between NeoRadar and
@@ -60,8 +63,10 @@ a `v*` tag. Everything `public` here is a customer contract.
 
 ## Rollout of a change
 
-1. Change here, with tests. 2. Bump `PluginSdkVersion` and `<Version>` if the surface broke.
-3. Move the `@client` submodule pin, rebuild the client and its `PluginRuntime`, run its suites.
+1. Change here, with tests. 2. Bump `PluginSdkVersion` and `<Version>`: `Minor` for a break,
+`Patch` for an addition, nothing when no public member changed; rewrite the API baseline
+(`NEORADAR_UPDATE_SDK_API=1`). 3. Move the `@client` submodule pin, rebuild the client and its
+`PluginRuntime`, run its suites.
 4. Move the `uk-plugin-sharp` pin and rebuild. 5. Tag `v<version>`; the pack workflow publishes.
 
 ## Build and test

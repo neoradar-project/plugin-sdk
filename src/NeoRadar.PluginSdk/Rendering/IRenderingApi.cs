@@ -63,5 +63,6 @@ public interface IRenderingInterface
 
 public interface IRenderingApi
 {
-    IRenderingInterface? GetInterface();
+    /// <summary>The host's interface; never null, and the same instance on every call.</summary>
+    IRenderingInterface GetInterface();
 }

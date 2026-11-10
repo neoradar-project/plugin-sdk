@@ -23,9 +23,9 @@ public sealed class PluginSdkVersionTests
     public void Current_IsTheReleasedVersion()
     {
         Assert.Equal(0, PluginSdkVersion.Major);
-        Assert.Equal(8, PluginSdkVersion.Minor);
+        Assert.Equal(9, PluginSdkVersion.Minor);
         Assert.Equal(0, PluginSdkVersion.Patch);
-        Assert.Equal("0.8.0", PluginSdkVersion.Current);
+        Assert.Equal("0.9.0", PluginSdkVersion.Current);
     }
 
     [Fact]
@@ -33,11 +33,4 @@ public sealed class PluginSdkVersionTests
         => Assert.Equal(
             $"{PluginSdkVersion.Major}.{PluginSdkVersion.Minor}.{PluginSdkVersion.Patch}",
             PluginSdkVersion.Current);
-
-    [Fact]
-    public void BuildId_IsStampedFromTheCommit()
-    {
-        Assert.NotEqual("unknown", PluginSdkVersion.BuildId);
-        Assert.True(PluginSdkVersion.BuildId.Length >= 7, PluginSdkVersion.BuildId);
-    }
 }

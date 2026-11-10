@@ -18,8 +18,7 @@ public sealed class BasePluginDefaultsTests
             "minimal",
             "tests",
             PluginSdkVersion.Current,
-            PluginSdkVersion.Major,
-            SdkBuildId: PluginSdkVersion.BuildId);
+            PluginSdkVersion.Major);
 
         public override void Initialize(PluginManifest metadata, ICoreApi coreApi, ClientInformation clientInfo)
         {

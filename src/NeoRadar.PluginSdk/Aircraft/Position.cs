@@ -1,3 +1,5 @@
+using System;
+
 namespace NeoRadar.PluginSdk.Aircraft;
 
 public sealed record Position
@@ -28,5 +30,6 @@ public sealed record Position
     public bool Stopped { get; init; } = true;
     public TransponderMode TransponderMode { get; init; } = TransponderMode.Standby;
 
-    public string Timestamp { get; init; } = string.Empty;
+    /// <summary>When the position was reported, in UTC; the default value when the host has none.</summary>
+    public DateTimeOffset Timestamp { get; init; }
 }

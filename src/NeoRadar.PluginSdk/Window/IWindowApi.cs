@@ -85,5 +85,6 @@ public interface IWindowInterface
 
 public interface IWindowApi
 {
-    IWindowInterface? GetInterface();
+    /// <summary>The host's interface; never null, and the same instance on every call.</summary>
+    IWindowInterface GetInterface();
 }

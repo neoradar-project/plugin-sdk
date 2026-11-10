@@ -1,10 +1,10 @@
 namespace NeoRadar.PluginSdk;
 
 /// <summary>
-/// Version constants a plugin inlines into its <see cref="PluginManifest"/>. The client compares
-/// them with its own copy of this assembly; the comparison is client code, not part of the SDK.
+/// The SDK contract version. The client compares the version a plugin's SDK reference records with
+/// its own copy of this assembly; the comparison is client code, not part of the SDK.
 /// </summary>
-public static partial class PluginSdkVersion
+public static class PluginSdkVersion
 {
     /// <summary>
     /// Major version of the SDK contract. Plugins pass it as
@@ -13,12 +13,11 @@ public static partial class PluginSdkVersion
     public const int Major = 0;
 
     /// <summary>
-    /// Minor version. While <see cref="Major"/> is 0 the public surface may still break
-    /// between minors; a break bumps this and nothing else.
+    /// Minor version: a change that breaks a plugin bumps it and sets <see cref="Patch"/> to 0.
     /// </summary>
-    public const int Minor = 8;
+    public const int Minor = 9;
 
-    /// <summary>Patch: non-breaking fixes.</summary>
+    /// <summary>Patch: an addition to the public surface bumps it.</summary>
     public const int Patch = 0;
 
     /// <summary>Full version string, e.g. "0.6.0". Reported to plugins and in host logs.</summary>

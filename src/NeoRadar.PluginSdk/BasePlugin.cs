@@ -90,11 +90,6 @@ public abstract class BasePlugin
     /// <summary>Return false to suppress the dropdown for this action / callsign.</summary>
     public virtual bool OnTagShowDropdown(string actionId, string callsign) => true;
 
-    // Rendering events
-    public virtual void OnRenderObjectClicked(Rendering.RenderObjectEvent evt) { }
-    public virtual void OnRenderObjectHovered(Rendering.RenderObjectEvent evt) { }
-    public virtual void OnViewportChanged(Rendering.ViewportInfo info) { }
-
     // Window events
     public virtual void OnWindowEvent(Window.WindowEvent evt) { }
 

@@ -7,17 +7,18 @@ A plugin is a plain managed `.dll` that references only this assembly.
 ## Versioning
 
 `PluginSdkVersion` (major, minor, patch) is the contract version and equals this package's
-version. The client ships one copy of the SDK and refuses to load a plugin compiled against a
-different major or minor, so a plugin is always rebuilt against the SDK release its target client
-ships. That comparison runs inside the client against the copy it ships; nothing in this package
-takes part in it. While the major is 0 a breaking change bumps the minor.
+version. A change that breaks a plugin (a member removed, renamed or retyped, or a signature or
+payload changed) bumps the minor and resets the patch; an addition bumps the patch; a change to no
+public member bumps nothing. The client loads a plugin compiled against the same major and minor
+as the copy it ships, when the client's patch is at least the plugin's. That comparison runs
+inside the client; nothing in this package takes part in it.
 
 ## Referencing the SDK
 
 From the GitHub Packages feed (needs a PAT with `read:packages`):
 
 ```xml
-<PackageReference Include="NeoRadar.PluginSdk" Version="0.5.0" ExcludeAssets="runtime" />
+<PackageReference Include="NeoRadar.PluginSdk" Version="0.9.0" ExcludeAssets="runtime" />
 ```
 
 ```xml
@@ -40,10 +41,8 @@ Rules that bite:
   resolves the SDK from the copy it ships; a second copy next to your DLL splits the `BasePlugin`
   type identity and the plugin silently fails to load.
 - Build with `dotnet build`, never `dotnet publish`.
-- `Manifest.SdkMajorVersion` must be `PluginSdkVersion.Major` and `Manifest.SdkBuildId` must be
-  `PluginSdkVersion.BuildId`. Both are compile-time constants, so the plugin carries the exact SDK
-  build it was compiled against, and the client refuses a plugin compiled against any other build
-  of the same version.
+- `Manifest.SdkMajorVersion` must be `PluginSdkVersion.Major`. The version the client checks is
+  the one your assembly's SDK reference records, so rebuilding is the only way to change it.
 - Event handlers run on client threads and are watched; keep them short and catch your own
   exceptions.
 
