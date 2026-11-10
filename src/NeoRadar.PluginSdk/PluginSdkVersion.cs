@@ -15,7 +15,7 @@ public static class PluginSdkVersion
     /// <summary>
     /// Minor version: a change that breaks a plugin bumps it and sets <see cref="Patch"/> to 0.
     /// </summary>
-    public const int Minor = 9;
+    public const int Minor = 10;
 
     /// <summary>Patch: an addition to the public surface bumps it.</summary>
     public const int Patch = 0;

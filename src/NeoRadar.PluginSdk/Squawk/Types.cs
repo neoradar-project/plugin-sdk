@@ -37,9 +37,10 @@ public interface ISquawkApi
     bool RegisterProvider(ISquawkProvider provider);
 
     /// <summary>
-    /// Register and return an <see cref="IDisposable"/> that unregisters on dispose.
+    /// Register and return an <see cref="IDisposable"/> that unregisters on dispose, or <c>null</c> when
+    /// the host refused the registration (a provider of that name is already registered, or the provider is invalid).
     /// </summary>
-    IDisposable RegisterProviderWithToken(ISquawkProvider provider);
+    IDisposable? RegisterProviderWithToken(ISquawkProvider provider);
 
     bool SetActiveProvider(string providerName);
 

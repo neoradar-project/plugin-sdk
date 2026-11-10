@@ -1,4 +1,4 @@
-sdk-version 0.9.0
+sdk-version 0.10.0
 NeoRadar.PluginSdk.Aircraft.Aircraft :: .ctor()
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.Position Position { get; init; }
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.TransponderMode TransponderMode { get; init; }
@@ -1218,7 +1218,7 @@ NeoRadar.PluginSdk.PluginManifest :: string? Description { get; init; }
 NeoRadar.PluginSdk.PluginManifest :: string? Website { get; init; }
 NeoRadar.PluginSdk.PluginManifest :: void Deconstruct(out string Name, out string Author, out string Version, out int SdkMajorVersion, out string? Description, out string? Website)
 NeoRadar.PluginSdk.PluginSdkVersion :: const int Major = 0
-NeoRadar.PluginSdk.PluginSdkVersion :: const int Minor = 9
+NeoRadar.PluginSdk.PluginSdkVersion :: const int Minor = 10
 NeoRadar.PluginSdk.PluginSdkVersion :: const int Patch = 0
 NeoRadar.PluginSdk.PluginSdkVersion :: static string Current { get; }
 NeoRadar.PluginSdk.Rendering.BatchInvalidationFrequency :: EveryBatch = 1
@@ -1552,7 +1552,7 @@ NeoRadar.PluginSdk.Settings.ISettingsApi :: string? Get(string key)
 NeoRadar.PluginSdk.Settings.ISettingsApi :: string? GetForProfile(string key)
 NeoRadar.PluginSdk.Sound.ISoundApi :: bool Play(string filePath)
 NeoRadar.PluginSdk.Squawk.ISquawkApi :: System.Collections.Generic.IReadOnlyList<string> GetAvailableProviders()
-NeoRadar.PluginSdk.Squawk.ISquawkApi :: System.IDisposable RegisterProviderWithToken(NeoRadar.PluginSdk.Squawk.ISquawkProvider provider)
+NeoRadar.PluginSdk.Squawk.ISquawkApi :: System.IDisposable? RegisterProviderWithToken(NeoRadar.PluginSdk.Squawk.ISquawkProvider provider)
 NeoRadar.PluginSdk.Squawk.ISquawkApi :: bool RegisterProvider(NeoRadar.PluginSdk.Squawk.ISquawkProvider provider)
 NeoRadar.PluginSdk.Squawk.ISquawkApi :: bool SetActiveProvider(string providerName)
 NeoRadar.PluginSdk.Squawk.ISquawkProvider :: System.Threading.Tasks.Task<string?> GenerateSquawkAsync(string callsign, NeoRadar.PluginSdk.Aircraft.Aircraft aircraft, NeoRadar.PluginSdk.Flightplan.Flightplan? flightplan, System.Threading.CancellationToken cancellationToken)

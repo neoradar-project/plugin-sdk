@@ -23,9 +23,9 @@ public sealed class PluginSdkVersionTests
     public void Current_IsTheReleasedVersion()
     {
         Assert.Equal(0, PluginSdkVersion.Major);
-        Assert.Equal(9, PluginSdkVersion.Minor);
+        Assert.Equal(10, PluginSdkVersion.Minor);
         Assert.Equal(0, PluginSdkVersion.Patch);
-        Assert.Equal("0.9.0", PluginSdkVersion.Current);
+        Assert.Equal("0.10.0", PluginSdkVersion.Current);
     }
 
     [Fact]
