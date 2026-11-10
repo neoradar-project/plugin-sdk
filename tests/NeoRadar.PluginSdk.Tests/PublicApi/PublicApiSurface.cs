@@ -34,11 +34,13 @@ internal static class PublicApiSurface
         [typeof(object)] = "object",
     };
 
-    internal static List<string> Describe(Assembly assembly)
+    internal static List<string> Describe(Assembly assembly) => Describe(assembly.GetExportedTypes());
+
+    internal static List<string> Describe(IEnumerable<Type> types)
     {
         NullabilityInfoContext nullability = new();
         List<string> lines = new();
-        foreach (Type type in assembly.GetExportedTypes())
+        foreach (Type type in types)
         {
             lines.Add(DescribeType(type, nullability));
             if (IsDelegate(type)) continue;
