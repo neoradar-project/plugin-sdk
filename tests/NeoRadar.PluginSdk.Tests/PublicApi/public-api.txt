@@ -1,4 +1,4 @@
-sdk-version 0.10.0
+sdk-version 0.10.1
 NeoRadar.PluginSdk.Aircraft.Aircraft :: .ctor()
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.Position Position { get; init; }
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.TransponderMode TransponderMode { get; init; }
@@ -1580,6 +1580,7 @@ NeoRadar.PluginSdk.Tag.DropdownActionEvent :: static bool op_Inequality(NeoRadar
 NeoRadar.PluginSdk.Tag.DropdownActionEvent :: string ActionId { get; init; }
 NeoRadar.PluginSdk.Tag.DropdownActionEvent :: string Callsign { get; init; }
 NeoRadar.PluginSdk.Tag.DropdownActionEvent :: string ComponentId { get; init; }
+NeoRadar.PluginSdk.Tag.DropdownActionEvent :: string PlanCallsign { get; init; }
 NeoRadar.PluginSdk.Tag.DropdownActionEvent :: string TagId { get; init; }
 NeoRadar.PluginSdk.Tag.DropdownActionEvent :: string? UserInput { get; init; }
 NeoRadar.PluginSdk.Tag.DropdownActionEvent :: void Deconstruct(out string ActionId, out string ComponentId, out string TagId, out string Callsign, out string? UserInput, out System.Collections.Generic.IReadOnlyDictionary<string, string> Data)
@@ -1668,6 +1669,7 @@ NeoRadar.PluginSdk.Tag.TagActionEvent :: static bool op_Equality(NeoRadar.Plugin
 NeoRadar.PluginSdk.Tag.TagActionEvent :: static bool op_Inequality(NeoRadar.PluginSdk.Tag.TagActionEvent? left, NeoRadar.PluginSdk.Tag.TagActionEvent? right)
 NeoRadar.PluginSdk.Tag.TagActionEvent :: string ActionId { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionEvent :: string Callsign { get; init; }
+NeoRadar.PluginSdk.Tag.TagActionEvent :: string PlanCallsign { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionEvent :: string TagId { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionEvent :: string? UserInput { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionEvent :: void Deconstruct(out string ActionId, out string TagId, out string Callsign, out int Button, out string? UserInput, out System.Collections.Generic.IReadOnlyDictionary<string, string> Data)

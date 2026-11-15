@@ -36,13 +36,20 @@ public sealed record TagContext(
     (byte R, byte G, byte B)? BackgroundColour = null,
     IReadOnlyDictionary<string, string>? Data = null);
 
+/// <summary>A plugin tag action run on a radar track.</summary>
+/// <param name="Callsign">The radar track the action was run on, under its own callsign.</param>
 public sealed record TagActionEvent(
     string ActionId,
     string TagId,
     string Callsign,
     int Button,
     string? UserInput,
-    IReadOnlyDictionary<string, string> Data);
+    IReadOnlyDictionary<string, string> Data)
+{
+    /// <summary>The flight plan the track stands for: its own, or the plan CORRELATE bound it to by hand.
+    /// Empty for a track whose own plan another track holds by hand.</summary>
+    public string PlanCallsign { get; init; } = "";
+}
 
 public enum DropdownComponentType
 {
@@ -86,10 +93,17 @@ public sealed record DropdownDefinition(
     int MaxHeight,
     IReadOnlyList<DropdownComponent> Components);
 
+/// <summary>A component pressed in a plugin dropdown opened on a radar track.</summary>
+/// <param name="Callsign">The radar track the dropdown was opened on, under its own callsign.</param>
 public sealed record DropdownActionEvent(
     string ActionId,
     string ComponentId,
     string TagId,
     string Callsign,
     string? UserInput,
-    IReadOnlyDictionary<string, string> Data);
+    IReadOnlyDictionary<string, string> Data)
+{
+    /// <summary>The flight plan the track stands for: its own, or the plan CORRELATE bound it to by hand.
+    /// Empty for a track whose own plan another track holds by hand.</summary>
+    public string PlanCallsign { get; init; } = "";
+}

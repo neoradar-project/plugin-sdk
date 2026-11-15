@@ -18,7 +18,7 @@ public static class PluginSdkVersion
     public const int Minor = 10;
 
     /// <summary>Patch: an addition to the public surface bumps it.</summary>
-    public const int Patch = 0;
+    public const int Patch = 1;
 
     /// <summary>Full version string, e.g. "0.6.0". Reported to plugins and in host logs.</summary>
     public static string Current => $"{Major}.{Minor}.{Patch}";

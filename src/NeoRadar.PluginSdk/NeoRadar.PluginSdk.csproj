@@ -6,7 +6,7 @@
     <IsPackable>true</IsPackable>
     <PackageId>NeoRadar.PluginSdk</PackageId>
     <!-- Equals PluginSdkVersion.Current; PluginSdkVersionTests pins it. -->
-    <Version>0.10.0</Version>
+    <Version>0.10.1</Version>
     <Authors>NeoRadar</Authors>
     <Description>Public SDK for NeoRadar plugins: the BasePlugin entry point, ICoreApi and the event and model types.</Description>
     <RepositoryUrl>https://github.com/neoradar-project/plugin-sdk</RepositoryUrl>
