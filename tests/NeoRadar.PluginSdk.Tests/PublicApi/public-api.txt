@@ -1217,9 +1217,9 @@ NeoRadar.PluginSdk.PluginManifest :: string Version { get; init; }
 NeoRadar.PluginSdk.PluginManifest :: string? Description { get; init; }
 NeoRadar.PluginSdk.PluginManifest :: string? Website { get; init; }
 NeoRadar.PluginSdk.PluginManifest :: void Deconstruct(out string Name, out string Author, out string Version, out int SdkMajorVersion, out string? Description, out string? Website)
-NeoRadar.PluginSdk.PluginSdkVersion :: const int Major = 0
-NeoRadar.PluginSdk.PluginSdkVersion :: const int Minor = 10
-NeoRadar.PluginSdk.PluginSdkVersion :: const int Patch = 0
+NeoRadar.PluginSdk.PluginSdkVersion :: const int Major
+NeoRadar.PluginSdk.PluginSdkVersion :: const int Minor
+NeoRadar.PluginSdk.PluginSdkVersion :: const int Patch
 NeoRadar.PluginSdk.PluginSdkVersion :: static string Current { get; }
 NeoRadar.PluginSdk.Rendering.BatchInvalidationFrequency :: EveryBatch = 1
 NeoRadar.PluginSdk.Rendering.BatchInvalidationFrequency :: EveryFourthBatch = 4

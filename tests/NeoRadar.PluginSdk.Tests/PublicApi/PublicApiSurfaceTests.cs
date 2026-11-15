@@ -42,6 +42,17 @@ public sealed class PublicApiSurfaceTests
         Assert.Empty(reduced.Except(full));
     }
 
+    // The version constants move on every release, so a value in their lines made every patch read as a break.
+    [Fact]
+    public void APatchBump_LeavesTheVersionConstantsLinesAlone()
+    {
+        string[] members = Members(typeof(PluginSdkVersion));
+
+        Assert.Contains("const int Major", members);
+        Assert.Contains("const int Minor", members);
+        Assert.Contains("const int Patch", members);
+    }
+
     private static string[] Members(Type type) =>
         PublicApiSurface.Describe(new[] { type })
             .Where(l => l.Contains(" :: ", StringComparison.Ordinal))

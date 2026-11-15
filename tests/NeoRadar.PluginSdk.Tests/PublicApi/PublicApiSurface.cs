@@ -119,6 +119,9 @@ internal static class PublicApiSurface
 
         string type = TypeName(field.FieldType, nullability.Create(field));
         string visibility = field.IsFamily || field.IsFamilyOrAssembly ? "protected " : "";
+        // The version constants move with every release; the baseline's own version line records their values.
+        if (field.IsLiteral && owner == typeof(PluginSdkVersion))
+            return $"{visibility}const {type} {field.Name}";
         if (field.IsLiteral)
             return $"{visibility}const {type} {field.Name} = {Literal(field.GetRawConstantValue(), field.FieldType)}";
 
