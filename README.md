@@ -18,7 +18,7 @@ inside the client; nothing in this package takes part in it.
 From the GitHub Packages feed (needs a PAT with `read:packages`):
 
 ```xml
-<PackageReference Include="NeoRadar.PluginSdk" Version="0.1.1" ExcludeAssets="runtime" />
+<PackageReference Include="NeoRadar.PluginSdk" Version="0.2.0" ExcludeAssets="runtime" />
 ```
 
 ```xml

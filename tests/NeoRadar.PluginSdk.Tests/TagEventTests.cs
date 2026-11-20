@@ -12,7 +12,7 @@ public sealed class TagEventTests
     {
         Dictionary<string, string> data = new();
 
-        TagActionEvent action = new("a", "t", "ABC123", 0, null, data) { PlanCallsign = "BAW456" };
+        TagActionEvent action = new("a", "t", "ABC123", 0, null) { PlanCallsign = "BAW456" };
         DropdownActionEvent dropdown = new("a", "c", "t", "ABC123", null, data);
 
         Assert.Equal("ABC123", action.Callsign);

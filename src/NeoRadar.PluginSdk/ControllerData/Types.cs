@@ -110,7 +110,7 @@ public enum GroundStatus
 /// <param name="AssignedVerticalRate">The assigned vertical rate, or 0 when none is assigned.</param>
 /// <param name="AssignedSquawk">The assigned squawk, or empty when none.</param>
 /// <param name="Scratchpad">The scratchpad text.</param>
-/// <param name="RawScratchpad">The raw scratchpad text.</param>
+/// <param name="RawScratchpad">The scratchpad line as typed or received, flags included.</param>
 /// <param name="ClearanceIssued">True if the clearance has been issued.</param>
 /// <param name="OwnedByMe">True if the local controller tracks the aircraft.</param>
 /// <param name="OwnedByCallsign">The tracking controller, or empty when the aircraft is untracked.</param>
@@ -118,7 +118,6 @@ public enum GroundStatus
 /// <param name="AssignedSpeedVariance">How the assigned speed is to be read.</param>
 /// <param name="AttentionState">How the aircraft relates to the local controller.</param>
 /// <param name="GroundStatus">The aircraft's ground status.</param>
-/// <param name="ClearanceQueuePosition">The aircraft's position in the clearance queue.</param>
 public sealed record ControllerDataModel(
     string Callsign,
     int ClearedFlightLevel,
@@ -136,5 +135,4 @@ public sealed record ControllerDataModel(
     string FutureOwnerCallsign,
     AssignedSpeedVariance AssignedSpeedVariance,
     AttentionState AttentionState,
-    GroundStatus GroundStatus,
-    int ClearanceQueuePosition);
+    GroundStatus GroundStatus);

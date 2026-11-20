@@ -1,4 +1,4 @@
-sdk-version 0.1.1
+sdk-version 0.2.0
 NeoRadar.PluginSdk.Aircraft.Aircraft :: .ctor()
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.Position Position { get; init; }
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.TransponderMode TransponderMode { get; init; }
@@ -619,7 +619,7 @@ NeoRadar.PluginSdk.ControllerData.AttentionState :: Notified = 1
 NeoRadar.PluginSdk.ControllerData.AttentionState :: OutgoingTransfer = 4
 NeoRadar.PluginSdk.ControllerData.AttentionState :: Redundant = 7
 NeoRadar.PluginSdk.ControllerData.AttentionState :: Unconcerned = 0
-NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: .ctor(string Callsign, int ClearedFlightLevel, string AssignedDirect, int AssignedHeading, int AssignedSpeed, int AssignedMach, int AssignedVerticalRate, string AssignedSquawk, string Scratchpad, string RawScratchpad, bool ClearanceIssued, bool OwnedByMe, string OwnedByCallsign, string FutureOwnerCallsign, NeoRadar.PluginSdk.ControllerData.AssignedSpeedVariance AssignedSpeedVariance, NeoRadar.PluginSdk.ControllerData.AttentionState AttentionState, NeoRadar.PluginSdk.ControllerData.GroundStatus GroundStatus, int ClearanceQueuePosition)
+NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: .ctor(string Callsign, int ClearedFlightLevel, string AssignedDirect, int AssignedHeading, int AssignedSpeed, int AssignedMach, int AssignedVerticalRate, string AssignedSquawk, string Scratchpad, string RawScratchpad, bool ClearanceIssued, bool OwnedByMe, string OwnedByCallsign, string FutureOwnerCallsign, NeoRadar.PluginSdk.ControllerData.AssignedSpeedVariance AssignedSpeedVariance, NeoRadar.PluginSdk.ControllerData.AttentionState AttentionState, NeoRadar.PluginSdk.ControllerData.GroundStatus GroundStatus)
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: NeoRadar.PluginSdk.ControllerData.AssignedSpeedVariance AssignedSpeedVariance { get; init; }
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: NeoRadar.PluginSdk.ControllerData.AttentionState AttentionState { get; init; }
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: NeoRadar.PluginSdk.ControllerData.GroundStatus GroundStatus { get; init; }
@@ -630,7 +630,6 @@ NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: int AssignedHeading { g
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: int AssignedMach { get; init; }
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: int AssignedSpeed { get; init; }
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: int AssignedVerticalRate { get; init; }
-NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: int ClearanceQueuePosition { get; init; }
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: int ClearedFlightLevel { get; init; }
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: override bool Equals(object? obj)
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: override int GetHashCode()
@@ -644,7 +643,7 @@ NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: string FutureOwnerCalls
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: string OwnedByCallsign { get; init; }
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: string RawScratchpad { get; init; }
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: string Scratchpad { get; init; }
-NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: void Deconstruct(out string Callsign, out int ClearedFlightLevel, out string AssignedDirect, out int AssignedHeading, out int AssignedSpeed, out int AssignedMach, out int AssignedVerticalRate, out string AssignedSquawk, out string Scratchpad, out string RawScratchpad, out bool ClearanceIssued, out bool OwnedByMe, out string OwnedByCallsign, out string FutureOwnerCallsign, out NeoRadar.PluginSdk.ControllerData.AssignedSpeedVariance AssignedSpeedVariance, out NeoRadar.PluginSdk.ControllerData.AttentionState AttentionState, out NeoRadar.PluginSdk.ControllerData.GroundStatus GroundStatus, out int ClearanceQueuePosition)
+NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: void Deconstruct(out string Callsign, out int ClearedFlightLevel, out string AssignedDirect, out int AssignedHeading, out int AssignedSpeed, out int AssignedMach, out int AssignedVerticalRate, out string AssignedSquawk, out string Scratchpad, out string RawScratchpad, out bool ClearanceIssued, out bool OwnedByMe, out string OwnedByCallsign, out string FutureOwnerCallsign, out NeoRadar.PluginSdk.ControllerData.AssignedSpeedVariance AssignedSpeedVariance, out NeoRadar.PluginSdk.ControllerData.AttentionState AttentionState, out NeoRadar.PluginSdk.ControllerData.GroundStatus GroundStatus)
 NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent :: .ctor(string Callsign)
 NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent :: bool Equals(NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent? other)
 NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent :: override bool Equals(object? obj)
@@ -1632,8 +1631,7 @@ NeoRadar.PluginSdk.Tag.TagActionDefinition :: string Description { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionDefinition :: string Name { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionDefinition :: string Title { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionDefinition :: void Deconstruct(out string Name, out bool RequiresInput, out string Description)
-NeoRadar.PluginSdk.Tag.TagActionEvent :: .ctor(string ActionId, string TagId, string Callsign, int Button, string? UserInput, System.Collections.Generic.IReadOnlyDictionary<string, string> Data)
-NeoRadar.PluginSdk.Tag.TagActionEvent :: System.Collections.Generic.IReadOnlyDictionary<string, string> Data { get; init; }
+NeoRadar.PluginSdk.Tag.TagActionEvent :: .ctor(string ActionId, string TagId, string Callsign, int Button, string? UserInput)
 NeoRadar.PluginSdk.Tag.TagActionEvent :: bool Equals(NeoRadar.PluginSdk.Tag.TagActionEvent? other)
 NeoRadar.PluginSdk.Tag.TagActionEvent :: int Button { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionEvent :: override bool Equals(object? obj)
@@ -1646,9 +1644,8 @@ NeoRadar.PluginSdk.Tag.TagActionEvent :: string Callsign { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionEvent :: string PlanCallsign { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionEvent :: string TagId { get; init; }
 NeoRadar.PluginSdk.Tag.TagActionEvent :: string? UserInput { get; init; }
-NeoRadar.PluginSdk.Tag.TagActionEvent :: void Deconstruct(out string ActionId, out string TagId, out string Callsign, out int Button, out string? UserInput, out System.Collections.Generic.IReadOnlyDictionary<string, string> Data)
-NeoRadar.PluginSdk.Tag.TagContext :: .ctor(string Callsign, string ListId, System.ValueTuple<byte, byte, byte>? Colour = null, System.ValueTuple<byte, byte, byte>? BackgroundColour = null, System.Collections.Generic.IReadOnlyDictionary<string, string>? Data = null)
-NeoRadar.PluginSdk.Tag.TagContext :: System.Collections.Generic.IReadOnlyDictionary<string, string>? Data { get; init; }
+NeoRadar.PluginSdk.Tag.TagActionEvent :: void Deconstruct(out string ActionId, out string TagId, out string Callsign, out int Button, out string? UserInput)
+NeoRadar.PluginSdk.Tag.TagContext :: .ctor(string Callsign, System.ValueTuple<byte, byte, byte>? Colour = null, System.ValueTuple<byte, byte, byte>? BackgroundColour = null)
 NeoRadar.PluginSdk.Tag.TagContext :: System.ValueTuple<byte, byte, byte>? BackgroundColour { get; init; }
 NeoRadar.PluginSdk.Tag.TagContext :: System.ValueTuple<byte, byte, byte>? Colour { get; init; }
 NeoRadar.PluginSdk.Tag.TagContext :: bool Equals(NeoRadar.PluginSdk.Tag.TagContext? other)
@@ -1658,8 +1655,7 @@ NeoRadar.PluginSdk.Tag.TagContext :: override string ToString()
 NeoRadar.PluginSdk.Tag.TagContext :: static bool op_Equality(NeoRadar.PluginSdk.Tag.TagContext? left, NeoRadar.PluginSdk.Tag.TagContext? right)
 NeoRadar.PluginSdk.Tag.TagContext :: static bool op_Inequality(NeoRadar.PluginSdk.Tag.TagContext? left, NeoRadar.PluginSdk.Tag.TagContext? right)
 NeoRadar.PluginSdk.Tag.TagContext :: string Callsign { get; init; }
-NeoRadar.PluginSdk.Tag.TagContext :: string ListId { get; init; }
-NeoRadar.PluginSdk.Tag.TagContext :: void Deconstruct(out string Callsign, out string ListId, out System.ValueTuple<byte, byte, byte>? Colour, out System.ValueTuple<byte, byte, byte>? BackgroundColour, out System.Collections.Generic.IReadOnlyDictionary<string, string>? Data)
+NeoRadar.PluginSdk.Tag.TagContext :: void Deconstruct(out string Callsign, out System.ValueTuple<byte, byte, byte>? Colour, out System.ValueTuple<byte, byte, byte>? BackgroundColour)
 NeoRadar.PluginSdk.Tag.TagItemDefinition :: .ctor(string Name, string DefaultValue, System.Collections.Generic.IReadOnlyList<string> AllowedActions)
 NeoRadar.PluginSdk.Tag.TagItemDefinition :: NeoRadar.PluginSdk.Tag.TagValueType ValueType { get; init; }
 NeoRadar.PluginSdk.Tag.TagItemDefinition :: System.Collections.Generic.IReadOnlyList<string> AllowedActions { get; init; }

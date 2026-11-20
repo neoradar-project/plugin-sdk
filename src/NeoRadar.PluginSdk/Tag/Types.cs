@@ -78,16 +78,12 @@ public sealed record TagActionDefinition(string Name, bool RequiresInput, string
 /// Represents the aircraft and styling a tag value is pushed for.
 /// </summary>
 /// <param name="Callsign">The callsign of the aircraft the value is for.</param>
-/// <param name="ListId">The identifier of the list the value is for.</param>
 /// <param name="Colour">The text colour, or null to keep the label's own.</param>
 /// <param name="BackgroundColour">The background colour, or null to keep the label's own.</param>
-/// <param name="Data">Extra values passed with the update, or null for none.</param>
 public sealed record TagContext(
     string Callsign,
-    string ListId,
     (byte R, byte G, byte B)? Colour = null,
-    (byte R, byte G, byte B)? BackgroundColour = null,
-    IReadOnlyDictionary<string, string>? Data = null);
+    (byte R, byte G, byte B)? BackgroundColour = null);
 
 /// <summary>
 /// Represents a plugin tag action run on a radar track.
@@ -97,14 +93,12 @@ public sealed record TagContext(
 /// <param name="Callsign">The callsign of the radar track the action was run on.</param>
 /// <param name="Button">The mouse button, 0 left, 1 middle, 2 right or 3 double click, and 0 for submitted input.</param>
 /// <param name="UserInput">The text the controller entered, or null when the action asks for none.</param>
-/// <param name="Data">Extra values passed with the action.</param>
 public sealed record TagActionEvent(
     string ActionId,
     string TagId,
     string Callsign,
     int Button,
-    string? UserInput,
-    IReadOnlyDictionary<string, string> Data)
+    string? UserInput)
 {
     /// <summary>
     /// Gets the callsign of the flight plan the track stands for, which may be one correlated by hand.
