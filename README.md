@@ -161,4 +161,8 @@ dotnet build
 dotnet test
 ```
 
-The plugin authoring guide and the reference sample plugin live with the client repository.
+`samples/NeoRadar.SamplePlugin/` is the reference plugin: a feature host that isolates each
+feature's faults, retained-mode renderers for world, screen and inset screens, chat commands and a
+window. It builds with the solution against this SDK, so it always compiles against the current
+surface. To run it, list its built DLL in a package's `plugins`. The plugin authoring guide lives
+with the client repository.
