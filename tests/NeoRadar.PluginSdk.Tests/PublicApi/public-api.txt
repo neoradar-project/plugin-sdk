@@ -1,4 +1,4 @@
-sdk-version 0.1.0
+sdk-version 0.1.1
 NeoRadar.PluginSdk.Aircraft.Aircraft :: .ctor()
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.Position Position { get; init; }
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.TransponderMode TransponderMode { get; init; }
@@ -617,6 +617,7 @@ NeoRadar.PluginSdk.ControllerData.AttentionState :: IncomingTransfer = 2
 NeoRadar.PluginSdk.ControllerData.AttentionState :: Intruder = 5
 NeoRadar.PluginSdk.ControllerData.AttentionState :: Notified = 1
 NeoRadar.PluginSdk.ControllerData.AttentionState :: OutgoingTransfer = 4
+NeoRadar.PluginSdk.ControllerData.AttentionState :: Redundant = 7
 NeoRadar.PluginSdk.ControllerData.AttentionState :: Unconcerned = 0
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: .ctor(string Callsign, int ClearedFlightLevel, string AssignedDirect, int AssignedHeading, int AssignedSpeed, int AssignedMach, int AssignedVerticalRate, string AssignedSquawk, string Scratchpad, string RawScratchpad, bool ClearanceIssued, bool OwnedByMe, string OwnedByCallsign, string FutureOwnerCallsign, NeoRadar.PluginSdk.ControllerData.AssignedSpeedVariance AssignedSpeedVariance, NeoRadar.PluginSdk.ControllerData.AttentionState AttentionState, NeoRadar.PluginSdk.ControllerData.GroundStatus GroundStatus, int ClearanceQueuePosition)
 NeoRadar.PluginSdk.ControllerData.ControllerDataModel :: NeoRadar.PluginSdk.ControllerData.AssignedSpeedVariance AssignedSpeedVariance { get; init; }

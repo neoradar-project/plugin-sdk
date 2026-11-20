@@ -60,6 +60,11 @@ public enum AttentionState
     /// The aircraft's path will or should enter the local controller's airspace.
     /// </summary>
     Concerned = 6,
+
+    /// <summary>
+    /// The local controller handed the aircraft off, the next controller accepted it, and it is still inside the local controller's airspace.
+    /// </summary>
+    Redundant = 7,
 }
 
 /// <summary>
