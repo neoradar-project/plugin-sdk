@@ -1,0 +1,26 @@
+name: Pack
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Tag must equal the csproj Version
+        run: |
+          version=$(grep -o '<Version>[^<]*' src/NeoRadar.PluginSdk/NeoRadar.PluginSdk.csproj | cut -d'>' -f2)
+          test "v$version" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME does not match csproj Version $version"; exit 1; }
+      - run: dotnet build -c Release
+      - run: dotnet test -c Release --no-build
+      - run: dotnet pack src/NeoRadar.PluginSdk/NeoRadar.PluginSdk.csproj -c Release --no-build -o out
+      - run: dotnet nuget push "out/*.nupkg" --source https://nuget.pkg.github.com/neoradar-project/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate

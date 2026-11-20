@@ -1,0 +1,14 @@
+bin/
+obj/
+out/
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+
+.claude/*
+!.claude/skills/
+!.claude/rules/
+!.claude/hooks/
+!.claude/settings.json
