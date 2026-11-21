@@ -40,9 +40,9 @@ NeoRadar.PluginSdk.Aircraft.IAircraftApi :: System.Collections.Generic.IReadOnly
 NeoRadar.PluginSdk.Aircraft.IAircraftApi :: double? GetDistanceFromOrigin(string callsign)
 NeoRadar.PluginSdk.Aircraft.IAircraftApi :: double? GetDistanceToDestination(string callsign)
 NeoRadar.PluginSdk.Aircraft.Position :: .ctor()
-NeoRadar.PluginSdk.Aircraft.Position :: NeoRadar.PluginSdk.Aircraft.TransponderMode TransponderMode { get; init; }
 NeoRadar.PluginSdk.Aircraft.Position :: System.DateTimeOffset Timestamp { get; init; }
 NeoRadar.PluginSdk.Aircraft.Position :: bool Equals(NeoRadar.PluginSdk.Aircraft.Position? other)
+NeoRadar.PluginSdk.Aircraft.Position :: bool HasVelocity { get; init; }
 NeoRadar.PluginSdk.Aircraft.Position :: bool OnGround { get; init; }
 NeoRadar.PluginSdk.Aircraft.Position :: bool Stopped { get; init; }
 NeoRadar.PluginSdk.Aircraft.Position :: double Agl { get; init; }

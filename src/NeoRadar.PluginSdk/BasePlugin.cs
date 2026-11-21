@@ -25,12 +25,12 @@ public abstract class BasePlugin
 
     // Aircraft events
     /// <summary>
-    /// Called when an aircraft connects to the network.
+    /// Called when an aircraft connects to the network, before its first position: it is not yet ready, so wait for <see cref="Aircraft.Aircraft.IsReady"/> before reading where it is.
     /// </summary>
     public virtual void OnAircraftConnected(Aircraft.AircraftConnectedEvent evt) { }
 
     /// <summary>
-    /// Called when an aircraft disconnects from the network.
+    /// Called when an aircraft disconnects from the network, and for every aircraft still connected when the user's own FSD connection ends.
     /// </summary>
     public virtual void OnAircraftDisconnected(Aircraft.AircraftDisconnectedEvent evt) { }
 
@@ -271,7 +271,7 @@ public abstract class BasePlugin
 
     // Focus events
     /// <summary>
-    /// Called when the selected aircraft changes or the selection is cleared.
+    /// Called when the selected aircraft changes or the selection is cleared, including when the selected aircraft disconnects or is lost.
     /// </summary>
     public virtual void OnSelectedAircraftChanged(Focus.SelectedAircraftChangedEvent evt) { }
 

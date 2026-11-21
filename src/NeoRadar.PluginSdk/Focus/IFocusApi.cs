@@ -8,6 +8,7 @@ public interface IFocusApi
     /// <summary>
     /// Gets the selected aircraft's callsign, or null when nothing is selected or the selection is not an aircraft.
     /// </summary>
+    /// <remarks>The selection clears when its aircraft disconnects or is lost, and the plugin hears it through <see cref="BasePlugin.OnSelectedAircraftChanged"/>.</remarks>
     string? GetSelectedAircraft();
 
     /// <summary>
@@ -20,6 +21,6 @@ public interface IFocusApi
     /// <summary>
     /// Selects an aircraft by callsign, which moves the user's visible selection.
     /// </summary>
-    /// <returns><c>false</c> when the callsign is unknown or the call was throttled to about one per second.</returns>
+    /// <returns><c>false</c> when the callsign is unknown or the call was throttled: a burst of five, then one per second, and one per callsign per second.</returns>
     bool SelectAircraft(string callsign);
 }

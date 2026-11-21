@@ -6,10 +6,10 @@ namespace NeoRadar.PluginSdk.Sound;
 public interface ISoundApi
 {
     /// <summary>
-    /// Plays a <c>.wav</c> or <c>.mp3</c> file.
+    /// Plays a <c>.wav</c> file, or an <c>.mp3</c> on macOS and Linux only.
     /// </summary>
-    /// <remarks>Rate limited to roughly one call per second per plugin.</remarks>
+    /// <remarks>Rate limited per plugin to a burst of five, then one call per second.</remarks>
     /// <param name="filePath">An absolute path the plugin owns, normally under <see cref="ClientInformation.DocumentsPath"/>.</param>
-    /// <returns>False if the file does not exist, is not a supported format, or the call was throttled.</returns>
+    /// <returns>False if the file does not exist, is not a format this platform plays (an <c>.mp3</c> on Windows), or the call was throttled.</returns>
     bool Play(string filePath);
 }

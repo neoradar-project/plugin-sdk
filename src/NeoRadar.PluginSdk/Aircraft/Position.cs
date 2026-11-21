@@ -5,6 +5,7 @@ namespace NeoRadar.PluginSdk.Aircraft;
 /// <summary>
 /// Represents an aircraft's reported position and motion.
 /// </summary>
+/// <remarks>Agl, VerticalSpeed, VerticalTrend, VelX, VelY and VelZ come from velocity reports: each is 0 and meaningless while <see cref="HasVelocity"/> is false.</remarks>
 public sealed record Position
 {
     /// <summary>
@@ -23,7 +24,7 @@ public sealed record Position
     public int Altitude { get; init; }
 
     /// <summary>
-    /// Gets the height above ground level in feet.
+    /// Gets the height above ground level in feet, or 0 while <see cref="HasVelocity"/> is false.
     /// </summary>
     public double Agl { get; init; }
 
@@ -53,12 +54,12 @@ public sealed record Position
     public int TrackHeading { get; init; }
 
     /// <summary>
-    /// Gets the vertical speed in feet per minute.
+    /// Gets the vertical speed in feet per minute, or 0 while <see cref="HasVelocity"/> is false.
     /// </summary>
     public int VerticalSpeed { get; init; }
 
     /// <summary>
-    /// Gets the vertical trend: 1 climbing, -1 descending, 0 level.
+    /// Gets the vertical trend: 1 climbing, -1 descending, 0 level or, while <see cref="HasVelocity"/> is false, unknown.
     /// </summary>
     public int VerticalTrend { get; init; }
 
@@ -73,17 +74,17 @@ public sealed record Position
     public double Bank { get; init; }
 
     /// <summary>
-    /// Gets the eastward velocity in metres per second.
+    /// Gets the eastward velocity in metres per second, or 0 while <see cref="HasVelocity"/> is false.
     /// </summary>
     public double VelX { get; init; }
 
     /// <summary>
-    /// Gets the upward velocity in metres per second.
+    /// Gets the upward velocity in metres per second, or 0 while <see cref="HasVelocity"/> is false.
     /// </summary>
     public double VelY { get; init; }
 
     /// <summary>
-    /// Gets the northward velocity in metres per second.
+    /// Gets the northward velocity in metres per second, or 0 while <see cref="HasVelocity"/> is false.
     /// </summary>
     public double VelZ { get; init; }
 
@@ -103,9 +104,9 @@ public sealed record Position
     public bool Stopped { get; init; } = true;
 
     /// <summary>
-    /// Gets the transponder mode at the time of the report.
+    /// Gets a value indicating whether the pilot client has sent a velocity report, without which the velocity-derived members are 0.
     /// </summary>
-    public TransponderMode TransponderMode { get; init; } = TransponderMode.Standby;
+    public bool HasVelocity { get; init; }
 
     /// <summary>
     /// Gets the time the position was reported, in UTC, or the default value when the host has none.

@@ -31,7 +31,7 @@ public enum LogLevel
     Debug = 4,
 
     /// <summary>
-    /// Fine-grained tracing.
+    /// Fine-grained tracing, written to the plugin's own log file only.
     /// </summary>
     Verbose = 5,
 }
@@ -39,6 +39,7 @@ public enum LogLevel
 /// <summary>
 /// Provides writing to the client's log.
 /// </summary>
+/// <remarks>Every level also reaches the plugin's own log file; no level is sent to NeoRadar's crash reporting.</remarks>
 public interface ILoggerApi
 {
     /// <summary>
@@ -72,7 +73,7 @@ public interface ILoggerApi
     void Debug(string message);
 
     /// <summary>
-    /// Writes a message at <see cref="LogLevel.Verbose"/>.
+    /// Writes a message at <see cref="LogLevel.Verbose"/>, which reaches the plugin's own log file only.
     /// </summary>
     void Verbose(string message);
 }

@@ -26,7 +26,7 @@ public interface ISquawkProvider
         CancellationToken cancellationToken);
 
     /// <summary>
-    /// Gets the provider's name, which must be unique within the host.
+    /// Gets the provider's name, which must be unique within the host, compared without case.
     /// </summary>
     string ProviderName { get; }
 
@@ -67,7 +67,8 @@ public interface ISquawkApi
     bool SetActiveProvider(string providerName);
 
     /// <summary>
-    /// Gets the names of every registered provider.
+    /// Gets the names of every registered provider the loaded system allows.
     /// </summary>
+    /// <remarks>A provider the system's squawk policy disables still registers but is left out here, is never asked, and cannot be made active.</remarks>
     IReadOnlyList<string> GetAvailableProviders();
 }
