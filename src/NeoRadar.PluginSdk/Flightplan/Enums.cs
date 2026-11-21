@@ -29,6 +29,7 @@ public enum VoiceType
 /// <summary>
 /// Specifies the flight rules a route leg is flown under.
 /// </summary>
+/// <remarks>A plan that changes rules (Y or Z) gives each leg its own rule; the plan's filed rules are <see cref="Flightplan.FlightRule"/>.</remarks>
 public enum FlightRule
 {
     /// <summary>
@@ -39,17 +40,7 @@ public enum FlightRule
     /// <summary>
     /// Visual flight rules.
     /// </summary>
-    VFR,
-
-    /// <summary>
-    /// Instrument flight rules first, then a change of flight rules, as ICAO Doc 4444 Item 8 letter Y files it.
-    /// </summary>
-    Yankee,
-
-    /// <summary>
-    /// Visual flight rules first, then a change of flight rules, as ICAO Doc 4444 Item 8 letter Z files it.
-    /// </summary>
-    Zulu
+    VFR
 }
 
 /// <summary>
