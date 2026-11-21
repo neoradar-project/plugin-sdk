@@ -1574,7 +1574,7 @@ NeoRadar.PluginSdk.Tag.DropdownComponent :: static bool op_Equality(NeoRadar.Plu
 NeoRadar.PluginSdk.Tag.DropdownComponent :: static bool op_Inequality(NeoRadar.PluginSdk.Tag.DropdownComponent? left, NeoRadar.PluginSdk.Tag.DropdownComponent? right)
 NeoRadar.PluginSdk.Tag.DropdownComponent :: string Id { get; init; }
 NeoRadar.PluginSdk.Tag.DropdownComponent :: string Text { get; init; }
-NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: .ctor(System.ValueTuple<byte, byte, byte>? BackgroundColor = null, System.ValueTuple<byte, byte, byte>? TextColor = null, int? FontSize = null, string? FontWeight = null, int? Width = null, int? Height = null, bool? Border = null, string? ClassName = null, NeoRadar.PluginSdk.Tag.DropdownAlignmentType? TextAlign = null)
+NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: .ctor(System.ValueTuple<byte, byte, byte>? BackgroundColor = null, System.ValueTuple<byte, byte, byte>? TextColor = null, int? FontSize = null, string? FontWeight = null, int? Width = null, int? Height = null, bool? Border = null, NeoRadar.PluginSdk.Tag.DropdownAlignmentType? TextAlign = null)
 NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: NeoRadar.PluginSdk.Tag.DropdownAlignmentType? TextAlign { get; init; }
 NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: System.ValueTuple<byte, byte, byte>? BackgroundColor { get; init; }
 NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: System.ValueTuple<byte, byte, byte>? TextColor { get; init; }
@@ -1588,9 +1588,8 @@ NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: override int GetHashCode()
 NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: override string ToString()
 NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: static bool op_Equality(NeoRadar.PluginSdk.Tag.DropdownComponentStyle? left, NeoRadar.PluginSdk.Tag.DropdownComponentStyle? right)
 NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: static bool op_Inequality(NeoRadar.PluginSdk.Tag.DropdownComponentStyle? left, NeoRadar.PluginSdk.Tag.DropdownComponentStyle? right)
-NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: string? ClassName { get; init; }
 NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: string? FontWeight { get; init; }
-NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: void Deconstruct(out System.ValueTuple<byte, byte, byte>? BackgroundColor, out System.ValueTuple<byte, byte, byte>? TextColor, out int? FontSize, out string? FontWeight, out int? Width, out int? Height, out bool? Border, out string? ClassName, out NeoRadar.PluginSdk.Tag.DropdownAlignmentType? TextAlign)
+NeoRadar.PluginSdk.Tag.DropdownComponentStyle :: void Deconstruct(out System.ValueTuple<byte, byte, byte>? BackgroundColor, out System.ValueTuple<byte, byte, byte>? TextColor, out int? FontSize, out string? FontWeight, out int? Width, out int? Height, out bool? Border, out NeoRadar.PluginSdk.Tag.DropdownAlignmentType? TextAlign)
 NeoRadar.PluginSdk.Tag.DropdownComponentType :: Button = 0
 NeoRadar.PluginSdk.Tag.DropdownComponentType :: Divider = 1
 NeoRadar.PluginSdk.Tag.DropdownComponentType :: Group = 5

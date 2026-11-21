@@ -203,11 +203,10 @@ public enum DropdownAlignmentType
 /// <param name="BackgroundColor">The background colour.</param>
 /// <param name="TextColor">The text colour.</param>
 /// <param name="FontSize">The font size.</param>
-/// <param name="FontWeight">The font weight.</param>
-/// <param name="Width">The component width.</param>
+/// <param name="FontWeight">The text weight of a button or label: normal, bold, bolder, lighter, or 100 to 900 in hundreds.</param>
+/// <param name="Width">The component width in device-independent pixels.</param>
 /// <param name="Height">The component height.</param>
-/// <param name="Border">True to draw a border.</param>
-/// <param name="ClassName">A style class name for the host.</param>
+/// <param name="Border">True to draw a one-pixel border in the popup's border colour; false to draw none.</param>
 /// <param name="TextAlign">The horizontal text alignment.</param>
 public sealed record DropdownComponentStyle(
     (byte R, byte G, byte B)? BackgroundColor = null,
@@ -217,7 +216,6 @@ public sealed record DropdownComponentStyle(
     int? Width = null,
     int? Height = null,
     bool? Border = null,
-    string? ClassName = null,
     DropdownAlignmentType? TextAlign = null);
 
 /// <summary>
