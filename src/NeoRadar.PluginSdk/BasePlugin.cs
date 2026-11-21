@@ -283,9 +283,13 @@ public abstract class BasePlugin
 
     // Timer events
     /// <summary>
-    /// Called about once a second on a host thread for periodic work.
+    /// Called on each whole UTC second, on a host thread, for periodic work.
     /// </summary>
-    /// <remarks>Never re-entered; a tick is skipped while the previous one runs, and a slow tick counts as a strike.</remarks>
+    /// <remarks>
+    /// <see cref="Timer.TimerEvent.Tick"/> counts the beats: the first beat is 0 and each beat after it one more, a skipped beat included.
+    /// When every plugin's OnTimer returns, the host asks for a frame on each view showing a plugin screen, so a screen needs no RequestRedraw after it.
+    /// Never re-entered; a tick is skipped while the previous one runs, and a slow tick counts as a strike.
+    /// </remarks>
     public virtual void OnTimer(Timer.TimerEvent evt) { }
 
     // Menu events

@@ -191,6 +191,7 @@ public interface IPluginGraphics
     /// <summary>
     /// Asks the host to draw this screen again soon, which runs its renderer's OnFrameUpdate, and is safe to call from any thread.
     /// </summary>
+    /// <remarks>Calling it from OnFrameUpdate on every frame keeps the view drawing continuously.</remarks>
     void RequestRedraw();
 
     // Coordinate conversion
