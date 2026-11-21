@@ -1,4 +1,4 @@
-sdk-version 0.2.0
+sdk-version 0.3.0
 NeoRadar.PluginSdk.Aircraft.Aircraft :: .ctor()
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.Position Position { get; init; }
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.TransponderMode TransponderMode { get; init; }
@@ -712,10 +712,10 @@ NeoRadar.PluginSdk.Flightplan.DistanceUnit :: FEET = 2
 NeoRadar.PluginSdk.Flightplan.DistanceUnit :: KILOMETERS = 1
 NeoRadar.PluginSdk.Flightplan.DistanceUnit :: METERS = 3
 NeoRadar.PluginSdk.Flightplan.DistanceUnit :: NAUTICAL_MILES = 0
-NeoRadar.PluginSdk.Flightplan.FlightRule :: DVFR = 2
 NeoRadar.PluginSdk.Flightplan.FlightRule :: IFR = 0
-NeoRadar.PluginSdk.Flightplan.FlightRule :: SVFR = 3
 NeoRadar.PluginSdk.Flightplan.FlightRule :: VFR = 1
+NeoRadar.PluginSdk.Flightplan.FlightRule :: Yankee = 2
+NeoRadar.PluginSdk.Flightplan.FlightRule :: Zulu = 3
 NeoRadar.PluginSdk.Flightplan.Flightplan :: .ctor()
 NeoRadar.PluginSdk.Flightplan.Flightplan :: NeoRadar.PluginSdk.Flightplan.Route Route { get; init; }
 NeoRadar.PluginSdk.Flightplan.Flightplan :: NeoRadar.PluginSdk.Flightplan.VoiceType VoiceType { get; init; }

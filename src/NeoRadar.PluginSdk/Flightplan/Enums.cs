@@ -42,14 +42,14 @@ public enum FlightRule
     VFR,
 
     /// <summary>
-    /// Defence visual flight rules.
+    /// Instrument flight rules first, then a change of flight rules, as ICAO Doc 4444 Item 8 letter Y files it.
     /// </summary>
-    DVFR,
+    Yankee,
 
     /// <summary>
-    /// Special visual flight rules.
+    /// Visual flight rules first, then a change of flight rules, as ICAO Doc 4444 Item 8 letter Z files it.
     /// </summary>
-    SVFR
+    Zulu
 }
 
 /// <summary>
