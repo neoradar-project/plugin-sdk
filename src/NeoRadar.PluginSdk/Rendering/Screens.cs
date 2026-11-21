@@ -62,7 +62,7 @@ public enum BatchInvalidationFrequency
 /// <param name="Scope">Where the screen renders.</param>
 /// <param name="ZOrder">The paint order; host layers run from -20 (sectors) to 90 (feedback), so 100 paints above them.</param>
 /// <param name="EnabledByDefault">Whether the screen starts enabled.</param>
-/// <param name="Icon">The icon shown in the screen list, or <c>null</c> for none.</param>
+/// <param name="Icon">A Lucide icon name, shown before the entry in the Insets &amp; Plugin Windows menu; an unknown name shows none.</param>
 /// <param name="InsetWidth">The initial inset window width in pixels.</param>
 /// <param name="InsetHeight">The initial inset window height in pixels.</param>
 /// <param name="ShowInList">Whether the screen appears in the screen list.</param>

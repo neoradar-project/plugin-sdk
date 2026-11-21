@@ -635,7 +635,7 @@ public sealed record WindowElement
 /// <param name="Title">The window title, which also keys the remembered position and size.</param>
 /// <param name="Width">The width in pixels at first open.</param>
 /// <param name="Height">The height in pixels at first open.</param>
-/// <param name="Icon">The icon name shown in the title bar and the plugin list.</param>
+/// <param name="Icon">A Lucide icon name, shown before the entry in the Insets &amp; Plugin Windows menu; an unknown name shows none.</param>
 /// <param name="ShowInList">Whether the window is listed in the client's plugin list.</param>
 /// <param name="Elements">The root elements, or <c>null</c> for an empty window.</param>
 /// <param name="Resizable">Whether the controller can resize the window; the size is remembered like the position.</param>
