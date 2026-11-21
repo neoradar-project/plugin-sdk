@@ -213,7 +213,7 @@ public enum PointSymbol
     Square,
 
     /// <summary>
-    /// A triangle.
+    /// A triangle, drawn as an outline.
     /// </summary>
     Triangle,
 
@@ -228,7 +228,7 @@ public enum PointSymbol
     Cross,
 
     /// <summary>
-    /// A star.
+    /// A five-pointed star, drawn as an outline.
     /// </summary>
     Star,
 }

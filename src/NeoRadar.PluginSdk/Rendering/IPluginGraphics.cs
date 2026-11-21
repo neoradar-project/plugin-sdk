@@ -130,7 +130,7 @@ public interface IPluginGraphics
     bool SetText(GraphicsObjectRef r, string text);
 
     /// <summary>
-    /// Moves the anchor point of a screen-space text, rectangle or line.
+    /// Moves the anchor point of a screen-space text, rectangle, line or point.
     /// </summary>
     /// <returns><c>false</c> if the object cannot be repositioned.</returns>
     bool SetScreenAnchor(GraphicsObjectRef r, Vector2 anchor);
