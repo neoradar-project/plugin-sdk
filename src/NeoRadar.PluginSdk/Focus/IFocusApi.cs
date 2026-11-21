@@ -8,14 +8,14 @@ public interface IFocusApi
     /// <summary>
     /// Gets the selected aircraft's callsign, or null when nothing is selected or the selection is not an aircraft.
     /// </summary>
-    /// <remarks>The selection clears when its aircraft disconnects or is lost, and the plugin hears it through <see cref="BasePlugin.OnSelectedAircraftChanged"/>.</remarks>
+    /// <remarks>Null as soon as the selected aircraft has left the client's aircraft list; the selection itself clears afterwards on the UI thread, where <see cref="BasePlugin.OnSelectedAircraftChanged"/> follows.</remarks>
     string? GetSelectedAircraft();
 
     /// <summary>
     /// Gets the callsign of the flight plan the selected track stands for, its correlated plan or else its own.
     /// </summary>
     /// <remarks>Read or amend a plan by this callsign rather than by the track's.</remarks>
-    /// <returns>The plan's callsign, or empty when nothing is selected or another track holds the plan by hand.</returns>
+    /// <returns>The plan's callsign, or empty when nothing is selected, the selected aircraft has left the client's aircraft list, or another track holds the plan by hand.</returns>
     string GetSelectedPlanCallsign();
 
     /// <summary>

@@ -271,7 +271,7 @@ public abstract class BasePlugin
 
     // Focus events
     /// <summary>
-    /// Called when the selected aircraft changes or the selection is cleared, including when the selected aircraft disconnects or is lost.
+    /// Called when the selected aircraft changes or the selection is cleared, including on the UI thread after the selected aircraft disconnects or is lost.
     /// </summary>
     public virtual void OnSelectedAircraftChanged(Focus.SelectedAircraftChangedEvent evt) { }
 
