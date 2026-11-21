@@ -13,7 +13,7 @@ public static class PluginSdkVersion
     /// <summary>
     /// The minor version, bumped by a change that breaks a plugin, which resets <see cref="Patch"/> to 0.
     /// </summary>
-    public const int Minor = 3;
+    public const int Minor = 4;
 
     /// <summary>
     /// The patch version, bumped by an addition to the public surface.

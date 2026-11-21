@@ -1,4 +1,4 @@
-sdk-version 0.3.0
+sdk-version 0.4.0
 NeoRadar.PluginSdk.Aircraft.Aircraft :: .ctor()
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.Position Position { get; init; }
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.TransponderMode TransponderMode { get; init; }
@@ -1726,15 +1726,6 @@ NeoRadar.PluginSdk.Window.ButtonVariant :: Danger = 2
 NeoRadar.PluginSdk.Window.ButtonVariant :: Default = 0
 NeoRadar.PluginSdk.Window.ButtonVariant :: Ghost = 4
 NeoRadar.PluginSdk.Window.ButtonVariant :: Success = 1
-NeoRadar.PluginSdk.Window.ElementHandle :: .ctor(ulong Value)
-NeoRadar.PluginSdk.Window.ElementHandle :: bool Equals(NeoRadar.PluginSdk.Window.ElementHandle other)
-NeoRadar.PluginSdk.Window.ElementHandle :: override bool Equals(object obj)
-NeoRadar.PluginSdk.Window.ElementHandle :: override int GetHashCode()
-NeoRadar.PluginSdk.Window.ElementHandle :: override string ToString()
-NeoRadar.PluginSdk.Window.ElementHandle :: static bool op_Equality(NeoRadar.PluginSdk.Window.ElementHandle left, NeoRadar.PluginSdk.Window.ElementHandle right)
-NeoRadar.PluginSdk.Window.ElementHandle :: static bool op_Inequality(NeoRadar.PluginSdk.Window.ElementHandle left, NeoRadar.PluginSdk.Window.ElementHandle right)
-NeoRadar.PluginSdk.Window.ElementHandle :: ulong Value { get; init; }
-NeoRadar.PluginSdk.Window.ElementHandle :: void Deconstruct(out ulong Value)
 NeoRadar.PluginSdk.Window.ElementRole :: Accent = 4
 NeoRadar.PluginSdk.Window.ElementRole :: Danger = 7
 NeoRadar.PluginSdk.Window.ElementRole :: Default = 0
@@ -2027,7 +2018,6 @@ readonly record struct NeoRadar.PluginSdk.Rendering.RgbaColor : System.IEquatabl
 readonly record struct NeoRadar.PluginSdk.Rendering.ScreenHandle : System.IEquatable<NeoRadar.PluginSdk.Rendering.ScreenHandle>
 readonly record struct NeoRadar.PluginSdk.Rendering.Transform2D : System.IEquatable<NeoRadar.PluginSdk.Rendering.Transform2D>
 readonly record struct NeoRadar.PluginSdk.Theme.ThemeColour : System.IEquatable<NeoRadar.PluginSdk.Theme.ThemeColour>
-readonly record struct NeoRadar.PluginSdk.Window.ElementHandle : System.IEquatable<NeoRadar.PluginSdk.Window.ElementHandle>
 readonly record struct NeoRadar.PluginSdk.Window.WindowHandle : System.IEquatable<NeoRadar.PluginSdk.Window.WindowHandle>
 record NeoRadar.PluginSdk.Flightplan.Waypoint : System.IEquatable<NeoRadar.PluginSdk.Flightplan.Waypoint>
 sealed record NeoRadar.PluginSdk.Aircraft.Aircraft : System.IEquatable<NeoRadar.PluginSdk.Aircraft.Aircraft>

@@ -5,17 +5,19 @@ namespace NeoRadar.PluginSdk.Window;
 /// <summary>
 /// Provides methods to open and update plugin windows.
 /// </summary>
-/// <remarks>Each method returns <c>false</c> for an unknown window or element; the host remembers placement per plugin and title.</remarks>
+/// <remarks>Each method returns <c>false</c> for an unknown or closed window; an element call is applied asynchronously, and an unknown element or one of the wrong type is ignored. A call never raises a <see cref="WindowEvent"/> back to the plugin. The host remembers placement per plugin and title.</remarks>
 public interface IWindowInterface
 {
     /// <summary>
     /// Opens a window built from a definition.
     /// </summary>
+    /// <returns>The window's handle, or <see cref="WindowHandle.Invalid"/> when the plugin already holds 10 windows; a window the controller closed frees its place, a hidden <c>ShowInList</c> one does not.</returns>
     WindowHandle OpenWindow(WindowDefinition definition);
 
     /// <summary>
     /// Replaces the text of an element.
     /// </summary>
+    /// <param name="text">A Label, Heading, Paragraph, Button, Badge or TextInput's text, a Group's caption or a TabPage's header; <c>true</c> or <c>false</c> for a Checkbox, Toggle or single Radio; a number in the invariant culture for a Slider, NumberInput or ProgressBar, where a negative ProgressBar value is indeterminate; an option's text for a Select. A Tabs, Image, Table or Radio group takes none, and a captioned Select, Slider or NumberInput keeps its caption.</param>
     bool UpdateElement(WindowHandle window, string elementId, string text);
 
     /// <summary>
@@ -41,7 +43,7 @@ public interface IWindowInterface
     bool ReplaceChildren(WindowHandle window, string elementId, IReadOnlyList<WindowElement> children);
 
     /// <summary>
-    /// Appends a child to the end of a container.
+    /// Appends a child to the end of a container, a TabPage included; a TabPage appended to a Tabs becomes a new tab.
     /// </summary>
     bool AppendChild(WindowHandle window, string parentId, WindowElement child);
 
@@ -64,20 +66,17 @@ public interface IWindowInterface
     /// <summary>
     /// Replaces the options of a Select or Radio element in place without raising <c>change</c>.
     /// </summary>
-    /// <returns><c>false</c> also when the element is not a Select or Radio.</returns>
     bool SetOptions(WindowHandle window, string elementId, IReadOnlyList<string> options, int selectedIndex);
 
     /// <summary>
     /// Replaces the rows of a Table in place, keeping the scroll position, without raising <c>select</c>.
     /// </summary>
-    /// <returns><c>false</c> also when the element is not a Table.</returns>
     bool SetTableRows(WindowHandle window, string elementId, IReadOnlyList<TableRow> rows, int selectedIndex);
 
     /// <summary>
     /// Sets the selected row of a Table without raising <c>select</c>.
     /// </summary>
     /// <param name="index">The row index, or -1 to clear the selection.</param>
-    /// <returns><c>false</c> also when the element is not a Table.</returns>
     bool SetTableSelection(WindowHandle window, string elementId, int index);
 
     /// <summary>

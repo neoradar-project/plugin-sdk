@@ -14,12 +14,12 @@ public interface IMenuApi
     /// <summary>
     /// Changes an entry's label or check state, leaving a null argument's field unchanged.
     /// </summary>
-    /// <returns>False if the item id is unknown.</returns>
+    /// <returns>False if the item id is unknown or another plugin's.</returns>
     bool UpdateMenuItem(string itemId, string? label, bool? @checked);
 
     /// <summary>
     /// Removes an entry from the plugin list.
     /// </summary>
-    /// <returns>False if the item id is unknown.</returns>
+    /// <returns>False if the item id is unknown or another plugin's.</returns>
     bool RemoveMenuItem(string itemId);
 }

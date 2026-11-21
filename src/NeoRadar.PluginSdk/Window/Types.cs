@@ -19,11 +19,6 @@ public readonly record struct WindowHandle(ulong Value)
 }
 
 /// <summary>
-/// Represents the handle of a window element.
-/// </summary>
-public readonly record struct ElementHandle(ulong Value);
-
-/// <summary>
 /// Specifies the kind of control a window element renders as.
 /// </summary>
 public enum ElementType
@@ -44,7 +39,7 @@ public enum ElementType
     Button = 2,
 
     /// <summary>
-    /// A single-line text box that raises <c>change</c>.
+    /// A single-line text box that raises <c>change</c> on every edit and <c>submit</c> with its text on Enter.
     /// </summary>
     TextInput = 3,
 
@@ -150,7 +145,7 @@ public enum ElementType
 public enum FontWeight : byte
 {
     /// <summary>
-    /// The host's default weight for the element.
+    /// The element type's own weight: SemiBold for a Heading and a Group caption, Regular otherwise.
     /// </summary>
     Default = 0,
 
@@ -636,7 +631,7 @@ public sealed record WindowElement
 /// <param name="Width">The width in pixels at first open.</param>
 /// <param name="Height">The height in pixels at first open.</param>
 /// <param name="Icon">A Lucide icon name, shown before the entry in the Insets &amp; Plugin Windows menu; an unknown name shows none.</param>
-/// <param name="ShowInList">Whether the window is listed in the client's plugin list.</param>
+/// <param name="ShowInList">Whether the window is listed in the Insets &amp; Plugin Windows menu; the controller's close then only hides it, keeping its handle and state, the plugin's calls keep applying and <c>close</c> is still raised, and the menu shows it again as the plugin last left it.</param>
 /// <param name="Elements">The root elements, or <c>null</c> for an empty window.</param>
 /// <param name="Resizable">Whether the controller can resize the window; the size is remembered like the position.</param>
 /// <param name="MinWidth">The smallest width a resize may reach, or 0 for the host minimum.</param>
@@ -661,8 +656,8 @@ public sealed record WindowDefinition(
 /// </summary>
 /// <param name="Window">The window the event came from.</param>
 /// <param name="ElementId">The element that raised it, or empty for <c>close</c>.</param>
-/// <param name="EventType">One of <c>click</c>, <c>change</c>, <c>select</c>, <c>activate</c>, <c>sort</c>, <c>toggle</c>, <c>cell</c> or <c>close</c>.</param>
-/// <param name="Value">The click value, new content, row id (select, activate), column id (sort), <c>row|col|bool</c> (toggle), <c>row|col</c> (cell) or empty.</param>
+/// <param name="EventType">One of <c>click</c>, <c>change</c>, <c>submit</c>, <c>select</c>, <c>activate</c>, <c>sort</c>, <c>toggle</c>, <c>cell</c> or <c>close</c>; only the controller raises them, never the plugin's own calls.</param>
+/// <param name="Value">The click value, new content (a number in the invariant culture), submitted text, row id (select, activate), column id (sort), <c>row|col|bool</c> (toggle), <c>row|col</c> (cell) or empty.</param>
 public sealed record WindowEvent(
     WindowHandle Window,
     string ElementId,
