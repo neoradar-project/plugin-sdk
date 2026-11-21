@@ -1256,6 +1256,7 @@ NeoRadar.PluginSdk.Rendering.IPluginGraphics :: bool SetVisible(NeoRadar.PluginS
 NeoRadar.PluginSdk.Rendering.IPluginGraphics :: void CapturePointer()
 NeoRadar.PluginSdk.Rendering.IPluginGraphics :: void Clear()
 NeoRadar.PluginSdk.Rendering.IPluginGraphics :: void ReleasePointer()
+NeoRadar.PluginSdk.Rendering.IPluginGraphics :: void RequestRedraw()
 NeoRadar.PluginSdk.Rendering.IPluginScreenRenderer :: default bool OnKeyDown(NeoRadar.PluginSdk.Rendering.KeyEvent e)
 NeoRadar.PluginSdk.Rendering.IPluginScreenRenderer :: default bool OnKeyUp(NeoRadar.PluginSdk.Rendering.KeyEvent e)
 NeoRadar.PluginSdk.Rendering.IPluginScreenRenderer :: default bool OnPointerPressed(NeoRadar.PluginSdk.Rendering.PointerEvent e)

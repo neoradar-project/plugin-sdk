@@ -186,6 +186,13 @@ public interface IPluginGraphics
     /// </summary>
     bool HasCapture { get; }
 
+    // Redraw
+
+    /// <summary>
+    /// Asks the host to draw this screen again soon, which runs its renderer's OnFrameUpdate, and is safe to call from any thread.
+    /// </summary>
+    void RequestRedraw();
+
     // Coordinate conversion
 
     /// <summary>
