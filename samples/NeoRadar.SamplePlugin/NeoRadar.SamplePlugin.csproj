@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>NeoRadar.SamplePlugin</RootNamespace>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- Ships the dependency-injection assemblies beside the plugin, where the host's per-plugin load context finds them. -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Compile-only: the host supplies its own PluginSdk at runtime, so the plugin's output must not carry one. -->
+    <ProjectReference Include="..\..\src\NeoRadar.PluginSdk\NeoRadar.PluginSdk.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The example package fragment travels beside the built plugin for a controller to copy into a test package. -->
+    <None Include="Package\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

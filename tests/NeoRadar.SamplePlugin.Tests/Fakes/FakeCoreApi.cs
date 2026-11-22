@@ -1,0 +1,71 @@
+using NeoRadar.PluginSdk;
+using NeoRadar.PluginSdk.Aircraft;
+using NeoRadar.PluginSdk.Airport;
+using NeoRadar.PluginSdk.Chat;
+using NeoRadar.PluginSdk.Controller;
+using NeoRadar.PluginSdk.ControllerData;
+using NeoRadar.PluginSdk.Expressions;
+using NeoRadar.PluginSdk.Feedback;
+using NeoRadar.PluginSdk.Flightplan;
+using NeoRadar.PluginSdk.Focus;
+using NeoRadar.PluginSdk.Fsd;
+using NeoRadar.PluginSdk.Logger;
+using NeoRadar.PluginSdk.Menu;
+using NeoRadar.PluginSdk.Navdata;
+using NeoRadar.PluginSdk.Package;
+using NeoRadar.PluginSdk.Rendering;
+using NeoRadar.PluginSdk.Settings;
+using NeoRadar.PluginSdk.Sound;
+using NeoRadar.PluginSdk.Squawk;
+using NeoRadar.PluginSdk.Tag;
+using NeoRadar.PluginSdk.Theme;
+using NeoRadar.PluginSdk.Window;
+
+namespace NeoRadar.SamplePlugin.Tests.Fakes;
+
+internal sealed class FakeCoreApi : ICoreApi
+{
+    public FakePackageApi PackageFake { get; } = new();
+    public FakeAircraftApi AircraftFake { get; } = new();
+    public FakeFlightplanApi FlightplanFake { get; } = new();
+    public FakeControllerApi ControllerFake { get; } = new();
+    public FakeControllerDataApi ControllerDataFake { get; } = new();
+    public FakeAirportApi AirportFake { get; } = new();
+    public FakeSquawkApi SquawkFake { get; } = new();
+    public FakeTagApi TagFake { get; } = new();
+    public FakeLoggerApi LoggerFake { get; } = new();
+    public FakeFsdApi FsdFake { get; } = new();
+    public FakeChatApi ChatFake { get; } = new();
+    public FakeRenderingApi RenderingFake { get; } = new();
+    public FakeWindowApi WindowFake { get; } = new();
+    public FakeSoundApi SoundFake { get; } = new();
+    public FakeFocusApi FocusFake { get; } = new();
+    public FakeNavdataApi NavdataFake { get; } = new();
+    public FakeFeedbackApi FeedbackFake { get; } = new();
+    public FakeSettingsApi SettingsFake { get; } = new();
+    public FakeMenuApi MenuFake { get; } = new();
+    public FakeThemeApi ThemeFake { get; } = new();
+    public FakeExpressionApi ExpressionsFake { get; } = new();
+
+    public IPackageApi Package => PackageFake;
+    public IAircraftApi Aircraft => AircraftFake;
+    public IFlightplanApi Flightplan => FlightplanFake;
+    public IControllerApi Controller => ControllerFake;
+    public IControllerDataApi ControllerData => ControllerDataFake;
+    public IAirportApi Airport => AirportFake;
+    public ISquawkApi Squawk => SquawkFake;
+    public ITagApi Tag => TagFake;
+    public ILoggerApi Logger => LoggerFake;
+    public IFsdApi Fsd => FsdFake;
+    public IChatApi Chat => ChatFake;
+    public IRenderingApi Rendering => RenderingFake;
+    public IWindowApi Window => WindowFake;
+    public ISoundApi Sound => SoundFake;
+    public IFocusApi Focus => FocusFake;
+    public INavdataApi Navdata => NavdataFake;
+    public IFeedbackApi Feedback => FeedbackFake;
+    public ISettingsApi Settings => SettingsFake;
+    public IMenuApi Menu => MenuFake;
+    public IThemeApi Theme => ThemeFake;
+    public IExpressionApi Expressions => ExpressionsFake;
+}

@@ -1,0 +1,81 @@
+## OnATISInfoMessageReceived
+stations: 1 recent, newest hh:mm:ss Callsign ATIS Icao information AtisLetter
+## OnAircraftAssignedSpeedChanged
+stations: 2 recent, newest hh:mm:ss Callsign speed 8 to 8
+## OnAircraftBeaconCodeChanged
+stations: 3 recent, newest hh:mm:ss Callsign squawk OldCode to NewCode
+## OnAircraftCDMStatusChanged
+stations: 4 recent, newest hh:mm:ss Callsign clearance True, ground Dep
+## OnAircraftHandoffCancelled
+stations: 5 recent, newest hh:mm:ss Callsign handoff withdrawn
+## OnAircraftHandoffInitiated
+alerts: hh:mm:ss Callsign offered to you: sound played
+stations: 6 recent, newest hh:mm:ss Callsign handoff FromController to ToController
+sound: sample-beep.wav
+## OnAircraftHandoffRejected
+stations: 7 recent, newest hh:mm:ss Callsign handoff rejected by From
+## OnAircraftHeadingChanged
+stations: 8 recent, newest hh:mm:ss Callsign heading 10 to 10
+## OnAircraftInitiatedTracking
+stations: 9 recent, newest hh:mm:ss You assumed Callsign
+## OnAircraftOwnedByChanged
+stations: 10 recent, newest hh:mm:ss Callsign tracked by NewOwner, was OldOwner
+## OnAircraftScratchpadUpdated
+stations: 11 recent, newest hh:mm:ss Callsign scratchpad 'Scratchpad'
+## OnAircraftTemporaryAltitudeChanged
+stations: 12 recent, newest hh:mm:ss Callsign cleared level 11 to 11 ft
+## OnAircraftTerminatedTracking
+stations: 12 recent, newest hh:mm:ss Callsign dropped
+## OnAirportAdded
+runways: EGLL (not in the navdata) Active, centrelines shown /   departures 27R, arrivals 27L
+stations: 12 recent, newest hh:mm:ss Callsign dropped
+## OnAirportConfigurationsUpdated
+runways: EGLL (not in the navdata) Active, centrelines shown /   departures 27R, arrivals 27L
+stations: 12 recent, newest hh:mm:ss Callsign dropped
+## OnAirportRemoved
+runways: EGLL (not in the navdata) Active, centrelines shown /   departures 27R, arrivals 27L
+stations: 12 recent, newest hh:mm:ss Callsign dropped
+## OnAirportStatusChanged
+runways: EGLL (not in the navdata) Active, centrelines shown /   departures 27R, arrivals 27L
+stations: 12 recent, newest hh:mm:ss Callsign dropped
+## OnAtcMessageReceived
+stations: 12 recent, newest hh:mm:ss ATC SentFrom: Message
+## OnAtisLinesUpdate
+stations: 12 recent, newest hh:mm:ss Callsign ATIS now 9 lines
+## OnBroadcastMessageReceived
+stations: 12 recent, newest hh:mm:ss Broadcast SentFrom: Message
+## OnCapabilitiesUpdate
+stations: 12 recent, newest hh:mm:ss Callsign capabilities changed
+## OnControllerConnected
+stations: 12 recent, newest hh:mm:ss Callsign connected as CTR
+## OnControllerDataUpdated
+stations: 12 recent, newest hh:mm:ss Callsign connected as CTR
+## OnControllerDisconnected
+stations: 12 recent, newest hh:mm:ss Callsign disconnected
+## OnFrequencyMessageReceived
+stations: 12 recent, newest hh:mm:ss Frequency SentFrom: Message
+## OnFsdConnected
+stations: 12 recent, newest hh:mm:ss FSD connected as Callsign to Server
+## OnFsdConnectionModelUpdated
+stations: 12 recent, newest hh:mm:ss Your connection now Callsign
+## OnFsdConnectionStateChange
+stations: 12 recent, newest hh:mm:ss FSD state Connected
+## OnFsdDisconnected
+stations: 12 recent, newest hh:mm:ss FSD disconnected (Reason, by you: True)
+## OnFsdError
+stations: 12 recent, newest hh:mm:ss FSD error: Message
+## OnIsControllerATC
+stations: 12 recent, newest hh:mm:ss Callsign is ATC: True
+## OnPrivateMessageReceived
+stations: 12 recent, newest hh:mm:ss PM SentFrom to SentTo: Message
+## OnRunwayStatusChanged
+runways: EGLL (not in the navdata) Active, centrelines shown /   departures 27R, arrivals 27L
+stations: 12 recent, newest hh:mm:ss PM SentFrom to SentTo: Message
+## OnSelectedAircraftChanged
+alerts: hh:mm:ss Selected Callsign
+followed: Callsign 51.5 -0.5
+stations: 12 recent, newest hh:mm:ss PM SentFrom to SentTo: Message
+## OnServerMessageReceived
+stations: 12 recent, newest hh:mm:ss Server SentFrom: Message
+## OnSupervisorMessageReceived
+stations: 12 recent, newest hh:mm:ss Supervisor SentFrom: Message

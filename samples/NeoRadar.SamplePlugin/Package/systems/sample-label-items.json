@@ -1,0 +1,15 @@
+[
+  {
+    "itemName": "plugin:Sample:TAG_Note",
+    "placeholder": "-",
+    "separatorBefore": true,
+    "color": [255, 220, 0],
+    "leftClick": "plugin:Sample:ACTION_Note",
+    "rightClick": "plugin:Sample:ACTION_Menu"
+  },
+  {
+    "itemName": "plugin:Sample:TAG_Status",
+    "separatorBefore": true,
+    "middleClick": "plugin:Sample:ACTION_Scratchpad"
+  }
+]

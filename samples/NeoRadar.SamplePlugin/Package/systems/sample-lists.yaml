@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/neoradar-project/schemas/main/systems/lists.schema.json
+---
+- name: SAMPLE FLAGGED
+  filterExpressions: ["==", "plugin:Sample:EXP_Flagged", "1"]
+  columns:
+    - name: C/S
+      widthChars: 8
+      tagItem:
+        itemName: callsign
+        textAlign: left
+    - name: NOTE
+      widthChars: 10
+      tagItem:
+        itemName: "plugin:Sample:TAG_Note"
+        leftClick: "plugin:Sample:ACTION_Note"
+        rightClick: "plugin:Sample:ACTION_Menu"
+    - name: STATUS
+      widthChars: 8
+      tagItem:
+        itemName: "plugin:Sample:TAG_Status"
+        middleClick: "plugin:Sample:ACTION_Scratchpad"

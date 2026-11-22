@@ -1,0 +1,8 @@
+{
+  "description": "Sample: the Note action on a flagged aircraft's symbol, which the client refuses because the action asks for typed input",
+  "applyWhen": ["==", "plugin:Sample:EXP_Flagged", "1"],
+  "plotShape": "sct/mode-c",
+  "plotColor": [255, 80, 80],
+  "leftClick": "plugin:Sample:ACTION_Note",
+  "rightClick": "plugin:Sample:ACTION_Menu"
+}

@@ -1,0 +1,34 @@
+{
+  "type": "FeatureCollection",
+  "name": "Sample Quiet Hours",
+  "origin": { "kind": "authored", "file": "sample-quiet-hours.geojson" },
+  "items": [
+    {
+      "uuid": "sample-quiet-hours-box",
+      "name": "Sample: drawn while quiet hours are on",
+      "showWhen": ["==", "plugin:Sample:EXP_Quiet Hours", "1"]
+    }
+  ],
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "uuid": "sample-quiet-hours-box",
+        "lineStyle": { "color": [255, 220, 0], "width": 2 },
+        "fillStyle": { "color": [255, 220, 0], "opacity": 0.15 }
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-80000, 6680000],
+            [30000, 6680000],
+            [30000, 6750000],
+            [-80000, 6750000],
+            [-80000, 6680000]
+          ]
+        ]
+      }
+    }
+  ]
+}

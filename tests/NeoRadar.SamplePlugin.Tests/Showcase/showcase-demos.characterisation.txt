@@ -1,0 +1,752 @@
+# Demo writes closed
+## demo-start-ShowPluginInfo
+window: children readout-start 4
+  | Client: Test 0.0.0
+  | Data root: C:\NeoRadar
+  | Active package: C:\Packages\Test
+  | Built against SDK 0.1.0
+## demo-boundary-TimeOneHostCall
+window: children readout-boundary 1
+  | Aircraft.GetAll returned 2 aircraft in N microseconds
+## demo-threads-ShowThreads
+window: children readout-threads 2
+  | This click (UI thread): thread N
+  | A pool job is due on the next timer tick...
+## demo-features-ListFeatures
+window: children readout-features 22
+  | 21 features, in Initialize order:
+  |   ShowcaseFeature
+  |   EventLogFeature
+  |   ThemeFollowFeature
+  |   WarningZoneFeature
+  |   StatusBadgeFeature
+  |   AmanFeature
+  |   MiniMapFeature
+  |   TlmFeature
+  |   WindProfileFeature
+  |   NonSeqFeature
+  |   CommandsFeature
+  |   DemoWindowFeature
+  |   RouteInspectorFeature
+  |   TrackWritesFeature
+  |   WhoIsOnlineFeature
+  |   RunwayBoardFeature
+  |   QuietHoursFeature
+  |   TagDemoFeature
+  |   SettingsScopesFeature
+  |   AlertsFeature
+  |   SquawkDemoFeature
+## demo-flightplans-InspectRoute
+window: children readout-flightplans 1
+  | BAW1: no flight plan filed
+## demo-controllerdata-SetScratchpad
+## demo-controllerdata-SetClearedLevel
+## demo-controllerdata-BurstScratchpad
+## demo-controllerdata-Assume
+## demo-controllerdata-Release
+## demo-controllerdata-AcceptHandoff
+## demo-controllerdata-RejectHandoff
+## demo-controllerdata-CancelHandoff
+## demo-controllerdata-SetNextController
+## demo-airports-RefreshRunways
+window: children readout-airports 2
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+## demo-airports-ToggleCentrelines
+window: children readout-airports 3
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+  | SetShowRunwayCenterlines EGLL: applied
+airport: centrelines EGLL False
+## demo-airports-ActivateRunway
+## demo-airports-DeactivateRunway
+## demo-airports-BatchRunways
+## demo-airports-ToggleObserved
+## demo-airports-DeleteAirport
+## input-airports
+window: children readout-airports 4
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+  | Navaid LON: not in the navdata
+  | SetShowRunwayCenterlines EGLL: applied
+## demo-squawk-RegisterSquawk
+## demo-squawk-UnregisterSquawk
+## demo-squawk-ListSquawk
+window: children readout-squawk 1
+  | hh:mm:ss Available providers: 
+## demo-squawk-ActivateSquawk
+## demo-tags-PushStatus
+window: children readout-tags 1
+  | BAW1 Status = 'SET' pushed
+tag: plugin:Sample:TAG_Status SET BAW1
+## demo-tags-PushEmptyStatus
+window: children readout-tags 2
+  | BAW1 Status = '' pushed, so it shows DEFAULT
+  | BAW1 Status = 'SET' pushed
+tag: plugin:Sample:TAG_Status  BAW1
+## demo-expressions-QuietHoursOn
+window: children readout-expressions 1
+  | plugin:Sample:EXP_Quiet Hours = True: pushed
+expressions: plugin:Sample:EXP_Quiet Hours session True
+## demo-expressions-QuietHoursOff
+window: children readout-expressions 2
+  | plugin:Sample:EXP_Quiet Hours = False: pushed
+  | plugin:Sample:EXP_Quiet Hours = True: pushed
+expressions: plugin:Sample:EXP_Quiet Hours session False
+## demo-expressions-FlagSelected
+window: children readout-expressions 3
+  | plugin:Sample:EXP_Flagged for BAW1 = True: pushed
+  | plugin:Sample:EXP_Quiet Hours = False: pushed
+  | plugin:Sample:EXP_Quiet Hours = True: pushed
+expressions: plugin:Sample:EXP_Flagged BAW1 True
+## demo-screens-ToggleStatusBadge
+window: children readout-screens 1
+  | Status badge is now off
+screens now: Warning Zone True, Status Badge False, AMAN True, Mini Map True, Traffic Load Monitor (TLM) False, Vertical Wind Profile False, Non-Sequenced Flights False
+## demo-screens-ToggleAman
+window: children readout-screens 1
+  | AMAN inset is now off
+screens now: Warning Zone True, Status Badge False, AMAN False, Mini Map True, Traffic Load Monitor (TLM) False, Vertical Wind Profile False, Non-Sequenced Flights False
+## demo-screens-OpenForm
+windows: Sample Form
+## demo-alerts-ToastInfo
+window: children readout-alerts 1
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+feedback: Info Sample Info toast
+## demo-alerts-ToastWarning
+window: children readout-alerts 2
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+feedback: Warning Sample Warning toast
+## demo-alerts-ToastError
+window: children readout-alerts 3
+  | hh:mm:ss Toast Error shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+feedback: Error Sample Error toast
+## demo-alerts-PlayWav
+## demo-alerts-PlayMp3
+## demo-alerts-FollowOn
+window: children readout-alerts 4
+  | hh:mm:ss Follow the selected aircraft: True
+  | hh:mm:ss Toast Error shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+## demo-alerts-FollowOff
+window: children readout-alerts 5
+  | hh:mm:ss Follow the selected aircraft: False
+  | hh:mm:ss Follow the selected aircraft: True
+  | hh:mm:ss Toast Error shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+## demo-alerts-SelectNext
+window: children readout-alerts 6
+  | hh:mm:ss SelectAircraft(EZY2) returned True
+  | hh:mm:ss Follow the selected aircraft: False
+  | hh:mm:ss Follow the selected aircraft: True
+  | hh:mm:ss Toast Error shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+focus: EZY2
+## demo-network-RefreshStations
+window: children readout-network 3
+  | FSD: not connected
+  | Controllers online: 0
+  | Recent:
+## demo-network-PostOnSample
+window: children readout-network 4
+  | FSD: not connected
+  | Controllers online: 0
+  | Recent:
+  | hh:mm:ss Post on [Sample]: posted
+chat: [Sample] Sample: Hello on [Sample]
+## demo-network-PostOnSampleTwo
+window: children readout-network 5
+  | FSD: not connected
+  | Controllers online: 0
+  | Recent:
+  | hh:mm:ss Post on [Sample Two]: posted
+  | hh:mm:ss Post on [Sample]: posted
+chat: [Sample Two] Sample: Hello on [Sample Two]
+## demo-network-PostOnSystem
+window: children readout-network 6
+  | FSD: not connected
+  | Controllers online: 0
+  | Recent:
+  | hh:mm:ss Post on [SYSTEM]: refused (a reserved name, a ninth channel, or the rate limit)
+  | hh:mm:ss Post on [Sample Two]: posted
+  | hh:mm:ss Post on [Sample]: posted
+## demo-ratelimits-ChatBurst
+window: children readout-ratelimits 8
+  | Posted 7 of 7 lines at once; the host refused 0
+  | Line 1: posted
+  | Line 2: posted
+  | Line 3: posted
+  | Line 4: posted
+  | Line 5: posted
+  | Line 6: posted
+  | Line 7: posted
+chat: [Sample] Sample: Burst line 1 of 7
+chat: [Sample] Sample: Burst line 2 of 7
+chat: [Sample] Sample: Burst line 3 of 7
+chat: [Sample] Sample: Burst line 4 of 7
+chat: [Sample] Sample: Burst line 5 of 7
+chat: [Sample] Sample: Burst line 6 of 7
+chat: [Sample] Sample: Burst line 7 of 7
+## demo-ratelimits-ToastBurst
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+## demo-settings-WriteGlobalSetting
+window: children readout-settings 5
+  | Active profile: Default
+  | Plugin scope: sample.global = 'yyyy-mm-dd hh:mm:ssZ', keys sample.loaded-at, sample.global
+  | Profile scope: sample.profile = null (never set)
+  | Set(sample.global) returned True
+  | Set(sample.loaded-at) in Initialize returned True
+settings: sample.global
+## demo-settings-WriteProfileSetting
+window: children readout-settings 6
+  | Active profile: Default
+  | Plugin scope: sample.global = 'yyyy-mm-dd hh:mm:ssZ', keys sample.loaded-at, sample.global
+  | Profile scope: sample.profile = 'yyyy-mm-dd hh:mm:ssZ'
+  | SetForProfile(sample.profile) returned True
+  | Set(sample.global) returned True
+  | Set(sample.loaded-at) in Initialize returned True
+settings: Default/sample.profile
+## demo-settings-ReadUnsetSetting
+window: children readout-settings 7
+  | Active profile: Default
+  | Plugin scope: sample.global = 'yyyy-mm-dd hh:mm:ssZ', keys sample.loaded-at, sample.global
+  | Profile scope: sample.profile = 'yyyy-mm-dd hh:mm:ssZ'
+  | Get(sample.never-set) returned null (never set)
+  | SetForProfile(sample.profile) returned True
+  | Set(sample.global) returned True
+  | Set(sample.loaded-at) in Initialize returned True
+## demo-settings-ShowSettings
+window: children readout-settings 7
+  | Active profile: Default
+  | Plugin scope: sample.global = 'yyyy-mm-dd hh:mm:ssZ', keys sample.loaded-at, sample.global
+  | Profile scope: sample.profile = 'yyyy-mm-dd hh:mm:ssZ'
+  | Get(sample.never-set) returned null (never set)
+  | SetForProfile(sample.profile) returned True
+  | Set(sample.global) returned True
+  | Set(sample.loaded-at) in Initialize returned True
+## demo-events-LogEachLevel
+window: rows counts 1
+window: children readout-events 14
+  | hh:mm:ss wrote one line at each of the six log levels
+  | hh:mm:ss OnWindowEvent click nav-events [thread N]
+  | hh:mm:ss OnWindowEvent click demo-settings-ShowSettings [thread N]
+  | hh:mm:ss OnWindowEvent click demo-settings-ReadUnsetSetting [thread N]
+  | hh:mm:ss OnWindowEvent click demo-settings-WriteProfileSetting [thread N]
+  | hh:mm:ss OnWindowEvent click demo-settings-WriteGlobalSetting [thread N]
+  | hh:mm:ss OnWindowEvent click nav-settings [thread N]
+  | hh:mm:ss OnWindowEvent click demo-ratelimits-ToastBurst [thread N]
+  | hh:mm:ss OnWindowEvent click demo-ratelimits-ChatBurst [thread N]
+  | hh:mm:ss OnWindowEvent click nav-ratelimits [thread N]
+  | hh:mm:ss OnWindowEvent click nav-commands [thread N]
+  | hh:mm:ss OnWindowEvent click demo-network-PostOnSystem [thread N]
+  | hh:mm:ss OnWindowEvent click demo-network-PostOnSampleTwo [thread N]
+  | hh:mm:ss OnWindowEvent click demo-network-PostOnSample [thread N]
+# Demo writes open
+## demo-start-ShowPluginInfo
+window: children readout-start 4
+  | Client: Test 0.0.0
+  | Data root: C:\NeoRadar
+  | Active package: C:\Packages\Test
+  | Built against SDK 0.1.0
+## demo-boundary-TimeOneHostCall
+window: children readout-boundary 1
+  | Aircraft.GetAll returned 2 aircraft in N microseconds
+## demo-threads-ShowThreads
+window: children readout-threads 2
+  | This click (UI thread): thread N
+  | A pool job is due on the next timer tick...
+## demo-features-ListFeatures
+window: children readout-features 22
+  | 21 features, in Initialize order:
+  |   ShowcaseFeature
+  |   EventLogFeature
+  |   ThemeFollowFeature
+  |   WarningZoneFeature
+  |   StatusBadgeFeature
+  |   AmanFeature
+  |   MiniMapFeature
+  |   TlmFeature
+  |   WindProfileFeature
+  |   NonSeqFeature
+  |   CommandsFeature
+  |   DemoWindowFeature
+  |   RouteInspectorFeature
+  |   TrackWritesFeature
+  |   WhoIsOnlineFeature
+  |   RunwayBoardFeature
+  |   QuietHoursFeature
+  |   TagDemoFeature
+  |   SettingsScopesFeature
+  |   AlertsFeature
+  |   SquawkDemoFeature
+## demo-flightplans-InspectRoute
+window: children readout-flightplans 1
+  | BAW1: no flight plan filed
+## demo-controllerdata-SetScratchpad
+window: children readout-controllerdata 3
+  | Sent 1, refused 0
+  | BAW1 has no controller data yet
+  | SetScratchpad BAW1: sent
+controller data: scratchpad BAW1 SAMPLE
+## demo-controllerdata-SetClearedLevel
+window: children readout-controllerdata 5
+  | Sent 2, refused 0
+  | BAW1 has no controller data yet
+  | SetClearedFlightLevel BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad BAW1: sent
+controller data: cfl BAW1 12000
+## demo-controllerdata-BurstScratchpad
+window: children readout-controllerdata 7
+  | Sent 9, refused 0
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+window: children readout-controllerdata 9
+  | Sent 9, refused 0
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+window: children readout-controllerdata 11
+  | Sent 9, refused 0
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+window: children readout-controllerdata 11
+  | Sent 9, refused 0
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+window: children readout-controllerdata 11
+  | Sent 9, refused 0
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+window: children readout-controllerdata 11
+  | Sent 9, refused 0
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+window: children readout-controllerdata 11
+  | Sent 9, refused 0
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+controller data: scratchpad BAW1 SAMPLE0
+controller data: scratchpad BAW1 SAMPLE1
+controller data: scratchpad BAW1 SAMPLE2
+controller data: scratchpad BAW1 SAMPLE3
+controller data: scratchpad BAW1 SAMPLE4
+controller data: scratchpad BAW1 SAMPLE5
+controller data: scratchpad BAW1 SAMPLE6
+## demo-controllerdata-Assume
+window: children readout-controllerdata 11
+  | Sent 10, refused 0
+  | BAW1 has no controller data yet
+  | AssumeAircraft BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+controller data: assume BAW1
+## demo-controllerdata-Release
+window: children readout-controllerdata 11
+  | Sent 11, refused 0
+  | BAW1 has no controller data yet
+  | ReleaseAircraft BAW1: sent
+  | BAW1 has no controller data yet
+  | AssumeAircraft BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+controller data: release BAW1
+## demo-controllerdata-AcceptHandoff
+window: children readout-controllerdata 11
+  | Sent 12, refused 0
+  | BAW1 has no controller data yet
+  | AcceptHandoff BAW1: sent
+  | BAW1 has no controller data yet
+  | ReleaseAircraft BAW1: sent
+  | BAW1 has no controller data yet
+  | AssumeAircraft BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+controller data: accept BAW1 SAMPLE_CTR
+## demo-controllerdata-RejectHandoff
+window: children readout-controllerdata 11
+  | Sent 13, refused 0
+  | BAW1 has no controller data yet
+  | RejectHandoff BAW1: sent
+  | BAW1 has no controller data yet
+  | AcceptHandoff BAW1: sent
+  | BAW1 has no controller data yet
+  | ReleaseAircraft BAW1: sent
+  | BAW1 has no controller data yet
+  | AssumeAircraft BAW1: sent
+  | BAW1 has no controller data yet
+  | SetScratchpad (burst) BAW1: sent
+controller data: reject BAW1 SAMPLE_CTR
+## demo-controllerdata-CancelHandoff
+window: children readout-controllerdata 11
+  | Sent 14, refused 0
+  | BAW1 has no controller data yet
+  | CancelHandoff BAW1: sent
+  | BAW1 has no controller data yet
+  | RejectHandoff BAW1: sent
+  | BAW1 has no controller data yet
+  | AcceptHandoff BAW1: sent
+  | BAW1 has no controller data yet
+  | ReleaseAircraft BAW1: sent
+  | BAW1 has no controller data yet
+  | AssumeAircraft BAW1: sent
+controller data: cancel BAW1 SAMPLE_CTR
+## demo-controllerdata-SetNextController
+window: children readout-controllerdata 11
+  | Sent 15, refused 0
+  | BAW1 has no controller data yet
+  | SetNextController BAW1: sent
+  | BAW1 has no controller data yet
+  | CancelHandoff BAW1: sent
+  | BAW1 has no controller data yet
+  | RejectHandoff BAW1: sent
+  | BAW1 has no controller data yet
+  | AcceptHandoff BAW1: sent
+  | BAW1 has no controller data yet
+  | ReleaseAircraft BAW1: sent
+controller data: next BAW1 SAMPLE_CTR
+## demo-airports-RefreshRunways
+window: children readout-airports 2
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+## demo-airports-ToggleCentrelines
+window: children readout-airports 3
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+  | SetShowRunwayCenterlines EGLL: applied
+airport: centrelines EGLL False
+## demo-airports-ActivateRunway
+window: children readout-airports 5
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+  | SetRunwayStatus EGLL: refused
+  | SetRunwayStatus: EGLL has no runway in the navdata
+  | SetShowRunwayCenterlines EGLL: applied
+## demo-airports-DeactivateRunway
+window: children readout-airports 7
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+  | RemoveRunwayStatus EGLL: refused
+  | RemoveRunwayStatus: EGLL has no runway in the navdata
+  | SetRunwayStatus EGLL: refused
+  | SetRunwayStatus: EGLL has no runway in the navdata
+  | SetShowRunwayCenterlines EGLL: applied
+## demo-airports-BatchRunways
+window: children readout-airports 8
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+  | BatchUpdateRunways EGLL: refused
+  | BatchUpdateRunways: EGLL has no runway in the navdata
+  | RemoveRunwayStatus EGLL: refused
+  | RemoveRunwayStatus: EGLL has no runway in the navdata
+  | SetRunwayStatus EGLL: refused
+  | SetRunwayStatus: EGLL has no runway in the navdata
+## demo-airports-ToggleObserved
+window: children readout-airports 8
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+  | SetAirportStatus EGLL: applied
+  | BatchUpdateRunways EGLL: refused
+  | BatchUpdateRunways: EGLL has no runway in the navdata
+  | RemoveRunwayStatus EGLL: refused
+  | RemoveRunwayStatus: EGLL has no runway in the navdata
+  | SetRunwayStatus EGLL: refused
+airport: status EGLL Observed
+## demo-airports-DeleteAirport
+window: children readout-airports 8
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+  | DeleteAirport EGLL: applied
+  | SetAirportStatus EGLL: applied
+  | BatchUpdateRunways EGLL: refused
+  | BatchUpdateRunways: EGLL has no runway in the navdata
+  | RemoveRunwayStatus EGLL: refused
+  | RemoveRunwayStatus: EGLL has no runway in the navdata
+airport: delete EGLL
+## input-airports
+window: children readout-airports 8
+  | EGLL (not in the navdata) Active, centrelines shown
+  |   departures 27R, arrivals 27L
+  | Navaid LON: not in the navdata
+  | DeleteAirport EGLL: applied
+  | SetAirportStatus EGLL: applied
+  | BatchUpdateRunways EGLL: refused
+  | BatchUpdateRunways: EGLL has no runway in the navdata
+  | RemoveRunwayStatus EGLL: refused
+## demo-squawk-RegisterSquawk
+window: children readout-squawk 1
+  | hh:mm:ss Registered 'Sample'
+squawk providers: Sample priority 1
+## demo-squawk-UnregisterSquawk
+window: children readout-squawk 2
+  | hh:mm:ss Unregistered
+  | hh:mm:ss Registered 'Sample'
+squawk providers now: 
+## demo-squawk-ListSquawk
+window: children readout-squawk 3
+  | hh:mm:ss Available providers: 
+  | hh:mm:ss Unregistered
+  | hh:mm:ss Registered 'Sample'
+## demo-squawk-ActivateSquawk
+window: children readout-squawk 4
+  | hh:mm:ss SetActiveProvider(Sample) returned False
+  | hh:mm:ss Available providers: 
+  | hh:mm:ss Unregistered
+  | hh:mm:ss Registered 'Sample'
+## demo-tags-PushStatus
+window: children readout-tags 1
+  | BAW1 Status = 'SET' pushed
+tag: plugin:Sample:TAG_Status SET BAW1
+## demo-tags-PushEmptyStatus
+window: children readout-tags 2
+  | BAW1 Status = '' pushed, so it shows DEFAULT
+  | BAW1 Status = 'SET' pushed
+tag: plugin:Sample:TAG_Status  BAW1
+## demo-expressions-QuietHoursOn
+window: children readout-expressions 1
+  | plugin:Sample:EXP_Quiet Hours = True: pushed
+expressions: plugin:Sample:EXP_Quiet Hours session True
+## demo-expressions-QuietHoursOff
+window: children readout-expressions 2
+  | plugin:Sample:EXP_Quiet Hours = False: pushed
+  | plugin:Sample:EXP_Quiet Hours = True: pushed
+expressions: plugin:Sample:EXP_Quiet Hours session False
+## demo-expressions-FlagSelected
+window: children readout-expressions 3
+  | plugin:Sample:EXP_Flagged for BAW1 = True: pushed
+  | plugin:Sample:EXP_Quiet Hours = False: pushed
+  | plugin:Sample:EXP_Quiet Hours = True: pushed
+expressions: plugin:Sample:EXP_Flagged BAW1 True
+## demo-screens-ToggleStatusBadge
+window: children readout-screens 1
+  | Status badge is now off
+screens now: Warning Zone True, Status Badge False, AMAN True, Mini Map True, Traffic Load Monitor (TLM) False, Vertical Wind Profile False, Non-Sequenced Flights False
+## demo-screens-ToggleAman
+window: children readout-screens 1
+  | AMAN inset is now off
+screens now: Warning Zone True, Status Badge False, AMAN False, Mini Map True, Traffic Load Monitor (TLM) False, Vertical Wind Profile False, Non-Sequenced Flights False
+## demo-screens-OpenForm
+windows: Sample Form
+## demo-alerts-ToastInfo
+window: children readout-alerts 1
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+feedback: Info Sample Info toast
+## demo-alerts-ToastWarning
+window: children readout-alerts 2
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+feedback: Warning Sample Warning toast
+## demo-alerts-ToastError
+window: children readout-alerts 3
+  | hh:mm:ss Toast Error shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+feedback: Error Sample Error toast
+## demo-alerts-PlayWav
+## demo-alerts-PlayMp3
+## demo-alerts-FollowOn
+window: children readout-alerts 4
+  | hh:mm:ss Follow the selected aircraft: True
+  | hh:mm:ss Toast Error shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+## demo-alerts-FollowOff
+window: children readout-alerts 5
+  | hh:mm:ss Follow the selected aircraft: False
+  | hh:mm:ss Follow the selected aircraft: True
+  | hh:mm:ss Toast Error shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+## demo-alerts-SelectNext
+window: children readout-alerts 6
+  | hh:mm:ss SelectAircraft(EZY2) returned True
+  | hh:mm:ss Follow the selected aircraft: False
+  | hh:mm:ss Follow the selected aircraft: True
+  | hh:mm:ss Toast Error shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Warning shown (a throttled toast is dropped without telling the plugin)
+  | hh:mm:ss Toast Info shown (a throttled toast is dropped without telling the plugin)
+focus: EZY2
+## demo-network-RefreshStations
+window: children readout-network 3
+  | FSD: not connected
+  | Controllers online: 0
+  | Recent:
+## demo-network-PostOnSample
+window: children readout-network 4
+  | FSD: not connected
+  | Controllers online: 0
+  | Recent:
+  | hh:mm:ss Post on [Sample]: posted
+chat: [Sample] Sample: Hello on [Sample]
+## demo-network-PostOnSampleTwo
+window: children readout-network 5
+  | FSD: not connected
+  | Controllers online: 0
+  | Recent:
+  | hh:mm:ss Post on [Sample Two]: posted
+  | hh:mm:ss Post on [Sample]: posted
+chat: [Sample Two] Sample: Hello on [Sample Two]
+## demo-network-PostOnSystem
+window: children readout-network 6
+  | FSD: not connected
+  | Controllers online: 0
+  | Recent:
+  | hh:mm:ss Post on [SYSTEM]: refused (a reserved name, a ninth channel, or the rate limit)
+  | hh:mm:ss Post on [Sample Two]: posted
+  | hh:mm:ss Post on [Sample]: posted
+## demo-ratelimits-ChatBurst
+window: children readout-ratelimits 8
+  | Posted 7 of 7 lines at once; the host refused 0
+  | Line 1: posted
+  | Line 2: posted
+  | Line 3: posted
+  | Line 4: posted
+  | Line 5: posted
+  | Line 6: posted
+  | Line 7: posted
+chat: [Sample] Sample: Burst line 1 of 7
+chat: [Sample] Sample: Burst line 2 of 7
+chat: [Sample] Sample: Burst line 3 of 7
+chat: [Sample] Sample: Burst line 4 of 7
+chat: [Sample] Sample: Burst line 5 of 7
+chat: [Sample] Sample: Burst line 6 of 7
+chat: [Sample] Sample: Burst line 7 of 7
+## demo-ratelimits-ToastBurst
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+feedback: Info Sample Info toast
+## demo-settings-WriteGlobalSetting
+window: children readout-settings 5
+  | Active profile: Default
+  | Plugin scope: sample.global = 'yyyy-mm-dd hh:mm:ssZ', keys sample.loaded-at, sample.global
+  | Profile scope: sample.profile = null (never set)
+  | Set(sample.global) returned True
+  | Set(sample.loaded-at) in Initialize returned True
+settings: sample.global
+## demo-settings-WriteProfileSetting
+window: children readout-settings 6
+  | Active profile: Default
+  | Plugin scope: sample.global = 'yyyy-mm-dd hh:mm:ssZ', keys sample.loaded-at, sample.global
+  | Profile scope: sample.profile = 'yyyy-mm-dd hh:mm:ssZ'
+  | SetForProfile(sample.profile) returned True
+  | Set(sample.global) returned True
+  | Set(sample.loaded-at) in Initialize returned True
+settings: Default/sample.profile
+## demo-settings-ReadUnsetSetting
+window: children readout-settings 7
+  | Active profile: Default
+  | Plugin scope: sample.global = 'yyyy-mm-dd hh:mm:ssZ', keys sample.loaded-at, sample.global
+  | Profile scope: sample.profile = 'yyyy-mm-dd hh:mm:ssZ'
+  | Get(sample.never-set) returned null (never set)
+  | SetForProfile(sample.profile) returned True
+  | Set(sample.global) returned True
+  | Set(sample.loaded-at) in Initialize returned True
+## demo-settings-ShowSettings
+window: children readout-settings 7
+  | Active profile: Default
+  | Plugin scope: sample.global = 'yyyy-mm-dd hh:mm:ssZ', keys sample.loaded-at, sample.global
+  | Profile scope: sample.profile = 'yyyy-mm-dd hh:mm:ssZ'
+  | Get(sample.never-set) returned null (never set)
+  | SetForProfile(sample.profile) returned True
+  | Set(sample.global) returned True
+  | Set(sample.loaded-at) in Initialize returned True
+## demo-events-LogEachLevel
+window: rows counts 1
+window: children readout-events 14
+  | hh:mm:ss wrote one line at each of the six log levels
+  | hh:mm:ss OnWindowEvent click nav-events [thread N]
+  | hh:mm:ss OnWindowEvent click demo-settings-ShowSettings [thread N]
+  | hh:mm:ss OnWindowEvent click demo-settings-ReadUnsetSetting [thread N]
+  | hh:mm:ss OnWindowEvent click demo-settings-WriteProfileSetting [thread N]
+  | hh:mm:ss OnWindowEvent click demo-settings-WriteGlobalSetting [thread N]
+  | hh:mm:ss OnWindowEvent click nav-settings [thread N]
+  | hh:mm:ss OnWindowEvent click demo-ratelimits-ToastBurst [thread N]
+  | hh:mm:ss OnWindowEvent click demo-ratelimits-ChatBurst [thread N]
+  | hh:mm:ss OnWindowEvent click nav-ratelimits [thread N]
+  | hh:mm:ss OnWindowEvent click nav-commands [thread N]
+  | hh:mm:ss OnWindowEvent click demo-network-PostOnSystem [thread N]
+  | hh:mm:ss OnWindowEvent click demo-network-PostOnSampleTwo [thread N]
+  | hh:mm:ss OnWindowEvent click demo-network-PostOnSample [thread N]
