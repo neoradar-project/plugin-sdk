@@ -1,4 +1,4 @@
-sdk-version 0.1.0
+sdk-version 0.1.1
 NeoRadar.PluginSdk.Aircraft.Aircraft :: .ctor()
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.Position Position { get; init; }
 NeoRadar.PluginSdk.Aircraft.Aircraft :: NeoRadar.PluginSdk.Aircraft.TransponderMode TransponderMode { get; init; }
@@ -209,6 +209,8 @@ NeoRadar.PluginSdk.BasePlugin :: virtual void OnCapabilitiesUpdate(NeoRadar.Plug
 NeoRadar.PluginSdk.BasePlugin :: virtual void OnControllerConnected(NeoRadar.PluginSdk.Controller.ControllerConnectedEvent evt)
 NeoRadar.PluginSdk.BasePlugin :: virtual void OnControllerDataUpdated(NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent evt)
 NeoRadar.PluginSdk.BasePlugin :: virtual void OnControllerDisconnected(NeoRadar.PluginSdk.Controller.ControllerDisconnectedEvent evt)
+NeoRadar.PluginSdk.BasePlugin :: virtual void OnFlightStripAnnotationsChanged(NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent evt)
+NeoRadar.PluginSdk.BasePlugin :: virtual void OnFlightStripPushed(NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent evt)
 NeoRadar.PluginSdk.BasePlugin :: virtual void OnFlightplanRemoved(NeoRadar.PluginSdk.Flightplan.FlightplanRemovedEvent evt)
 NeoRadar.PluginSdk.BasePlugin :: virtual void OnFlightplanRouteChanged(NeoRadar.PluginSdk.Flightplan.FlightplanRouteChangedEvent evt)
 NeoRadar.PluginSdk.BasePlugin :: virtual void OnFlightplanUpdated(NeoRadar.PluginSdk.Flightplan.FlightplanUpdatedEvent evt)
@@ -643,6 +645,26 @@ NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent :: static bool op_E
 NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent :: static bool op_Inequality(NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent? left, NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent? right)
 NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent :: string Callsign { get; init; }
 NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent :: void Deconstruct(out string Callsign)
+NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent :: .ctor(string Callsign)
+NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent :: bool Equals(NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent? other)
+NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent :: override bool Equals(object? obj)
+NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent :: override int GetHashCode()
+NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent :: override string ToString()
+NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent :: static bool op_Equality(NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent? left, NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent? right)
+NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent :: static bool op_Inequality(NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent? left, NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent? right)
+NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent :: string Callsign { get; init; }
+NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent :: void Deconstruct(out string Callsign)
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: .ctor(string Callsign, string FromController, string ToController)
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: bool Equals(NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent? other)
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: override bool Equals(object? obj)
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: override int GetHashCode()
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: override string ToString()
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: static bool op_Equality(NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent? left, NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent? right)
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: static bool op_Inequality(NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent? left, NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent? right)
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: string Callsign { get; init; }
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: string FromController { get; init; }
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: string ToController { get; init; }
+NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent :: void Deconstruct(out string Callsign, out string FromController, out string ToController)
 NeoRadar.PluginSdk.ControllerData.GroundStatus :: Dep = 4
 NeoRadar.PluginSdk.ControllerData.GroundStatus :: None = 0
 NeoRadar.PluginSdk.ControllerData.GroundStatus :: Push = 2
@@ -650,12 +672,14 @@ NeoRadar.PluginSdk.ControllerData.GroundStatus :: Start = 1
 NeoRadar.PluginSdk.ControllerData.GroundStatus :: Taxi = 3
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: NeoRadar.PluginSdk.ControllerData.ControllerDataModel? GetByCallsign(string callsign)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: System.Collections.Generic.IReadOnlyList<NeoRadar.PluginSdk.ControllerData.ControllerDataModel> GetAll()
+NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: System.Collections.Generic.IReadOnlyList<string>? GetFlightStripAnnotations(string callsign)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool AcceptHandoff(string callsign, string fromController)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool AssumeAircraft(string callsign)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool CancelHandoff(string callsign, string targetController)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool ClearAssignedDirect(string callsign)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool ClearAssignedSpeed(string callsign)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool HandoffAircraft(string callsign, string toController)
+NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool PushFlightStrip(string callsign, string toController)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool RejectHandoff(string callsign, string fromController)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool ReleaseAircraft(string callsign)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool SetAssignedDirect(string callsign, string waypointIdentifier)
@@ -664,6 +688,7 @@ NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool SetAssignedSpeed(st
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool SetAssignedSquawk(string callsign, string squawk)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool SetClearanceIssued(string callsign, bool issued)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool SetClearedFlightLevel(string callsign, int clearedFlightLevel)
+NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool SetFlightStripAnnotation(string callsign, int index, string text)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool SetGroundStatus(string callsign, NeoRadar.PluginSdk.ControllerData.GroundStatus groundStatus)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool SetNextController(string callsign, string nextControllerCallsign)
 NeoRadar.PluginSdk.ControllerData.IControllerDataApi :: bool SetScratchpad(string callsign, string scratchpad)
@@ -2011,6 +2036,8 @@ sealed record NeoRadar.PluginSdk.ControllerData.AircraftTemporaryAltitudeChanged
 sealed record NeoRadar.PluginSdk.ControllerData.AircraftTerminatedTrackingEvent : System.IEquatable<NeoRadar.PluginSdk.ControllerData.AircraftTerminatedTrackingEvent>
 sealed record NeoRadar.PluginSdk.ControllerData.ControllerDataModel : System.IEquatable<NeoRadar.PluginSdk.ControllerData.ControllerDataModel>
 sealed record NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent : System.IEquatable<NeoRadar.PluginSdk.ControllerData.ControllerDataUpdatedEvent>
+sealed record NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent : System.IEquatable<NeoRadar.PluginSdk.ControllerData.FlightStripAnnotationsChangedEvent>
+sealed record NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent : System.IEquatable<NeoRadar.PluginSdk.ControllerData.FlightStripPushedEvent>
 sealed record NeoRadar.PluginSdk.Expressions.ExpressionDefinition : System.IEquatable<NeoRadar.PluginSdk.Expressions.ExpressionDefinition>
 sealed record NeoRadar.PluginSdk.Flightplan.Flightplan : System.IEquatable<NeoRadar.PluginSdk.Flightplan.Flightplan>
 sealed record NeoRadar.PluginSdk.Flightplan.FlightplanRemovedEvent : System.IEquatable<NeoRadar.PluginSdk.Flightplan.FlightplanRemovedEvent>

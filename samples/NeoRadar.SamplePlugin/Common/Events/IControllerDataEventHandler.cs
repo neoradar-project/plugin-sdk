@@ -30,4 +30,8 @@ internal interface IControllerDataEventHandler
     void OnAircraftHeadingChanged(AircraftHeadingChangedEvent evt) { }
 
     void OnAircraftAssignedSpeedChanged(AircraftAssignedSpeedChangedEvent evt) { }
+
+    void OnFlightStripAnnotationsChanged(FlightStripAnnotationsChangedEvent evt) { }
+
+    void OnFlightStripPushed(FlightStripPushedEvent evt) { }
 }

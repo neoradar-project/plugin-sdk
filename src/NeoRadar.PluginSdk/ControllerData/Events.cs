@@ -97,3 +97,18 @@ public sealed record AircraftHeadingChangedEvent(string Callsign, int OldHeading
 /// <param name="OldSpeed">The previous speed in knots, or in hundredths of Mach for a Mach assignment.</param>
 /// <param name="NewSpeed">The new speed in knots, or in hundredths of Mach for a Mach assignment.</param>
 public sealed record AircraftAssignedSpeedChangedEvent(string Callsign, int OldSpeed, int NewSpeed);
+
+/// <summary>
+/// Raised when any of an aircraft's flight strip annotations changes, whoever wrote it.
+/// </summary>
+/// <param name="Callsign">The aircraft's callsign.</param>
+public sealed record FlightStripAnnotationsChangedEvent(string Callsign);
+
+/// <summary>
+/// Raised when another controller pushes an aircraft's flight strip to the user.
+/// </summary>
+/// <remarks>The pushed annotations are applied before this is raised.</remarks>
+/// <param name="Callsign">The aircraft's callsign.</param>
+/// <param name="FromController">The controller who pushed the strip.</param>
+/// <param name="ToController">The user's callsign.</param>
+public sealed record FlightStripPushedEvent(string Callsign, string FromController, string ToController);

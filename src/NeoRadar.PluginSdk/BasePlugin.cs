@@ -160,6 +160,16 @@ public abstract class BasePlugin
     /// </summary>
     public virtual void OnAircraftAssignedSpeedChanged(ControllerData.AircraftAssignedSpeedChangedEvent evt) { }
 
+    /// <summary>
+    /// Called when any of an aircraft's flight strip annotations changes.
+    /// </summary>
+    public virtual void OnFlightStripAnnotationsChanged(ControllerData.FlightStripAnnotationsChangedEvent evt) { }
+
+    /// <summary>
+    /// Called when another controller pushes an aircraft's flight strip to the user.
+    /// </summary>
+    public virtual void OnFlightStripPushed(ControllerData.FlightStripPushedEvent evt) { }
+
     // Flightplan events
     /// <summary>
     /// Called when any part of a flight plan changes, including its voice capability and its parsed route.

@@ -182,6 +182,12 @@ internal sealed class FeatureHost
     public void OnAircraftAssignedSpeedChanged(AircraftAssignedSpeedChangedEvent evt)
         => Dispatch(_controllerDataHandlers, nameof(OnAircraftAssignedSpeedChanged), h => h.OnAircraftAssignedSpeedChanged(evt));
 
+    public void OnFlightStripAnnotationsChanged(FlightStripAnnotationsChangedEvent evt)
+        => Dispatch(_controllerDataHandlers, nameof(OnFlightStripAnnotationsChanged), h => h.OnFlightStripAnnotationsChanged(evt));
+
+    public void OnFlightStripPushed(FlightStripPushedEvent evt)
+        => Dispatch(_controllerDataHandlers, nameof(OnFlightStripPushed), h => h.OnFlightStripPushed(evt));
+
     public void OnFlightplanUpdated(FlightplanUpdatedEvent evt)
         => Dispatch(_flightplanHandlers, nameof(OnFlightplanUpdated), h => h.OnFlightplanUpdated(evt));
 

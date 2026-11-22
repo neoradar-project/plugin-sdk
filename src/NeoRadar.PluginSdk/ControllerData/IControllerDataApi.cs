@@ -135,4 +135,28 @@ public interface IControllerDataApi
     /// </summary>
     /// <returns>False if the call was throttled, the user is not connected as ATC, or the callsign is unknown.</returns>
     bool CancelHandoff(string callsign, string targetController);
+
+    /// <summary>
+    /// Gets the nine flight strip annotations of an aircraft, as EuroScope's flight strip boxes.
+    /// </summary>
+    /// <remarks>A box no controller has written reads empty.</remarks>
+    /// <returns>Nine strings, index 0 to 8, or null when the callsign has no controller data.</returns>
+    IReadOnlyList<string>? GetFlightStripAnnotations(string callsign);
+
+    /// <summary>
+    /// Sets one flight strip annotation and sends the strip to the user's linked EuroScope or NeoRadar instances, never the network.
+    /// </summary>
+    /// <remarks>Each box holds at most 50 characters, and a ':' or control character is removed before it is stored. The once-a-second limit is per box, not per aircraft.</remarks>
+    /// <param name="callsign">The aircraft's callsign.</param>
+    /// <param name="index">The box, 0 to 8.</param>
+    /// <param name="text">The annotation; empty clears the box.</param>
+    /// <returns>False if the call was throttled, the index is outside 0 to 8, or the callsign has no controller data.</returns>
+    bool SetFlightStripAnnotation(string callsign, int index, string text);
+
+    /// <summary>
+    /// Sends the aircraft's flight strip to another controller, as EuroScope's strip push does.
+    /// </summary>
+    /// <remarks>The host also pushes the strip by itself after every handoff the user sends.</remarks>
+    /// <returns>False if the call was throttled, the user is not connected as ATC, the callsign is unknown, another controller tracks the aircraft, <paramref name="toController"/> is not a known controller, or the strip holds no box yet.</returns>
+    bool PushFlightStrip(string callsign, string toController);
 }

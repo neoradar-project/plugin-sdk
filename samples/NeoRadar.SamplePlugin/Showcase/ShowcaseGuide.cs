@@ -295,7 +295,7 @@ internal static class ShowcaseGuide
             new(Events, "Event log", "Every BasePlugin event, counted as it arrives.",
                 [
                     new("Event counts",
-                        ["Every one of BasePlugin's 51 events, counted as it arrives, with the thread it came on. Position batches, controller data updates and the timer are counted but not listed."],
+                        ["Every one of BasePlugin's 53 events, counted as it arrives, with the thread it came on. Position batches, controller data updates and the timer are counted but not listed."],
                         [new("LogEachLevel", "Write one log line at each level")]),
                 ],
                 "Logging and diagnostics")

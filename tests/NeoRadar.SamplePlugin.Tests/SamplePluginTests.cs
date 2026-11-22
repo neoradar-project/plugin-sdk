@@ -25,7 +25,7 @@ public sealed class SamplePluginTests
             .Select(e => e.Name)
             .ToArray();
 
-        Assert.Equal(51, events.Length);
+        Assert.Equal(53, events.Length);
         Assert.Empty(notForwarded);
     }
 
@@ -45,7 +45,7 @@ public sealed class SamplePluginTests
         }
         plugin.OnTimer(new TimerEvent(1));
 
-        Assert.Contains($"rows {ShowcasePageLayout.CountsTable} 51", core.WindowFake.Interface.Calls);
+        Assert.Contains($"rows {ShowcasePageLayout.CountsTable} 53", core.WindowFake.Interface.Calls);
         plugin.Shutdown();
     }
 

@@ -52,6 +52,10 @@ stations: 12 recent, newest hh:mm:ss Callsign connected as CTR
 stations: 12 recent, newest hh:mm:ss Callsign connected as CTR
 ## OnControllerDisconnected
 stations: 12 recent, newest hh:mm:ss Callsign disconnected
+## OnFlightStripAnnotationsChanged
+stations: 12 recent, newest hh:mm:ss Callsign disconnected
+## OnFlightStripPushed
+stations: 12 recent, newest hh:mm:ss Callsign disconnected
 ## OnFrequencyMessageReceived
 stations: 12 recent, newest hh:mm:ss Frequency SentFrom: Message
 ## OnFsdConnected

@@ -50,6 +50,12 @@ internal sealed class FakeControllerDataApi : IControllerDataApi
 
     public bool CancelHandoff(string callsign, string targetController) => Write($"cancel {callsign} {targetController}");
 
+    public IReadOnlyList<string>? GetFlightStripAnnotations(string callsign) => null;
+
+    public bool SetFlightStripAnnotation(string callsign, int index, string text) => Write($"strip {callsign} {index} {text}");
+
+    public bool PushFlightStrip(string callsign, string toController) => Write($"push strip {callsign} {toController}");
+
     private bool Write(string call)
     {
         Writes.Add(call);

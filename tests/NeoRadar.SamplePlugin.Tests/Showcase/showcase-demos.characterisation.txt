@@ -4,7 +4,7 @@ window: children readout-start 4
   | Client: Test 0.0.0
   | Data root: C:\NeoRadar
   | Active package: C:\Packages\Test
-  | Built against SDK 0.1.0
+  | Built against SDK 0.1.1
 ## demo-boundary-TimeOneHostCall
 window: children readout-boundary 1
   | Aircraft.GetAll returned 2 aircraft in N microseconds
@@ -259,7 +259,7 @@ window: children readout-start 4
   | Client: Test 0.0.0
   | Data root: C:\NeoRadar
   | Active package: C:\Packages\Test
-  | Built against SDK 0.1.0
+  | Built against SDK 0.1.1
 ## demo-boundary-TimeOneHostCall
 window: children readout-boundary 1
   | Aircraft.GetAll returned 2 aircraft in N microseconds

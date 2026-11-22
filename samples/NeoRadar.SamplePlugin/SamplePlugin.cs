@@ -112,6 +112,10 @@ public sealed class SamplePlugin : BasePlugin
 
     public override void OnAircraftAssignedSpeedChanged(AircraftAssignedSpeedChangedEvent evt) => _features?.OnAircraftAssignedSpeedChanged(evt);
 
+    public override void OnFlightStripAnnotationsChanged(FlightStripAnnotationsChangedEvent evt) => _features?.OnFlightStripAnnotationsChanged(evt);
+
+    public override void OnFlightStripPushed(FlightStripPushedEvent evt) => _features?.OnFlightStripPushed(evt);
+
     public override void OnFlightplanUpdated(FlightplanUpdatedEvent evt) => _features?.OnFlightplanUpdated(evt);
 
     public override void OnFlightplanRemoved(FlightplanRemovedEvent evt) => _features?.OnFlightplanRemoved(evt);

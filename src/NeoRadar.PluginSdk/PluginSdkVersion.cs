@@ -18,7 +18,7 @@ public static class PluginSdkVersion
     /// <summary>
     /// The patch version, bumped by an addition to the public surface.
     /// </summary>
-    public const int Patch = 0;
+    public const int Patch = 1;
 
     /// <summary>
     /// Gets the full version string, for example "0.1.0".

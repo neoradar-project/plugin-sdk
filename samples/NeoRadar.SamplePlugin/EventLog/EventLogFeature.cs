@@ -20,7 +20,7 @@ using NeoRadar.SamplePlugin.Common.Events;
 
 namespace NeoRadar.SamplePlugin.EventLog;
 
-/// <summary>Hears every one of the host's 51 events, counts each, and keeps a few lines of what just happened.</summary>
+/// <summary>Hears every one of the host's 53 events, counts each, and keeps a few lines of what just happened.</summary>
 internal sealed class EventLogFeature :
     IFeature,
     IEventLog,
@@ -119,6 +119,10 @@ internal sealed class EventLogFeature :
     public void OnAircraftHeadingChanged(AircraftHeadingChangedEvent evt) => Heard(nameof(OnAircraftHeadingChanged), evt.Callsign);
 
     public void OnAircraftAssignedSpeedChanged(AircraftAssignedSpeedChangedEvent evt) => Heard(nameof(OnAircraftAssignedSpeedChanged), evt.Callsign);
+
+    public void OnFlightStripAnnotationsChanged(FlightStripAnnotationsChangedEvent evt) => Heard(nameof(OnFlightStripAnnotationsChanged), evt.Callsign);
+
+    public void OnFlightStripPushed(FlightStripPushedEvent evt) => Heard(nameof(OnFlightStripPushed), evt.Callsign);
 
     // Client threads.
     public void OnFlightplanUpdated(FlightplanUpdatedEvent evt) => Heard(nameof(OnFlightplanUpdated), evt.Callsign);
